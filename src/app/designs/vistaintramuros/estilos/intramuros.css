@@ -342,3 +342,14 @@ body {
     font-size: 0.85rem;
   }
 }
+.team-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1b396a; /* Azul ITE */
+  min-height: 1.2em;
+}
+
+.cronologia-tag {
+  color: #f39c12; /* Color naranja de torneos */
+  font-weight: 800;
+}

@@ -539,3 +539,77 @@
     height: 45px;
   }
 }
+/* 4. iPhone Pro Max & Pantallas Grandes (Responsividad Extra) */
+@media (max-width: 430px) {
+  /* Ancho estándar de un Pro Max */
+  .title-group {
+    flex-direction: row !important; /* Mantenemos horizontal si el título es corto */
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .icon-circle {
+    width: 45px;
+    height: 45px;
+    flex-shrink: 0;
+  }
+
+  .title-group h1 {
+    font-size: 1.2rem;
+  }
+
+  /* Hacemos que los eventos sean más fáciles de leer con el pulgar */
+  .ev-card {
+    border-radius: 20px;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Ajuste de los detalles del evento para que no se vean gigantes */
+  .detail {
+    font-size: 0.85rem;
+    padding: 0.75rem;
+  }
+}
+
+/* 5. Ajustes para iPad Pro & iPad Air (Layout de dos columnas) */
+@media (min-width: 769px) and (max-width: 1180px) {
+  .grid-layout {
+    /* En iPad, 380px es mucho para el calendario. Lo bajamos a 300px */
+    grid-template-columns: 300px 1fr;
+    gap: 1.5rem;
+  }
+
+  .intra-content {
+    max-width: 100%;
+    padding: 2rem;
+  }
+
+  .ev-grid-details {
+    /* En iPad forzamos 2 columnas de detalles para aprovechar el ancho */
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 6. Fix para "Pull to Refresh" y Scroll en iOS */
+.intra-wrapper {
+  /* Evita el rebote blanco feo en los extremos en Safari */
+  overscroll-behavior-y: contain;
+  /* Suavizado de fuentes exclusivo de Mac/iOS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 7. Mejoras de visibilidad del Calendario en Móvil */
+@media (max-width: 640px) {
+  .calendar-grid {
+    gap: 2px; /* Reducimos gap para ganar espacio */
+  }
+
+  .calendar-day {
+    aspect-ratio: 1 / 1; /* Hacemos que los días sean cuadrados perfectos */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+}

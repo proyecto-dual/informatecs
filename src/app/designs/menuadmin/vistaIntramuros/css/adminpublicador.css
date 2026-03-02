@@ -193,3 +193,43 @@
 .spin {
   animation: spin 0.8s linear infinite;
 }
+/* ============================================
+   MEDIA QUERIES (Tablets y Desktop)
+   ============================================ */
+
+/* Para iPads y pantallas mayores a 600px */
+@media (min-width: 600px) {
+  .ap-form-grid {
+    grid-template-columns: repeat(2, 1fr); /* Volvemos a 2 columnas */
+    gap: 20px;
+  }
+
+  .ap-full {
+    grid-column: 1 / span 2;
+  }
+
+  .ap-modal__header {
+    padding: 24px 32px;
+  }
+
+  .ap-modal__body {
+    padding: 28px 32px;
+  }
+
+  /* En desktop/tablet podemos bajar un poco el font-size si prefieres */
+  .ap-input,
+  .ap-select,
+  .ap-textarea {
+    font-size: 0.82rem;
+  }
+}
+
+/* Ajuste específico para cuando el celular está de lado (Landscape) */
+@media (max-height: 450px) {
+  .ap-modal {
+    max-height: 95vh;
+  }
+  .ap-modal__header {
+    padding: 10px 20px;
+  }
+}

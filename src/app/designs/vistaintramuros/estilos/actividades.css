@@ -35,8 +35,9 @@
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 
   /* Tipografía */
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
 
   /* Espaciado */
   --radius: 0.5rem;
@@ -60,12 +61,13 @@ body {
 /* ================================= */
 /* 2. CONTENEDOR PRINCIPAL */
 /* ================================= */
-.intramuros-list-wrapper {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-}
 
+.intramuros-list-wrapper,
+.modal-overlay {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+}
 .intramuros-list-wrapper h2 {
   font-size: 2rem;
   font-weight: 700;
@@ -917,4 +919,107 @@ body {
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.9em;
+}
+
+/* ======================================================
+   OPTIMIZACIONES ESPECÍFICAS PARA IOS (IPHONE & IPAD)
+   ====================================================== */
+
+/* 1. Ajuste para el Notch y Barras de Sistema */
+.intramuros-list-wrapper,
+.modal-overlay {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 2. Evitar Zoom Automático en iPhone */
+/* iOS hace zoom automáticamente si la fuente en inputs es menor a 16px */
+@media screen and (max-width: 480px) {
+  .search-input,
+  .form-group input,
+  .form-group textarea,
+  .integrante-row input {
+    font-size: 16px !important;
+  }
+}
+
+/* 3. Optimización de la Sección de Equipo para Móviles */
+@media (max-width: 600px) {
+  .integrante-row {
+    flex-direction: column; /* Apilamos inputs en iPhone */
+    align-items: stretch;
+    background: var(--white);
+    padding: 10px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 15px;
+    position: relative;
+  }
+
+  .integrante-row input {
+    width: 100%;
+  }
+
+  .btn-remove {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 30px;
+    height: 30px;
+    box-shadow: var(--shadow);
+  }
+}
+
+/* 4. Mejoras para iPad (Vista Tablet) */
+@media (min-width: 769px) and (max-width: 1180px) {
+  .intramuros-table {
+    display: table; /* Volvemos a modo tabla en iPad */
+  }
+
+  .intramuros-table thead {
+    display: table-header-group; /* Mostramos encabezados */
+  }
+
+  .intramuros-table tr {
+    display: table-row;
+    border: none;
+  }
+
+  .intramuros-table td {
+    display: table-cell;
+    text-align: left;
+    padding-left: 1rem !important;
+    justify-content: flex-start;
+  }
+
+  .intramuros-table td::before {
+    display: none; /* Quitamos los labels de "tarjeta" */
+  }
+
+  /* Scroll horizontal suave si la tabla es muy ancha en iPad */
+  .table-responsive {
+    -webkit-overflow-scrolling: touch;
+    overflow-x: auto;
+  }
+}
+
+/* 5. Ajustes de Modal para iPhone Pro Max */
+@media screen and (max-height: 700px) {
+  .modal-content {
+    max-height: 95vh;
+  }
+  .modal-actividad-info {
+    padding: 0.8rem;
+  }
+}
+
+/* 6. Fix para botones en Safari (iOS) */
+.btn,
+.btn-inscribirse,
+.btn-add,
+.btn-remove {
+  -webkit-appearance: none;
+  appearance: none;
+  touch-action: manipulation; /* Mejora la respuesta al toque */
 }

@@ -1478,11 +1478,16 @@ svg {
    Agregar al final de adminpanel.css
 ══════════════════════════════════════════ */
 
-/* Contenedor principal */
+/* Contenedor principal corregido */
 .publicadas {
   margin-top: 1.5rem;
+  margin-left: auto; /* Centra el bloque a la izquierda */
+  margin-right: auto; /* Centra el bloque a la derecha */
+  max-width: 900px; /* Evita que se estire demasiado y se vea "flaco" */
+  width: 95%; /* Deja un pequeño margen en los bordes en móviles */
+  padding: 0 10px; /* Seguridad extra para que no toque los bordes */
+  box-sizing: border-box;
 }
-
 .publicadas .flex-between {
   display: flex;
   align-items: center;
@@ -1530,9 +1535,9 @@ svg {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
-  flex: 1;
+  flex: 1; /* Esto obliga a la info a expandirse y empujar lo demás a la derecha */
+  text-align: left; /* Asegura que el texto siempre empiece en el mismo lugar */
 }
-
 .publicada-info h4 {
   margin: 0;
   font-size: 0.95rem;
@@ -1582,7 +1587,9 @@ svg {
   font-weight: 600;
   border: none;
   cursor: pointer;
-  transition: background-color 0.2s, opacity 0.2s;
+  transition:
+    background-color 0.2s,
+    opacity 0.2s;
 }
 
 .btn-reiniciar.enabled {

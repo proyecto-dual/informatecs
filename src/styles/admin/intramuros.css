@@ -93,3 +93,107 @@
   height: 600px;
   display: block;
 }
+/* ======================================================
+   RESPONSIVIDAD PARA IPHONE Y DISPOSITIVOS MÓVILES
+   ====================================================== */
+
+@media screen and (max-width: 768px) {
+  /* Convertimos la tabla en un layout de "Tarjetas" */
+  .intramuros-table,
+  .intramuros-table thead,
+  .intramuros-table tbody,
+  .intramuros-table th,
+  .intramuros-table td,
+  .intramuros-table tr {
+    display: block;
+  }
+
+  /* Ocultamos los encabezados originales de la tabla */
+  .intramuros-table thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  .intramuros-table tr {
+    border: 1px solid #ccc;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .intramuros-table td {
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    padding-left: 50%; /* Espacio para el label */
+    text-align: right;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  /* Creamos etiquetas para cada celda usando el atributo data-label */
+  .intramuros-table td:before {
+    content: attr(data-label);
+    position: absolute;
+    left: 15px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    font-weight: bold;
+    text-align: left;
+    color: #004d40;
+  }
+
+  /* Ajuste de altura del calendario para pantallas pequeñas */
+  .calendar-embed-wrapper iframe {
+    height: 450px;
+  }
+
+  .intramuros-main-page {
+    padding: 15px;
+  }
+}
+/* ======================================================
+   OPTIMIZACIÓN PARA IPAD / TABLETS (769px a 1024px)
+   ====================================================== */
+
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  .intramuros-main-page {
+    max-width: 95%; /* Aprovecha más los bordes en iPad */
+    padding: 30px;
+  }
+
+  /* Ajustamos la tabla para que no se vea apretada */
+  .intramuros-table th,
+  .intramuros-table td {
+    padding: 12px 8px; /* Reducimos padding lateral para ganar espacio */
+    font-size: 0.95em; /* Reducimos ligeramente la fuente */
+  }
+
+  /* Si la tabla sigue siendo muy ancha, permitimos scroll horizontal suave */
+  .intramuros-list-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Scroll suave característico de iOS */
+    border-radius: 8px;
+  }
+
+  .intramuros-table {
+    min-width: 700px; /* Forzamos un mínimo para que no se colapse el contenido */
+  }
+
+  /* Mejoramos el tamaño del calendario para la proporción del iPad */
+  .calendar-embed-wrapper iframe {
+    height: 550px;
+  }
+}
+
+/* Ajuste adicional para iPad Pro (12.9") en modo Landscape */
+@media screen and (min-width: 1025px) and (max-width: 1366px) {
+  .intramuros-main-page {
+    max-width: 1100px;
+  }
+}

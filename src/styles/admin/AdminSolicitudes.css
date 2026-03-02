@@ -34,16 +34,26 @@
   font-family: "Montserrat", sans-serif;
 }
 /* ── WRAPPER ─────────────────────────────────────────────── */
+/* ── WRAPPER ─────────────────────────────────────────────── */
 .ssolicitudes-wrapper {
   min-height: 100vh;
   background: var(--background);
-  padding: 2rem 2rem 3rem;
+  /* Cambiamos padding lateral a auto para pantallas grandes */
+  padding: 2rem 1rem 3rem;
   font-family: "Montserrat", sans-serif;
+  display: flex; /* Agregado */
+  flex-direction: column; /* Agregado */
+  align-items: center; /* Agregado: Centra el contenedor hijo */
+
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+  padding-bottom: max(3rem, env(safe-area-inset-bottom));
 }
 
 .ssolicitudes-container {
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%; /* Asegura que use el espacio en móviles */
+  max-width: 1200px; /* Límite de expansión */
+  margin: 0 auto; /* Centrado horizontal clásico */
 }
 
 /* ── HEADER — sin fondo, sin degradado ───────────────────── */
