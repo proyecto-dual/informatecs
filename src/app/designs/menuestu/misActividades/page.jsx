@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Calendar, List, Plus, Download, RefreshCw } from "lucide-react";
+import { Calendar, List, Plus, Download, RefreshCw, AlertCircle, UserX } from "lucide-react";
 
 // --- IMPORTACIONES DE COMPONENTES ---
 import BloodTypeValidator from "@/app/components/blood";
@@ -35,6 +35,10 @@ export default function MisActividades() {
   const [showMateriasDrawer, setShowMateriasDrawer] = useState(false);
   const [editingActivity, setEditingActivity] = useState(null);
   const [editingDay, setEditingDay] = useState(null);
+
+  // ✅ NUEVOS ESTADOS PARA BAJA DE ACTIVIDAD
+  const [modalBaja, setModalBaja] = useState(null); // inscripción a dar de baja
+  const [dandoDeBaja, setDandoDeBaja] = useState(false);
 
   const [formData, setFormData] = useState({
     nombre: "",
@@ -81,7 +85,41 @@ export default function MisActividades() {
     }
   };
 
-  // --- LÓGICA DE DESCARGA (RESTAURADA) ---
+  // funcion dar de baja la actividad
+  const handleDarseDeBaja = async (inscripcion) => {
+    try {
+      setDandoDeBaja(true);
+
+      const response = await fetch("/api/inscripciones/baja", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          inscripcionId: inscripcion.id,
+          estudianteId: studentData.numeroControl,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al darse de baja");
+      }
+
+      const data = await response.json();
+      
+      alert(` ${data.mensaje}\n\nTe has dado de baja de: ${inscripcion.actividad?.aconco || inscripcion.actividad?.aticve}`);
+      
+      // Recargar las inscripciones
+      await loadData(studentData.numeroControl);
+      
+      setModalBaja(null);
+    } catch (error) {
+      console.error("Error al darse de baja:", error);
+      alert(" Error al procesar la baja. Intenta de nuevo.");
+    } finally {
+      setDandoDeBaja(false);
+    }
+  };
+
+  // logica de descarga 
   const handleDownloadImage = async () => {
     if (typeof window === "undefined" || !calendarRef.current) return;
     try {
@@ -274,6 +312,89 @@ export default function MisActividades() {
         />
       </div>
 
+      {/* ✅ LISTA DE ACTIVIDADES INSCRITAS CON BOTÓN DE BAJA */}
+      {inscripciones.length > 0 && (
+        <div style={{ margin: "0 2rem 1.5rem" }}>
+          <div style={{
+            backgroundColor: "white",
+            borderRadius: "12px",
+            padding: "1.5rem",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
+          }}>
+            <h3 style={{ 
+              fontSize: "1.25rem", 
+              fontWeight: "600", 
+              color: "#1f2937", 
+              marginBottom: "1rem" 
+            }}>
+              Actividades Complementarias Inscritas
+            </h3>
+            
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+              {inscripciones.map((inscripcion) => {
+                const nombreActividad = inscripcion.actividad?.aconco || 
+                                       inscripcion.actividad?.aticve || 
+                                       "Actividad sin nombre";
+                
+                return (
+                  <div
+                    key={inscripcion.id}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "1rem",
+                      backgroundColor: "#f9fafb",
+                      borderRadius: "8px",
+                      border: "1px solid #e5e7eb"
+                    }}
+                  >
+                    <div style={{ flex: 1 }}>
+                      <h4 style={{ 
+                        fontSize: "1rem", 
+                        fontWeight: "600", 
+                        color: "#111827",
+                        marginBottom: "0.25rem"
+                      }}>
+                        {nombreActividad}
+                      </h4>
+                      <div style={{ display: "flex", gap: "1rem", fontSize: "0.875rem", color: "#6b7280" }}>
+                        <span>📋 {inscripcion.actividad?.aticve}</span>
+                        <span>⭐ {inscripcion.actividad?.acocre} créditos</span>
+                        <span>📅 {new Date(inscripcion.fechaInscripcion).toLocaleDateString()}</span>
+                      </div>
+                    </div>
+                    
+                    <button
+                      onClick={() => setModalBaja(inscripcion)}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                        padding: "0.5rem 1rem",
+                        backgroundColor: "#ef4444",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "6px",
+                        fontSize: "0.875rem",
+                        fontWeight: "500",
+                        cursor: "pointer",
+                        transition: "background-color 0.2s"
+                      }}
+                      onMouseOver={(e) => e.target.style.backgroundColor = "#dc2626"}
+                      onMouseOut={(e) => e.target.style.backgroundColor = "#ef4444"}
+                    >
+                      <UserX size={16} />
+                      Darme de baja
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
       <main className="horario-main">
         {loading ? (
           <div className="horario-loading-state">
@@ -356,6 +477,138 @@ export default function MisActividades() {
           }}
           onSave={handleSaveEditDay}
         />
+      )}
+
+      {/* ✅ MODAL DE CONFIRMACIÓN DE BAJA */}
+      {modalBaja && (
+        <div style={{
+          position: "fixed",
+          inset: 0,
+          backgroundColor: "rgba(0,0,0,0.5)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 9999,
+          padding: "1rem"
+        }}>
+          <div style={{
+            backgroundColor: "white",
+            borderRadius: "12px",
+            maxWidth: "500px",
+            width: "100%",
+            boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)"
+          }}>
+            {/* Header */}
+            <div style={{
+              padding: "1.5rem",
+              borderBottom: "1px solid #e5e7eb",
+              display: "flex",
+              alignItems: "center",
+              gap: "1rem"
+            }}>
+              <AlertCircle size={28} style={{ color: "#ef4444" }} />
+              <div>
+                <h3 style={{ 
+                  fontSize: "1.25rem", 
+                  fontWeight: "600", 
+                  color: "#1f2937",
+                  margin: 0
+                }}>
+                  ¿Darte de baja de esta actividad?
+                </h3>
+              </div>
+            </div>
+
+            {/* Body */}
+            <div style={{ padding: "1.5rem" }}>
+              <div style={{
+                backgroundColor: "#fef2f2",
+                border: "1px solid #fecaca",
+                borderRadius: "8px",
+                padding: "1rem",
+                marginBottom: "1rem"
+              }}>
+                <p style={{ 
+                  fontSize: "1rem", 
+                  fontWeight: "600", 
+                  color: "#991b1b",
+                  marginBottom: "0.5rem"
+                }}>
+                  {modalBaja.actividad?.aconco || modalBaja.actividad?.aticve}
+                </p>
+                <p style={{ fontSize: "0.875rem", color: "#7f1d1d", margin: 0 }}>
+                  Código: {modalBaja.actividad?.aticve} • {modalBaja.actividad?.acocre} créditos
+                </p>
+              </div>
+
+              <div style={{
+                backgroundColor: "#fffbeb",
+                border: "1px solid #fde68a",
+                borderRadius: "8px",
+                padding: "1rem"
+              }}>
+                <p style={{ fontSize: "0.875rem", color: "#92400e", margin: 0 }}>
+                  <strong>⚠️ Advertencia:</strong>
+                </p>
+                <ul style={{ 
+                  fontSize: "0.875rem", 
+                  color: "#92400e", 
+                  marginTop: "0.5rem",
+                  marginBottom: 0,
+                  paddingLeft: "1.25rem"
+                }}>
+                  <li>Ya no podrás acceder a esta actividad</li>
+                  <li>Perderás el avance y calificaciones obtenidas</li>
+                  <li>El administrador será notificado de tu baja</li>
+                  <li>Si deseas volver a inscribirte, deberás hacerlo de nuevo</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div style={{
+              padding: "1.5rem",
+              borderTop: "1px solid #e5e7eb",
+              display: "flex",
+              gap: "0.75rem",
+              justifyContent: "flex-end"
+            }}>
+              <button
+                onClick={() => setModalBaja(null)}
+                disabled={dandoDeBaja}
+                style={{
+                  padding: "0.5rem 1.5rem",
+                  backgroundColor: "#f3f4f6",
+                  border: "none",
+                  borderRadius: "6px",
+                  fontSize: "0.875rem",
+                  fontWeight: "500",
+                  cursor: "pointer",
+                  color: "#374151"
+                }}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => handleDarseDeBaja(modalBaja)}
+                disabled={dandoDeBaja}
+                style={{
+                  padding: "0.5rem 1.5rem",
+                  backgroundColor: "#ef4444",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "6px",
+                  fontSize: "0.875rem",
+                  fontWeight: "500",
+                  cursor: dandoDeBaja ? "not-allowed" : "pointer",
+                  opacity: dandoDeBaja ? 0.6 : 1
+                }}
+              >
+                {dandoDeBaja ? "Procesando..." : "Sí, darme de baja"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
