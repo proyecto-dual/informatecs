@@ -325,40 +325,10 @@ body {
   grid-template-columns: 1fr;
 }
 
-@media (min-width: 768px) and (max-width: 1180px) {
-  .content-container {
-    max-width: 95%; /* Aprovecha más los laterales en iPad */
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-  }
-
+@media (min-width: 768px) {
   .contact-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
   }
-}
-
-/* 5. Corrección para iPhone en Orientación Horizontal (Landscape) */
-@media screen and (max-height: 450px) and (orientation: landscape) {
-  .navigation-tabs-container {
-    position: relative; /* Quita el sticky para ganar espacio vertical */
-  }
-  .main-title {
-    font-size: 1.5rem;
-  }
-}
-
-/* 6. Efecto de Selección Activa (Visual Feedback) */
-.tab-button:active {
-  transform: scale(0.96); /* Pequeño rebote al tocar */
-  background-color: var(--border-light);
-}
-
-/* 7. Estilos de Card para evitar cortes en pantallas pequeñas */
-.section-content-box,
-.contact-card {
-  word-wrap: break-word;
-  overflow-wrap: break-word;
 }
 
 /* Ajustes de fuente y espaciado en Móvil extremo */
@@ -371,4 +341,15 @@ body {
     padding: 0.5rem 1rem;
     font-size: 0.85rem;
   }
+}
+.team-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1b396a; /* Azul ITE */
+  min-height: 1.2em;
+}
+
+.cronologia-tag {
+  color: #f39c12; /* Color naranja de torneos */
+  font-weight: 800;
 }

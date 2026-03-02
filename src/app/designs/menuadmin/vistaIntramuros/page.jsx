@@ -11,6 +11,7 @@ import {
   Users,
   FileText,
   Plus,
+  Clock,
 } from "lucide-react";
 
 import SeccionPartidos from "./secciones/seccionpartidos";
@@ -22,6 +23,7 @@ import SectionActividades from "./secciones/seccionactividades";
 import Dashboard from "./componentesintra/dashboard";
 import AdminPublicador from "./componentesintra/intramurospublicador";
 import EditModal from "./componentesintra/editmodal";
+import SeccionCronologia from "./seccioncronologia"; // Asegúrate de que el archivo se llame así
 
 import "./css/intramuroscard.css";
 import "./css/intamurospanel.css";
@@ -31,6 +33,7 @@ const WEB_APP_URL = "/api/intramuros";
 const TABS = [
   { id: "dashboard", icon: <BarChart3 size={18} />, label: "Dashboard" },
   { id: "actividades", icon: <Calendar size={18} />, label: "Torneos" },
+  { id: "cronologia", icon: <Clock size={18} />, label: "Cronología" }, // Pestaña activada
   { id: "partidos", icon: <Swords size={18} />, label: "Partidos" },
   { id: "equipos", icon: <Shield size={18} />, label: "Equipos" },
   { id: "rankings", icon: <Award size={18} />, label: "Rankings" },
@@ -76,7 +79,7 @@ const IntramurosPanel = () => {
         ],
       });
     } catch (e) {
-      console.error("Error:", e);
+      console.error("Error cargando datos:", e);
     }
     setLoading(false);
   };
@@ -100,13 +103,11 @@ const IntramurosPanel = () => {
         <button
           className={`ip-btn-refresh ${loading ? "ip-btn-refresh--spinning" : ""}`}
           onClick={loadAllData}
-          title="Actualizar datos"
         >
           <RefreshCw size={18} />
         </button>
       </header>
 
-      {/* ── Nav ── */}
       <nav className="ip-nav">
         {TABS.map((tab) => (
           <button
@@ -122,6 +123,14 @@ const IntramurosPanel = () => {
 
       <main className="ip-main">
         {activeTab === "dashboard" && <Dashboard {...data} />}
+
+        {activeTab === "cronologia" && (
+          <SeccionCronologia
+            resultados={data.resultados}
+            actividades={data.actividades}
+          />
+        )}
+
         {activeTab === "actividades" && (
           <SectionActividades
             data={data.actividades}

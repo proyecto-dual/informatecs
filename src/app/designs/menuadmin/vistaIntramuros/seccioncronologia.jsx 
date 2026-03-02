@@ -1,0 +1,58 @@
+import React from 'react';
+import { Clock, Calendar, CheckCircle2, Minus } from 'lucide-react';
+
+const SeccionCronologia = ({ resultados }) => {
+  // 1. Agrupar por fecha para crear bloques de tiempo
+  const gruposPorFecha = resultados.reduce((acc, curr) => {
+    const fecha = curr.Fecha || "Sin Fecha";
+    if (!acc[fecha]) acc[fecha] = [];
+    acc[fecha].push(curr);
+    return acc;
+  }, {});
+
+  // Ordenar fechas de la más reciente a la más antigua
+  const fechasOrdenadas = Object.keys(gruposPorFecha).sort((a, b) => new Date(b) - new Date(a));
+
+  return (
+    <div className="timeline-container">
+      {fechasOrdenadas.map((fecha) => (
+        <div key={fecha} className="timeline-group">
+          <div className="timeline-date-header">
+            <Calendar size={16} />
+            <span>{new Date(fecha).toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
+          </div>
+
+          <div className="timeline-events">
+            {gruposPorFecha[fecha].map((partido, idx) => (
+              <div key={idx} className="timeline-card">
+                <div className="timeline-card__top">
+                  <span className="timeline-tag">{partido.Actividad}</span>
+                  <div className="timeline-status">
+                    {partido.Ganador === "Empate" ? <Minus size={14} /> : <CheckCircle2 size={14} />}
+                    {partido.Ganador}
+                  </div>
+                </div>
+
+                <div className="timeline-score-row">
+                  <div className={`team ${partido.Ganador === partido["Equipo Local"] ? 'winner' : ''}`}>
+                    <span className="team-name">{partido["Equipo Local"]}</span>
+                  </div>
+                  
+                  <div className="score-badge">
+                    {partido.Marcador}
+                  </div>
+
+                  <div className={`team ${partido.Ganador === partido["Equipo Visitante"] ? 'winner' : ''}`}>
+                    <span className="team-name">{partido["Equipo Visitante"]}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default SeccionCronologia;
