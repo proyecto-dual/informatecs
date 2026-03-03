@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
-import AdminPanel from "@/app/components/admin/AdminPanel";
-import AdminSidebar from "@/app/components/layout/navbaradm";
+
 
 export default function EventosPage() {
   return (
