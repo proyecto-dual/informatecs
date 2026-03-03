@@ -1,0 +1,106 @@
+.navbar {
+  background-color: var(--blue-primary);
+  color: var(--white);
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+/* ==========================
+   Navbar
+========================== */
+.navbar {
+  background-color: red;
+  color: var(--white);
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navbar__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar__logo a {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--white);
+  text-decoration: none;
+}
+
+.navbar__toggle {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: var(--white);
+  cursor: pointer;
+  display: none;
+}
+
+.navbar__menu li {
+  margin: 0.5rem 0;
+}
+/* Asegúrate de que el contenedor del menú tenga estas propiedades para el despliegue */
+.navbar__menu {
+  display: none; /* Oculto por defecto */
+  flex-direction: column;
+  background-color: var(--blue-primary);
+  width: 100%;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  padding: 1rem 2rem;
+  list-style: none;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Esta clase es la que activaremos con JS */
+.navbar__menu--open {
+  display: flex !important;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* ==========================
+   Mobile Responsive
+========================== */
+@media (max-width: 768px) {
+  .navbar__toggle {
+    display: block;
+  }
+
+  .navbar__menu {
+    flex-direction: column;
+    background-color: var(--blue-primary);
+    width: 100%;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    display: none;
+    padding: 1rem 2rem;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .navbar__menu--open {
+    display: flex;
+  }
+
+  .navbar__menu li {
+    margin: 0.5rem 0;
+  }
+}

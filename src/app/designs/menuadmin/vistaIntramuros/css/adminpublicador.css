@@ -1,0 +1,235 @@
+/* ============================================
+   ADMIN PUBLICADOR — Paleta ITE
+   ============================================ */
+
+/* ── Overlay ── */
+.ap-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+/* ── Modal container ── */
+.ap-modal {
+  width: 100%;
+  max-width: 640px;
+  background: var(--white);
+  border-radius: 28px;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+/* ── Header ── */
+.ap-modal__header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 32px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.ap-modal__icon {
+  background: var(--blue-primary);
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 16px rgba(27, 57, 106, 0.35);
+  flex-shrink: 0;
+}
+
+.ap-modal__info {
+  flex: 1;
+}
+.ap-modal__title {
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  color: var(--ite-blue-dark);
+
+  font-weight: 800;
+  margin: 0 0 10px 0;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.ap-modal__id {
+  margin: 3px 0 0;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--blue-primary);
+  letter-spacing: 0.06em;
+}
+
+.ap-modal__close {
+  background: var(--gray-100);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--ite-text);
+  transition: background 0.15s;
+}
+.ap-modal__close:hover {
+  background: var(--gray-200);
+}
+
+/* ── Form scroll area ── */
+.ap-modal__body {
+  padding: 28px 32px;
+  overflow-y: auto;
+}
+
+/* ── Grid ── */
+.ap-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.ap-full {
+  grid-column: 1 / span 2;
+}
+
+/* ── Label ── */
+.ap-label {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 900;
+  color: var(--ite-text);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 6px;
+}
+
+/* ── Inputs ── */
+.ap-input,
+.ap-select,
+.ap-textarea {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--gray-100);
+  border: 2px solid transparent;
+  border-radius: var(--border-radius);
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  outline: none;
+  transition:
+    border-color 0.18s,
+    background 0.18s;
+  box-sizing: border-box;
+}
+.ap-input:focus,
+.ap-select:focus,
+.ap-textarea:focus {
+  border-color: var(--blue-primary);
+  background: var(--white);
+}
+.ap-textarea {
+  height: 80px;
+  resize: none;
+}
+
+/* ── Footer ── */
+.ap-modal__footer {
+  padding: 20px 32px;
+  border-top: 1px solid var(--border-color);
+  background: var(--gray-100);
+}
+
+/* ── Submit button ── */
+.ap-btn-submit {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: var(--blue-primary);
+  color: var(--white);
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 16px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 900;
+  font-size: 0.88rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition:
+    background 0.18s,
+    transform 0.12s;
+}
+.ap-btn-submit:hover:not(:disabled) {
+  background: var(--act-primary-dark);
+}
+.ap-btn-submit:active:not(:disabled) {
+  transform: scale(0.99);
+}
+.ap-btn-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* spin utility */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spin {
+  animation: spin 0.8s linear infinite;
+}
+/* ============================================
+   MEDIA QUERIES (Tablets y Desktop)
+   ============================================ */
+
+/* Para iPads y pantallas mayores a 600px */
+@media (min-width: 600px) {
+  .ap-form-grid {
+    grid-template-columns: repeat(2, 1fr); /* Volvemos a 2 columnas */
+    gap: 20px;
+  }
+
+  .ap-full {
+    grid-column: 1 / span 2;
+  }
+
+  .ap-modal__header {
+    padding: 24px 32px;
+  }
+
+  .ap-modal__body {
+    padding: 28px 32px;
+  }
+
+  /* En desktop/tablet podemos bajar un poco el font-size si prefieres */
+  .ap-input,
+  .ap-select,
+  .ap-textarea {
+    font-size: 0.82rem;
+  }
+}
+
+/* Ajuste específico para cuando el celular está de lado (Landscape) */
+@media (max-height: 450px) {
+  .ap-modal {
+    max-height: 95vh;
+  }
+  .ap-modal__header {
+    padding: 10px 20px;
+  }
+}

@@ -1,0 +1,256 @@
+/* ============================================
+   SECCION RANKINGS — Paleta ITE
+   ============================================ */
+
+.rk-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Header sin fondo ── */
+.rk-header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+@media (min-width: 768px) {
+  .rk-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.rk-header__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  color: var(--blue-primary);
+
+  font-weight: 800;
+  margin: 0 0 10px 0;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.rk-header__title-icon {
+  color: var(--blue-primary);
+}
+.rk-header__sub {
+  margin: 4px 0 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ite-text);
+  letter-spacing: 0.05em;
+}
+
+.rk-select {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--gray-100);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--gray-700);
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.18s;
+}
+@media (min-width: 768px) {
+  .rk-select {
+    width: 260px;
+  }
+}
+.rk-select:focus {
+  border-color: var(--blue-primary);
+}
+
+/* ── Tabla ── */
+.rk-table-wrap {
+  background: var(--white);
+  border-radius: 28px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  overflow-x: auto;
+}
+
+.rk-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.rk-table thead tr {
+  background: var(--blue-primary);
+}
+.rk-table thead th {
+  padding: 14px 20px;
+  font-size: 0.62rem;
+  font-weight: 900;
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+.rk-table thead th.center {
+  text-align: center;
+}
+.rk-table thead th.rk-th-pts {
+  background: var(--act-primary-dark);
+  text-align: center;
+}
+.rk-table thead th.rk-th-v {
+  color: #6ee7b7;
+}
+.rk-table thead th.rk-th-e {
+  color: #fcd34d;
+}
+.rk-table thead th.rk-th-d {
+  color: #fca5a5;
+}
+
+.rk-table tbody tr {
+  border-bottom: 1px solid var(--gray-200);
+  transition: background 0.15s;
+}
+.rk-table tbody tr:last-child {
+  border-bottom: none;
+}
+.rk-table tbody tr:hover {
+  background: #f0f5ff;
+}
+
+.rk-table tbody td {
+  padding: 16px 20px;
+  font-size: 0.82rem;
+  color: var(--ite-text);
+}
+.rk-table tbody td.center {
+  text-align: center;
+}
+
+/* Equipo cell */
+.rk-td-equipo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.rk-td-shield {
+  width: 40px;
+  height: 40px;
+  background: var(--gray-100);
+  color: var(--ite-text);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+.rk-table tbody tr:hover .rk-td-shield {
+  background: #dce9ff;
+  color: var(--blue-primary);
+}
+.rk-td-name {
+  font-weight: 900;
+  color: var(--ite-blue-dark);
+  font-size: 0.85rem;
+}
+
+/* Posición */
+.rk-pos-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.rk-pos-gold {
+  color: #eab308;
+}
+.rk-pos-silver {
+  color: #94a3b8;
+}
+.rk-pos-bronze {
+  color: #b45309;
+}
+.rk-pos-num {
+  font-weight: 800;
+  color: var(--ite-text);
+  font-size: 0.85rem;
+}
+
+/* Puntos badge */
+.rk-pts-badge {
+  display: inline-block;
+  background: var(--blue-primary);
+  color: var(--white);
+  padding: 6px 20px;
+  border-radius: var(--radius-sm);
+  font-weight: 900;
+  font-size: 1rem;
+  box-shadow: 0 4px 12px rgba(27, 57, 106, 0.25);
+}
+
+/* Stat values */
+.rk-td-v {
+  font-weight: 700;
+  color: var(--gray-700);
+}
+.rk-td-ed {
+  font-weight: 700;
+  color: var(--gray-300);
+}
+.rk-td-pj {
+  font-weight: 700;
+  color: var(--ite-text);
+}
+
+/* Empty */
+.rk-empty {
+  padding: 80px 20px;
+  text-align: center;
+  color: var(--gray-300);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* ── Leyenda ── */
+.rk-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 8px 4px;
+}
+.rk-legend__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.6rem;
+  font-weight: 900;
+  color: var(--ite-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.rk-legend__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.rk-legend__dot--gray {
+  background: var(--gray-300);
+}
+.rk-legend__dot--green {
+  background: #34d399;
+}
+.rk-legend__dot--yellow {
+  background: #fbbf24;
+}
+.rk-legend__dot--red {
+  background: #f87171;
+}

@@ -1,0 +1,230 @@
+:root {
+  --blue-primary: #1b396a;
+  --yellow-accent: #fe9e10;
+  --blue-hover: #8eafef;
+  --text-dark: #333333;
+  --act-primary: #1b396a;
+  --act-primary-dark: #142a50;
+  --white: #ffffff;
+
+  /* Variables de apoyo */
+  --ite-text: #4a5568;
+  --ite-blue-dark: #1b396a;
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --radius-sm: 8px;
+
+  font-family: "Montserrat", sans-serif;
+}
+
+/* Contenedor Principal - Centrado y fondo */
+.perfil-main-page-container {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centra horizontalmente todo el contenido */
+}
+
+/* Patrón de fondo sutil */
+.perfil-main-page-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 400px;
+  background:
+    radial-gradient(
+      circle at 20% 50%,
+      rgba(59, 102, 245, 0.05) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(0, 26, 61, 0.03) 0%,
+      transparent 50%
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.perfil-portfolio-wrapper {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 20px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ============================================
+   HEADER SECTION - Centrado y Estabilizado
+   ============================================ */
+.perfil-welcome-section {
+  margin-bottom: 40px;
+  text-align: center;
+  width: 100%;
+}
+
+.perfil-welcome-grid {
+  display: flex;
+  flex-direction: column; /* Cambiado a columna para centrado perfecto */
+  align-items: center;
+  gap: 20px;
+}
+
+.perfil-profile-img-container {
+  position: relative;
+  width: 180px; /* Tamaño coincidente con el JS */
+  height: 180px;
+  margin-bottom: 10px;
+}
+
+.perfil-profile-main-img {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid white;
+  box-shadow: 0 10px 25px rgba(0, 26, 61, 0.15);
+  display: block;
+}
+
+.perfil-welcome-title {
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  color: var(--ite-blue-dark);
+
+  font-weight: 800;
+  margin: 0 0 10px 0;
+  line-height: 1.2;
+}
+
+.perfil-welcome-description {
+  color: var(--ite-text);
+  line-height: 1.6;
+  font-size: 1rem;
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+/* ============================================
+   GRID & CARDS - Fijo para evitar saltos
+   ============================================ */
+.perfil-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+  width: 100%;
+  align-items: start;
+}
+
+.perfil-info-card {
+  background: white;
+  border-radius: 24px;
+  padding: 30px;
+  border: 1px solid rgba(0, 26, 61, 0.06);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  min-height: 480px; /* RESERVA ESPACIO PARA EL FANTASMA */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header de la card - Centrado */
+.perfil-card-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 25px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #2286c9;
+  text-align: center;
+}
+
+.perfil-card-icon-box {
+  width: 52px;
+  height: 52px;
+  background: var(--blue-primary);
+  color: white;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.perfil-card-title {
+  font-size: 1.3rem;
+  color: var(--ite-blue-dark);
+  font-weight: 800;
+  margin: 0;
+}
+
+/* ============================================
+   DATA ROWS - Alineación Central
+   ============================================ */
+.perfil-data-row {
+  padding: 14px 0;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centra el texto de los datos */
+  text-align: center;
+  gap: 4px;
+}
+
+.perfil-data-label {
+  font-size: 0.75rem;
+  color: var(--blue-primary);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  min-height: 1rem;
+}
+
+.perfil-data-value {
+  font-size: 1rem;
+  color: var(--text-dark);
+  font-weight: 600;
+  min-height: 1.4rem;
+}
+
+/* ============================================
+   LOADING STATE
+   ============================================ */
+.perfil-centered {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.perfil-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #e2e8f0;
+  border-top-color: var(--blue-primary);
+  border-radius: 50%;
+  animation: perfil-spin 0.8s linear infinite;
+}
+
+@keyframes perfil-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+@media (max-width: 850px) {
+  .perfil-info-grid {
+    grid-template-columns: 1fr;
+  }
+}

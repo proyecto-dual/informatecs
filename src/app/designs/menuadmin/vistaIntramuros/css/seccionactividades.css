@@ -1,0 +1,243 @@
+/* ============================================
+   SECTION ACTIVIDADES — Paleta ITE
+   ============================================ */
+
+.sa-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Header ── */
+.sa-header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  /* sin fondo */
+}
+
+@media (min-width: 640px) {
+  .sa-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+}
+
+.sa-header__title {
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  color: var(--blue-primary);
+
+  font-weight: 800;
+  margin: 0 0 10px 0;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.sa-header__sub {
+  margin: 4px 0 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--pa-txt3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── Botón Nueva Actividad ── */
+.sa-btn-new {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--blue-primary);
+  color: var(--white);
+  padding: 12px 22px;
+  border-radius: var(--pa-r-md);
+  border: none;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 800;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: var(--pa-sh-sm);
+  transition:
+    background 0.18s,
+    box-shadow 0.18s,
+    transform 0.12s;
+  white-space: nowrap;
+}
+
+.sa-btn-new:hover {
+  background: var(--act-primary-dark);
+  box-shadow: var(--pa-sh-md);
+  transform: translateY(-1px);
+}
+
+.sa-btn-new:active {
+  transform: translateY(0);
+  box-shadow: var(--pa-sh-xs);
+}
+
+/* ── Tabla ── */
+.sa-table-wrap {
+  background: var(--pa-card);
+  border-radius: var(--pa-r-xl);
+  border: 1px solid var(--pa-brd);
+  box-shadow: var(--pa-sh-md);
+  overflow: hidden;
+  overflow-x: auto;
+}
+
+.sa-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+/* ── Encabezado tabla ── */
+.sa-table thead tr {
+  border-bottom: 2px solid var(--pa-brd);
+  background: var(--pa-blue-ll);
+}
+
+.sa-table thead th {
+  padding: 14px 20px;
+  font-size: 0.68rem;
+  font-weight: 900;
+  color: var(--pa-txt3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.sa-table thead th.center {
+  text-align: center;
+}
+
+/* ── Filas ── */
+.sa-table tbody tr {
+  border-bottom: 1px solid var(--pa-brd);
+  transition: background 0.15s;
+}
+
+.sa-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.sa-table tbody tr:hover {
+  background: var(--pa-blue-ll);
+}
+
+/* ── Celdas ── */
+.sa-table td {
+  padding: 16px 20px;
+  font-size: 0.82rem;
+  color: var(--pa-txt2);
+}
+
+.sa-table td.center {
+  text-align: center;
+}
+
+/* Actividad nombre */
+.sa-td-name {
+  font-weight: 800;
+  color: var(--ite-blue-dark);
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+}
+
+/* Ubicación */
+.sa-td-location {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  font-size: 0.72rem;
+  color: var(--pa-txt3);
+  font-weight: 600;
+}
+
+/* ── Badges de Estado ── */
+.sa-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.sa-badge--open {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.sa-badge--closed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ── Contador Equipos ── */
+.sa-td-count {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--blue-primary);
+  line-height: 1;
+}
+
+.sa-td-count span {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--pa-txt3);
+  display: block;
+  margin-top: 2px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ── Botón Editar ── */
+.sa-btn-edit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  border-radius: var(--pa-r-sm);
+  color: var(--pa-txt3);
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    background 0.15s,
+    transform 0.12s;
+}
+
+.sa-btn-edit:hover {
+  color: var(--blue-primary);
+  background: var(--pa-blue-light);
+  transform: scale(1.1);
+}
+
+.sa-btn-edit:active {
+  transform: scale(1);
+}
+
+/* ── Empty state ── */
+.sa-empty {
+  padding: 48px 20px;
+  text-align: center;
+  color: var(--pa-txt3);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}

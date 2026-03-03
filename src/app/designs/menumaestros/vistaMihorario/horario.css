@@ -1,0 +1,413 @@
+:root {
+  --blue-primary: #1b396a;
+  --yellow-accent: #fe9e10;
+  --blue-hover: #8eafef;
+  --text-dark: #333333;
+  --act-primary: #1b396a;
+  --act-primary-dark: #142a50;
+  --white: #ffffff;
+  --ite-text: #4a5568;
+  --ite-blue-dark: #1b396a;
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --radius-sm: 8px;
+
+  /* Extensiones internas del dashboard */
+  --pa-blue-mid: #2d5ba8;
+  --pa-blue-light: #e8f0fb;
+  --pa-blue-ll: #f0f5ff;
+  --pa-yellow-d: #c97800;
+  --pa-yellow-l: #fff5e0;
+  --pa-hover-l: #dce9ff;
+
+  --pa-bg: #f2f5fb;
+  --pa-card: #ffffff;
+  --pa-brd: rgba(27, 57, 106, 0.1);
+  --pa-txt2: #4a5568;
+  --pa-txt3: #8fa3be;
+
+  --pa-sh-xs: 0 1px 3px rgba(27, 57, 106, 0.06);
+  --pa-sh-sm: 0 2px 10px rgba(27, 57, 106, 0.08);
+  --pa-sh-md: 0 6px 24px rgba(27, 57, 106, 0.13);
+
+  --pa-r-sm: 10px;
+  --pa-r-md: 16px;
+  --pa-r-lg: 22px;
+  --pa-r-xl: 28px;
+
+  font-family: "Montserrat", sans-serif;
+}
+
+/* Loading Screen */
+.maestros .horario-loading-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--pa-bg);
+}
+
+.maestros .loader-circle {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top-color: var(--blue-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.maestros .loader-text {
+  color: var(--white);
+  font-size: 1.2rem;
+  margin-top: 20px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Main Wrapper */
+.maestros .horario-main-wrapper {
+  min-height: 100vh;
+  background: var(--pa-bg);
+  padding: 2rem;
+
+  transition: margin-left 0.3s ease;
+}
+
+.maestros .sliderbaradm.closed ~ .horario-main-wrapper {
+  margin-left: 80px;
+}
+
+/* Header */
+.maestros .horario-header {
+  background: var(--pa-card);
+  border-radius: var(--pa-r-md);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--pa-sh-sm);
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.maestros .header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.maestros .header-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--blue-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.maestros .inline-icon {
+  color: var(--yellow-accent);
+}
+
+.maestros .header-subtitle {
+  color: var(--pa-txt2);
+  margin-top: 0.5rem;
+}
+
+.maestros .header-stats {
+  display: flex;
+  gap: 1rem;
+}
+
+.maestros .stat-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--pa-r-sm);
+  font-weight: 600;
+  color: var(--white);
+}
+
+.maestros .stat-badge.stat-purple {
+  background: var(--blue-primary);
+}
+
+/* Horario Container */
+.maestros .horario-container {
+  background: var(--pa-card);
+  border-radius: var(--pa-r-md);
+  padding: 1.5rem;
+  box-shadow: var(--pa-sh-sm);
+  overflow-x: auto;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.maestros .horario-grid-wrapper {
+  min-width: 700px;
+}
+
+/* Tabla de Horario */
+.maestros .horario-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 2px solid var(--pa-brd);
+  border-radius: var(--pa-r-md);
+  overflow: hidden;
+}
+
+.maestros .horario-table thead tr {
+  background: var(--blue-primary);
+}
+
+.maestros .horario-table th {
+  padding: 1rem;
+  text-align: center;
+  color: var(--white);
+  font-weight: 700;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.maestros .horario-header-materia {
+  width: 250px;
+  text-align: left !important;
+  padding-left: 1.5rem !important;
+}
+
+.maestros .horario-header-dia {
+  min-width: 140px;
+}
+
+.maestros .horario-table tbody tr {
+  border-bottom: 2px solid var(--pa-brd);
+  transition: all 0.2s ease;
+}
+
+.maestros .horario-table tbody tr:hover {
+  background: var(--pa-blue-ll);
+}
+
+.maestros .horario-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* Celda de Materia */
+.maestros .horario-materia-cell {
+  padding: 1.25rem 1rem;
+  font-weight: 600;
+  vertical-align: middle;
+  border-right: 2px solid var(--pa-brd);
+}
+
+.maestros .materia-nombre-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+}
+
+.maestros .materia-codigo-row {
+  font-size: 0.75rem;
+  color: var(--pa-txt3);
+  margin-left: 1.75rem;
+}
+
+/* Celdas de días */
+.maestros .horario-cell {
+  padding: 1rem;
+  min-height: 80px;
+  vertical-align: middle;
+  text-align: center;
+  background: var(--pa-card);
+  border-right: 1px solid var(--pa-brd);
+  transition: all 0.2s ease;
+}
+
+.maestros .horario-cell:last-child {
+  border-right: none;
+}
+
+.maestros .horario-cell-filled {
+  cursor: pointer;
+}
+
+.maestros .horario-cell-filled:hover {
+  transform: scale(1.03);
+  box-shadow: var(--pa-sh-md);
+  z-index: 10;
+}
+
+/* Info dentro de celda */
+.maestros .horario-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.maestros .horario-hora {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.maestros .horario-salon {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+/* Empty State */
+.maestros .horario-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--pa-card);
+  border-radius: var(--pa-r-md);
+  box-shadow: var(--pa-sh-sm);
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.maestros .empty-icon {
+  color: var(--pa-txt3);
+  margin-bottom: 1rem;
+}
+
+.maestros .horario-empty h2 {
+  font-size: 1.5rem;
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+}
+
+.maestros .horario-empty p {
+  color: var(--pa-txt2);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .maestros .horario-grid-wrapper {
+    min-width: 600px;
+  }
+
+  .maestros .horario-header-materia {
+    width: 200px;
+  }
+
+  .maestros .horario-header-dia {
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 768px) {
+  .maestros .horario-main-wrapper {
+    padding: 1rem;
+    margin-left: 0;
+  }
+
+  .maestros .horario-header {
+    padding: 1.5rem;
+  }
+
+  .maestros .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .maestros .horario-container {
+    padding: 0.75rem;
+  }
+
+  .maestros .horario-grid-wrapper {
+    min-width: 500px;
+  }
+
+  .maestros .horario-table th,
+  .maestros .horario-table td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .maestros .horario-header-materia {
+    width: 150px;
+    font-size: 0.875rem;
+  }
+
+  .maestros .horario-header-dia {
+    min-width: 100px;
+  }
+
+  .maestros .materia-nombre-row {
+    font-size: 0.875rem;
+  }
+
+  .maestros .materia-codigo-row {
+    font-size: 0.7rem;
+  }
+}
+/* --- OPTIMIZACIÓN DE SCROLL PARA MÓVILES --- */
+@media (max-width: 1024px) {
+  .maestros .horario-main-wrapper {
+    padding: 1rem 0.5rem; /* Menos espacio lateral en móvil */
+    margin-left: 0 !important;
+  }
+
+  .maestros .horario-container {
+    padding: 0;
+    overflow-x: auto; /* Habilita el scroll */
+    -webkit-overflow-scrolling: touch; /* Scroll suave tipo Apple */
+    border-radius: var(--pa-r-md);
+    position: relative;
+  }
+
+  .maestros .horario-grid-wrapper {
+    /* Forzamos un ancho mínimo para que las columnas tengan espacio */
+    min-width: 950px;
+    display: block;
+  }
+
+  /* --- EFECTO STICKY (COLUMNA FIJA) --- */
+  .maestros .horario-header-materia {
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    background: var(--blue-primary) !important;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .maestros .horario-materia-cell {
+    position: sticky;
+    left: 0;
+    z-index: 5;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+    /* Asegúrate de que el fondo no sea transparente para que no se vea el texto de atrás al scrollear */
+    background-color: white !important;
+  }
+
+  /* Ajustes de tamaño de texto para iPhone */
+  .maestros .horario-table th,
+  .maestros .horario-table td {
+    padding: 0.8rem 0.5rem;
+  }
+
+  .maestros .header-title {
+    font-size: 1.5rem;
+  }
+}

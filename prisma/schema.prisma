@@ -1,0 +1,347 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "windows", "darwin", "darwin-arm64"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+   
+}
+
+model estudiantes {
+  aluctr                   String        @id @db.VarChar(50)
+  aluapp                   String?       @db.VarChar(50)
+  aluapm                   String?       @db.VarChar(50)
+  alunom                   String?       @db.VarChar(100)
+  alusex                   Int?          @db.SmallInt
+  alunac                   String?       @db.VarChar(50)
+  alulna                   String?       @db.VarChar(5)
+  alurfc                   String?       @db.VarChar(50)
+  alucur                   String?       @db.VarChar(18)
+  aluesc                   Int?
+  aluescpd                 Int?
+  aluescpa                 Int?
+  aluegr                   Int?          @db.SmallInt
+  aluare                   Int?          @db.SmallInt
+  aluescp                  Int?          @db.SmallInt
+  alucll                   String?       @db.VarChar(100)
+  alunum                   String?       @db.VarChar(20)
+  alucol                   String?       @db.VarChar(100)
+  alucpo                   Int?
+  alumun                   Int?
+  aluciu                   String?       @db.VarChar(100)
+  alute1                   String?       @db.VarChar(50)
+  alute2                   String?       @db.VarChar(50)
+  alumai                   String?       @db.VarChar(100)
+  alumaii                  String?       @db.VarChar(100)
+  alusme                   Int?
+  alusmei                  String?       @db.VarChar(100)
+  alusmea                  String?       @db.VarChar(100)
+  alutsa                   String?       @db.VarChar(20)
+  alueci                   Int?
+  alupad                   String?       @db.VarChar(100)
+  alumad                   String?       @db.VarChar(100)
+  alupadv                  String?
+  alumadv                  String?
+  alupadt                  String?       @db.VarChar(50)
+  alumadt                  String?       @db.VarChar(50)
+  alutno                   String?       @db.VarChar(100)
+  alutcl                   String?       @db.VarChar(100)
+  alutnu                   String?       @db.VarChar(20)
+  alutco                   String?       @db.VarChar(100)
+  alutcp                   Int?
+  alutmu                   Int?
+  alutci                   String?       @db.VarChar(100)
+  alutte1                  String?       @db.VarChar(50)
+  alutte2                  String?       @db.VarChar(50)
+  alutmai                  String?       @db.VarChar(100)
+  alufac                   String?       @db.VarChar(100)
+  alutwi                   String?       @db.VarChar(100)
+  alutce                   String?
+  alutra                   Int?
+  alupas                   String?       @db.VarChar(64)
+  alupasc                  String?
+  aluseg                   String?       @db.VarChar(50)
+  alulexp                  String?
+  alulemp                  Int?
+  alulare                  Int?
+  alulfde                  DateTime?     @db.Date
+  alulfha                  DateTime?     @db.Date
+  tbecve                   Int?          @db.SmallInt
+  aluest                   Int?
+  alupes                   Decimal?      @db.Decimal(8, 2)
+  gincve                   Int?
+  lincve                   Int?
+  aluoest                  Int?          @db.SmallInt
+  aluotra                  Int?          @db.SmallInt
+  alutinl                  Int?          @db.SmallInt
+  alutpot                  Int?          @db.SmallInt
+  alutsec                  Int?          @db.SmallInt
+  aluteotr                 String?
+  alutecll                 String?       @db.VarChar(100)
+  alutenum                 String?       @db.VarChar(20)
+  alutecol                 String?       @db.VarChar(100)
+  aluteciu                 String?       @db.VarChar(100)
+  alutecpo                 Int?
+  alutemun                 Int?
+  alutetel                 String?       @db.VarChar(50)
+  alutepto                 String?       @db.VarChar(50)
+  aluteanp                 DateTime?     @db.Date
+  aluteing                 Decimal?      @db.Decimal(10, 2)
+  alupexani                Int?          @db.SmallInt
+  alupegel                 Int?          @db.SmallInt
+  aluptoefl                Int?          @db.SmallInt
+  discve                   Int?          @db.SmallInt
+  alucen                   Int?          @db.SmallInt
+  aluale                   String?
+  alupsi                   String?
+  aluteotrt                String?
+  aludch                   String?
+  cve                      Int?
+  merida                   Int?
+  constancias              constancias[]
+  inscripciones            estudicarr?
+  inscripcionesActividades inscripact[]
+}
+
+model authStudents {
+  id             Int       @id @default(autoincrement())
+  matricula      String    @unique
+  password       String
+  nombreCompleto String
+  isVerified     Boolean   @default(false)
+  correo         String?
+  createdAt      DateTime  @default(now())
+  emailCode      String?
+  updatedAt      DateTime? @updatedAt
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model carrera {
+  carcve        Int          @id
+  extcve        String?      @db.VarChar(10)
+  carnom        String?      @db.VarChar(100)
+  carnco        String?      @db.VarChar(60)
+  carlet        String?      @db.VarChar(10)
+  carniv        Int?
+  carfin        DateTime?    @db.Date
+  carfte        DateTime?    @db.Date
+  carsit        Int?
+  carmod        Int?
+  carpmo        Int?
+  carhcr        String?      @db.VarChar(10)
+  depcve        Int?
+  dgparea       String?      @db.VarChar(10)
+  dgpsuba       String?      @db.VarChar(10)
+  dgpnivel      String?      @db.VarChar(10)
+  dgpconsec     String?      @db.VarChar(10)
+  puecve        Int?
+  cardetv       String?      @db.VarChar(10)
+  cve           String?      @db.VarChar(10)
+  id            String?      @db.VarChar(10)
+  inscripciones estudicarr[]
+}
+
+model estudicarr {
+  extcve     String?     @db.VarChar(2)
+  siscve     String?     @db.VarChar(1)
+  carcve     Int?
+  calnpe     String?     @db.VarChar(20)
+  calgpo     String?     @db.VarChar(2)
+  calobs     String?     @db.VarChar(100)
+  calpri     String?     @db.VarChar(1)
+  peerson    String?     @db.VarChar(34)
+  calingt    String?     @db.VarChar(1)
+  calplai    String?     @db.VarChar(1)
+  placve     String?     @db.VarChar(50)
+  caling     String?     @db.VarChar(50)
+  calter     String?     @db.VarChar(50)
+  calsit     String?     @db.VarChar(50)
+  calcac     String?     @db.VarChar(50)
+  calnpec    String?     @db.VarChar(50)
+  caltcala   String?     @db.VarChar(50)
+  caltcalr   String?     @db.VarChar(50)
+  calmata    String?     @db.VarChar(50)
+  calmat     String?     @db.VarChar(50)
+  calmatac   String?     @db.VarChar(50)
+  calnpep    String?     @db.VarChar(50)
+  calingi    String?     @db.VarChar(50)
+  calcari    String?     @db.VarChar(50)
+  espcve     String?     @db.VarChar(50)
+  aluctr     String      @id @db.VarChar(50)
+  estudiante estudiantes @relation(fields: [aluctr], references: [aluctr])
+  carrera    carrera?    @relation(fields: [carcve], references: [carcve])
+}
+
+model actividades {
+  id          Int              @id @default(autoincrement())
+  acocve      String?          @db.VarChar(10)
+  aticve      String?          @db.VarChar(50)
+  aconco      String?          @db.VarChar(100)
+  acodes      String?          @db.VarChar(100)
+  acocre      Int?
+  acohrs      Int?
+  depcve      String?          @db.VarChar(10)
+  puecve      String?          @db.VarChar(10)
+  horario     Json?
+  maestroId   Int?
+  maestro     maestros?        @relation(fields: [maestroId], references: [percve])
+  constancias constancias[]
+  inscripact  inscripact[]
+  ofertas     ofertaSemestre[]
+  @@index([maestroId])  // busqueda de actividades por maestro
+  @@index([aticve])     // busqueda por código en asignar-maestro
+}
+
+model ofertaSemestre {
+  id                Int          @id @default(autoincrement())
+  actividadId       Int
+  semestre          String       @db.VarChar(10)
+  activa            Boolean      @default(true)
+  cupoMaximo        Int?
+  inscritosActuales Int          @default(0)
+  fechaPublicacion  DateTime     @default(now())
+  maestroId         Int?
+  inscripact        inscripact[]
+  actividad         actividades  @relation(fields: [actividadId], references: [id])
+  maestro           maestros?    @relation(fields: [maestroId], references: [percve])
+
+  @@map("oferta_semestre")
+}
+
+model inscripact {
+  id                   Int            @id @default(autoincrement())
+  estudianteId         String         @db.VarChar(50)
+  actividadId          Int
+  ofertaId             Int
+  fechaInscripcion     DateTime       @default(now())
+  calificacion         Float?
+  liberado             Boolean        @default(false)
+  formularioData       Json?
+  nombreArchivoSangre  String?
+  sangreValidada       Boolean        @default(false)
+  tipoSangreSolicitado String?
+  mensajeAdmin         String?
+  comprobanteSangrePDF String?
+  modalidad            String?        @default("PRESENCIAL")
+  telefono             String?
+  actividad            actividades    @relation(fields: [actividadId], references: [id])
+  estudiante           estudiantes    @relation(fields: [estudianteId], references: [aluctr])
+  oferta               ofertaSemestre @relation(fields: [ofertaId], references: [id])
+
+   @@unique([estudianteId, actividadId])
+  @@index([estudianteId])               // búsquedas por alumno (GET sangre, calificaciones)
+  @@index([actividadId])                // búsquedas por actividad (GET calificaciones)
+  @@index([estudianteId, actividadId])  // findFirst en PUT calificaciones
+  @@index([sangreValidada, mensajeAdmin]) // filtro en fix-sangre y PATCH sangre
+  @@map("inscripciones_actividades")
+}
+
+model maestros {
+  percve            Int              @id
+  perapp            String?          @db.VarChar(50)
+  perapm            String?          @db.VarChar(50)
+  pernom            String?          @db.VarChar(100)
+  persig            String?          @db.VarChar(50)
+  pertar            Int?
+  perrfc            String?          @db.VarChar(50)
+  percur            String?          @db.VarChar(18)
+  pernac            DateTime?        @db.Date
+  perdep            Int?
+  perdepa           Int?
+  perlna            String?          @db.VarChar(10)
+  persex            Int?
+  pereci            Int?
+  perdec            Int?
+  percmi            String?          @db.VarChar(100)
+  perdcl            String?          @db.VarChar(100)
+  perdnu            String?          @db.VarChar(20)
+  perdcp            Int?
+  perdco            String?          @db.VarChar(100)
+  perdmu            Int?
+  perdlo            String?          @db.VarChar(100)
+  perdte            String?          @db.VarChar(50)
+  perdet2           String?          @db.VarChar(50)
+  pernot            String?          @db.VarChar(100)
+  pernte1           String?          @db.VarChar(50)
+  perdce            String?          @db.VarChar(100)
+  perdcei           String?          @db.VarChar(100)
+  peragf            DateTime?        @db.Date
+  perase            DateTime?        @db.Date
+  perara            DateTime?        @db.Date
+  peroct1h          Int?
+  peroct2h          Int?
+  perinva           Int?
+  perinsp           String?          @db.VarChar(100)
+  percon            String?          @db.VarChar(100)
+  pertal            String?          @db.VarChar(50)
+  perpas            String?          @db.VarChar(64)
+  perpasc           String?          @db.VarChar(50)
+  percalf           String?          @db.VarChar(50)
+  perape            String?          @db.VarChar(100)
+  cve               Int?
+  id                Int?
+  perdvi            Int?
+  peroct            Int?
+  peroct2           Int?
+  perinv            Int?
+  perinvo           Int?
+  perinvd           Int?
+  percom            Int?
+  percomo           Int?
+  percomd           Int?
+  percoma           Int?
+  persit            Int?
+  perins            Int?
+  perfun            Int?
+  perpro            Int?
+  perpme            Int?
+  peridi            Int?
+  perexp            Int?
+  perseg            Int?
+  actividades       actividades[]
+  ofertasImpartidas ofertaSemestre[]
+
+  @@index([perapp, pernom])
+  @@map("maestros")
+}
+
+model authMaestros {
+  id             Int       @id @default(autoincrement())
+  percve         Int       @unique
+  password       String
+  nombreCompleto String
+  isVerified     Boolean   @default(false)
+  correo         String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime? @updatedAt
+  emailCode      String?
+
+  @@map("auth_maestros")
+}
+
+model constancias {
+  id                 Int         @id @default(autoincrement())
+  folio              String      @unique @db.VarChar(50)
+  codigoVerificacion String      @unique @db.VarChar(20)
+  numeroControl      String      @db.VarChar(50)
+  nombreCompleto     String      @db.VarChar(200)
+  correoEstudiante   String?     @db.VarChar(100)
+  actividadCodigo    String      @db.VarChar(50)
+  actividadNombre    String      @db.VarChar(200)
+  actividadCreditos  Int?
+  actividadHoras     Int?
+  periodo            String      @db.VarChar(100)
+  acreditacion       String      @db.VarChar(100)
+  fechaEmision       DateTime    @default(now())
+  asesor             String      @default("Juan Carlos Leal Nodal") @db.VarChar(200)
+  estudianteId       String      @db.VarChar(50)
+  actividadId        Int
+  actividad          actividades @relation(fields: [actividadId], references: [id])
+  estudiante         estudiantes @relation(fields: [estudianteId], references: [aluctr])
+
+  @@index([numeroControl])
+  @@index([folio])
+  @@map("constancias")
+}

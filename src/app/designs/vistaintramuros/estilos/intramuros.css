@@ -1,0 +1,355 @@
+/* ================================= */
+/* 1. VARIABLES BÁSICAS (Asegurar existencia) */
+/* ================================= */
+:root {
+  --blue-primary: #1b396a; /* Azul Oscuro Principal */
+
+  --text-dark: #333333; /* Texto Oscuro */
+  --bg-page: #f9fafb;
+  --white: #ffffff;
+  --font-family-base: "Montserrat", sans-serif;
+  --border-light: #e5e7eb;
+}
+
+/* ================================= */
+/* 2. LAYOUT Y CONTENEDORES PRINCIPALES */
+/* ================================= */
+body {
+  font-family: var(--font-family-base);
+  margin: 0;
+  padding: 0;
+}
+
+.intramuros-page-container {
+  min-height: 100vh;
+  background-color: var(--bg-page);
+}
+
+.header-content-wrapper,
+.tabs-wrapper-outer,
+.content-container {
+  max-width: 80rem; /* Contenedor principal para centrar */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.main-title {
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  font-weight: 700;
+
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  text-align: center;
+}
+
+.main-subtitle {
+  color: var(--text-dark);
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Contenedor principal de contenido */
+.content-container {
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+  min-height: 500px;
+}
+
+/* Ajuste de padding en móvil */
+@media (max-width: 640px) {
+  .header-content-wrapper,
+  .tabs-wrapper-outer,
+  .content-container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+
+/* ================================= */
+/* 3. NAVEGACIÓN (TABS) */
+/* ================================= */
+.navigation-tabs-container {
+  background-color: var(--white);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid var(--border-light);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.tabs-wrapper-inner {
+  display: flex;
+  justify-content: flex-start; /* Permite scroll horizontal en móvil */
+  gap: 0.75rem; /* Espacio reducido en móvil */
+  padding: 1rem 0;
+  overflow-x: auto;
+}
+
+.tab-button {
+  flex-shrink: 0; /* Evita que los botones se encojan */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem; /* Tamaño de fuente ajustado para móvil */
+}
+/* ===== PESTAÑA INACTIVA ===== */
+.tab-inactive {
+  background-color: var(--white);
+  color: var(--text-dark);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.tab-inactive:hover,
+.tab-inactive:focus {
+  background-color: var(--blue-hover);
+  color: var(--blue-primary);
+}
+
+/* Ajuste de Navegación para Escritorio */
+@media (min-width: 768px) {
+  .tabs-wrapper-inner {
+    justify-content: center; /* Centrar en escritorio */
+    gap: 1.5rem;
+    overflow-x: hidden;
+  }
+  .tab-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+/* ================================= */
+/* 4. SECCIONES DE CONTENIDO */
+/* ================================= */
+
+.intramuros-section {
+  margin-bottom: 4rem;
+}
+
+/* Contenedor del contenido (Ej. Calendar, List) */
+.section-content-box {
+  background-color: var(--white);
+  border-radius: 1rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  border-width: 2px;
+  border-style: solid;
+}
+
+/* Bordes para las cajas de contenido */
+.blue-border {
+  border-color: var(--blue-hover);
+}
+.yellow-border {
+  border-color: var(--yellow-accent);
+}
+.green-border {
+  border-color: var(--green-accent); /* Nuevo borde para Resultados/Contacto */
+}
+
+/* --------------------------------- */
+/* 4.1 Encabezado de Sección (Resultados / Contacto) */
+/* --------------------------------- */
+.section-header-group {
+  margin-bottom: 2rem;
+}
+
+.header-icon-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.icon-circle {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.icon-blue {
+  background-color: var(--blue-primary);
+}
+.icon-yellow {
+  background-color: var(--yellow-accent);
+}
+
+.section-title {
+  font-size: clamp(1.5rem, 4vw, 1.875rem);
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.section-subtitle {
+  color: var(--text-dark);
+  font-size: 1rem;
+  margin-left: 0; /* Mobile First */
+}
+
+@media (min-width: 640px) {
+  .section-subtitle {
+    margin-left: 3.75rem; /* Indentación en escritorio */
+    font-size: 1.125rem;
+  }
+}
+
+/* --------------------------------- */
+/* 4.2 Notas de Registro (Amarillo) */
+/* --------------------------------- */
+.registration-note {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  border-width: 2px;
+  border-style: solid;
+  background-color: rgba(254, 158, 16, 0.1);
+  border-color: var(--yellow-accent);
+}
+
+.note-content-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.note-icon-container {
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+.note-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--yellow-accent);
+}
+
+.note-text {
+  font-size: 0.875rem;
+  color: var(--text-dark);
+}
+
+/* --------------------------------- */
+/* 4.3 Tarjetas de Contacto */
+/* --------------------------------- */
+
+.contact-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr; /* Mobile First */
+}
+@media (min-width: 768px) {
+  .contact-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.contact-card {
+  background-color: var(--white);
+  border-radius: 1rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  border-width: 2px;
+  border-style: solid;
+}
+
+.blue-border-light {
+  border-color: var(--blue-hover);
+}
+.yellow-border-light {
+  border-color: var(--yellow-accent);
+}
+
+.icon-small {
+  width: 2.5rem;
+  height: 2.5rem;
+  box-shadow: none;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.card-subtitle-contact {
+  color: var(--text-dark);
+  margin-bottom: 1rem;
+}
+/* Ajuste para escritorio */
+@media (min-width: 1024px) {
+  .tabs-wrapper-inner {
+    justify-content: center; /* Centra los botones si hay espacio de sobra */
+    overflow-x: hidden;
+  }
+}
+
+/* ================================= */
+/* 4. CONTENIDO Y SECCIONES */
+/* ================================= */
+.content-container {
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+}
+
+.section-content-box {
+  background-color: var(--white);
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-light);
+}
+
+/* Grid de Contacto Responsivo */
+.contact-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .contact-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Ajustes de fuente y espaciado en Móvil extremo */
+@media (max-width: 480px) {
+  .section-content-box {
+    padding: 1rem;
+  }
+
+  .tab-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+.team-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1b396a; /* Azul ITE */
+  min-height: 1.2em;
+}
+
+.cronologia-tag {
+  color: #f39c12; /* Color naranja de torneos */
+  font-weight: 800;
+}

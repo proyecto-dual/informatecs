@@ -1,0 +1,373 @@
+/* --- CONTENEDOR PRINCIPAL (BACKDROP) --- */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+/* --- CAJA DEL MODAL --- */
+.modal-content {
+  background: #ffffff;
+  width: 100%;
+  max-width: 550px;
+  max-height: 90vh;
+  border-radius: 16px;
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+/* --- CABECERA --- */
+.modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid #f3f4f6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8fafc;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #1e293b;
+  font-weight: 700;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #64748b;
+  cursor: pointer;
+  padding: 5px;
+  line-height: 1;
+}
+
+/* --- CUERPO DEL FORMULARIO --- */
+.modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* --- SWITCH (ALUMNO / EXTERNO) --- */
+.toggle-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: #f1f5f9;
+  padding: 10px;
+  border-radius: 50px;
+  margin-bottom: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 22px;
+}
+
+.switch input {
+  display: none;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #cbd5e1;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #2563eb;
+}
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+/* --- GRID DE INPUTS --- */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.modal-body input,
+.modal-body select,
+.modal-body textarea {
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.modal-body input:focus,
+.modal-body select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+/* --- SECCIÓN DE EQUIPO E INTEGRANTES --- */
+.team-section {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 10px;
+}
+
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #1e40af;
+  text-transform: uppercase;
+  margin: 15px 0 10px;
+}
+
+.integrante-input-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.btn-add {
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  width: 40px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.btn-add:hover {
+  background: #059669;
+}
+
+/* --- LISTA DE INTEGRANTES AGREGADOS --- */
+.integrantes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.integrante-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  font-size: 0.875rem;
+  color: #334155;
+}
+
+.integrante-item button {
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+}
+
+/* --- PIE DEL MODAL (BOTONES) --- */
+.modal-footer {
+  padding: 20px 24px;
+  border-top: 1px solid #f3f4f6;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  background: #f8fafc;
+}
+
+.btn-cancel {
+  padding: 10px 20px;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  color: #475569;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-submit {
+  padding: 10px 24px;
+  background: #2563eb;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-submit:hover {
+  background: #1d4ed8;
+}
+.btn-submit:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+.alert-error {
+  background: #fef2f2;
+  color: #b91c1c;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  border: 1px solid #fee2e2;
+}
+
+/* --- ANIMACIÓN --- */
+.animate-in {
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- RESPONSIVO --- */
+@media (max-width: 480px) {
+  .form-grid,
+  .integrante-input-group {
+    grid-template-columns: 1fr;
+  }
+  .btn-add {
+    width: 100%;
+    height: 40px;
+  }
+} /* 4. Optimización de la sección de Integrantes (Modo Mobile) */
+@media (max-width: 600px) {
+  .modal-body {
+    padding: 16px; /* Reducimos espacio para ganar pantalla útil */
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr; /* Todo en una columna en iPhone */
+    gap: 16px;
+  }
+
+  .integrante-input-group {
+    grid-template-columns: 1fr; /* Inputs de integrantes apilados */
+    background: #ffffff;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px dashed #cbd5e1;
+  }
+
+  .btn-add {
+    width: 100%;
+    height: 44px; /* Altura mínima recomendada por Apple para dedos */
+    margin-top: 4px;
+  }
+
+  .modal-footer {
+    flex-direction: column-reverse; /* Botón principal arriba para pulgares */
+    padding: 16px;
+  }
+
+  .btn-submit,
+  .btn-cancel {
+    width: 100%;
+    height: 48px;
+    font-size: 1rem;
+  }
+}
+
+/* 5. Ajustes específicos para iPad */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .modal-content {
+    max-width: 90%; /* Más ancho en iPad para aprovechar el espacio */
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr 1fr; /* Mantenemos 2 columnas */
+  }
+
+  .integrante-input-group {
+    grid-template-columns: 1fr 1fr 50px; /* Diseño horizontal limpio */
+  }
+}
+
+/* 6. Fix para el desplazamiento en iOS Safari */
+.modal-body {
+  -webkit-overflow-scrolling: touch; /* Scroll suave característico de iPhone */
+  overscroll-behavior: contain; /* Evita que rebote el fondo de la página */
+}
+
+/* 7. Estilo mejorado para el Switch en pantallas táctiles */
+.switch {
+  width: 50px;
+  height: 26px;
+}
+
+.slider:before {
+  height: 20px;
+  width: 20px;
+}
+
+input:checked + .slider:before {
+  transform: translateX(24px);
+}

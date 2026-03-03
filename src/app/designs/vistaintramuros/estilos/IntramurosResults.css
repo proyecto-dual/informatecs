@@ -1,0 +1,135 @@
+/* ========================================================================= */
+/* ESTILOS GLOBALES Y CONTENEDOR PRINCIPAL */
+/* ========================================================================= */
+
+.intramuros-container {
+  padding: 1rem; /* Reducido para móviles */
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  border: 1px solid #e5e7eb;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box; /* Crucial para evitar desbordes */
+}
+
+/* ========================================================================= */
+/* HEADER RESPONSIVO */
+/* ========================================================================= */
+
+.intramuros-header {
+  background-color: #1f305c;
+  color: #ffffff;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column; /* Por defecto en móvil: uno sobre otro */
+  gap: 1.5rem;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+/* Contenedor del Título y Subtítulo */
+.header-info {
+  display: flex;
+  flex-direction: column; /* Icono arriba en móviles pequeños */
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  text-align: center;
+}
+
+/* Ícono ajustable */
+.header-icon {
+  width: 50px;
+  height: 50px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+/* Contenedor de Textos */
+.intramuros-title {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  width: 100%;
+}
+
+/* Título Principal - ELIMINADO white-space: nowrap */
+.intramuros-title h1 {
+  font-size: clamp(1.25rem, 5vw, 2rem); /* Tamaño fluido */
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.2;
+  margin: 0;
+  white-space: normal; /* Permite que el texto salte de línea si es largo */
+}
+
+.intramuros-title p {
+  font-size: 0.9rem;
+  color: #c0c0c0;
+  margin-top: 0.25rem;
+}
+
+/* === FILTRO RESPONSIVO === */
+.filter-container {
+  display: flex;
+  flex-direction: column; /* Stack en móvil */
+  width: 100%;
+  gap: 0.5rem;
+}
+
+.activity-select {
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background-color: #314472;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 16px; /* Evita zoom automático en iOS */
+  width: 100%; /* Ocupa todo el ancho */
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+/* ========================================================================= */
+/* MEDIA QUERIES (Ajustes para Tablet y Desktop) */
+/* ========================================================================= */
+
+@media (min-width: 768px) {
+  .intramuros-container {
+    padding: 2rem;
+  }
+
+  .intramuros-header {
+    flex-direction: row; /* Alineación horizontal */
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+  }
+
+  .header-info {
+    flex-direction: row; /* Icono al lado del texto */
+    text-align: left;
+    width: auto;
+  }
+
+  .filter-container {
+    flex-direction: row; /* Filtro al lado del ícono */
+    width: auto;
+  }
+
+  .activity-select {
+    min-width: 250px;
+    width: auto;
+  }
+}
+
+/* Ajuste de Contenido */
+.content-area {
+  padding: 1.5rem 0;
+}

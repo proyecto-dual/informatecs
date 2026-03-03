@@ -1,0 +1,1177 @@
+/* ========================================
+   VARIABLES & DESIGN TOKENS
+   ======================================== */
+:root {
+  --blue-primary: #1b396a;
+  --yellow-accent: #fe9e10;
+  --blue-hover: #8eafef;
+  --text-dark: #333333;
+  --act-primary: #1b396a;
+  --act-primary-dark: #142a50;
+  --white: #ffffff;
+  --bg-light: #f9fafb;
+
+  /* Colores de Estado */
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --info: #3b82f6;
+
+  /* Variables de Apoyo */
+  --ite-text: #4a5568;
+  --ite-blue-dark: #1b396a;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --border-color: #e5e7eb;
+
+  /* Sombras y Radios */
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --radius-sm: 8px;
+  --border-radius: 12px;
+
+  font-family: "Montserrat", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ========================================
+   BASE STYLES & LAYOUT
+   ======================================== */
+* {
+  box-sizing: border-box;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box; /* Esto evita que el padding empuje el contenido hacia afuera */
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.horario-page {
+  min-height: 100vh;
+  background: var(--bg-light);
+  padding-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.horario-main {
+  width: 100%;
+  max-width: 1200px;
+  margin: 1.5rem auto;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========================================
+   HEADER PRINCIPAL
+   ======================================== */
+.horario-header {
+  width: 100%;
+  background: var(--white);
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+}
+
+.horario-header-content {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.horario-header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.horario-welcome-title {
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  font-weight: 800;
+  color: var(--blue-primary);
+  margin: 0 0 10px 0;
+  align-items: center; /* Centra horizontalmente */
+  text-align: center;
+}
+
+.horario-header-subtitle {
+  color: var(--ite-text);
+  line-height: 1.6;
+  font-size: 1rem;
+  max-width: 650px;
+  margin: 0;
+}
+
+.horario-header-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Botones del Header */
+.horario-btn-primary,
+.horario-btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-size: 0.9rem;
+}
+
+.horario-btn-primary {
+  background-color: var(--blue-primary);
+  color: var(--white);
+}
+
+.horario-btn-primary:hover {
+  background-color: var(--blue-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(27, 57, 106, 0.3);
+}
+
+.horario-btn-secondary {
+  background-color: var(--blue-primary);
+  color: var(--white);
+}
+
+.horario-btn-secondary:hover {
+  opacity: 0.9;
+}
+
+/* ========================================
+   CALENDARIO VIEW (GRID)
+   ======================================== */
+.horario-calendario-container {
+  background: var(--white);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.calendario-grid {
+  display: grid;
+  grid-template-columns: 80px repeat(6, minmax(120px, 1fr));
+  gap: 0;
+  width: 100%;
+  max-width: 1100px;
+  border: 1px solid var(--blue-primary);
+}
+
+.hora-column,
+.dia-column {
+  display: grid;
+  background-color: #8eafef;
+  grid-template-rows: 50px repeat(14, 70px);
+}
+
+.dia-header,
+.header-hora,
+.header-dia {
+  background: var(--blue-primary);
+  color: var(--white);
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-transform: uppercase;
+  padding: 12px;
+}
+
+.hora-cell,
+.columna-hora {
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--blue-primary);
+  font-size: 0.85rem;
+}
+
+.empty-cell,
+.celda-fondo {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+}
+
+/* Tarjetas de Actividad en Calendario */
+.horario-actividad-card {
+  background: var(--blue-primary);
+  color: var(--white);
+  border-radius: 0.4rem;
+  padding: 0.5rem;
+  margin: 2px;
+  height: calc(100% - 4px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.horario-actividad-nombre {
+  font-weight: 800;
+  margin-bottom: 2px;
+  line-height: 1.1;
+}
+
+/* ========================================
+   LISTA VIEW
+   ======================================== */
+.horario-lista-container {
+  background: var(--white);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.horario-lista-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 24px;
+  border-bottom: 2px solid var(--yellow-accent);
+  padding-bottom: 0.75rem;
+}
+
+.horario-actividades-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.horario-actividad-item {
+  background: var(--white);
+  border: 2px solid var(--gray-200);
+  border-left: 5px solid var(--blue-primary);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.horario-actividad-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.horario-actividad-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem;
+  cursor: pointer;
+}
+
+.horario-actividad-header:hover {
+  background: var(--gray-100);
+}
+
+/* Badges y Etiquetas */
+.horario-actividad-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.horario-actividad-badge.inscrita {
+  background: linear-gradient(135deg, #1b396a 0%, #2563eb 100%);
+  color: var(--white);
+}
+
+.horario-actividad-badge.personal {
+  background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+  color: var(--white);
+}
+
+/* Info Cards de Detalles */
+.info-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.info-card {
+  background: var(--white);
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+  border: 2px solid var(--gray-200);
+}
+
+.info-icon {
+  background: var(--blue-primary);
+  color: var(--white);
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========================================
+   SECCION MÉDICA & HORARIO
+   ======================================== */
+.horario-medical-section,
+.horario-section {
+  background: var(--white);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border: 2px solid var(--gray-200);
+}
+
+.horario-medical-title,
+.horario-section h4 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--text-dark);
+  font-size: 1.2rem;
+  margin: 0 0 1.25rem 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--gray-200);
+}
+
+.horario-medical-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.horario-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 2px solid var(--gray-200);
+  border-radius: 0.375rem;
+}
+
+.horario-table th {
+  background: var(--blue-primary);
+  color: var(--white);
+  padding: 0.875rem;
+  text-align: left;
+}
+
+.horario-table td {
+  padding: 0.875rem;
+  border-top: 1px solid var(--gray-200);
+}
+
+/* ========================================
+   MODAL STYLES
+   ======================================== */
+.horario-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(3px);
+  padding: 1rem;
+}
+
+.horario-modal-content {
+  background: var(--white);
+  border-radius: 0.75rem;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.horario-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem;
+  background: var(--blue-primary);
+  color: var(--white);
+  border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.horario-form-group {
+  margin-bottom: 1.25rem;
+  padding: 0 1.5rem;
+}
+
+.horario-form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: var(--gray-700);
+}
+
+.horario-form-group input,
+.horario-form-group select {
+  width: 100%;
+  padding: 0.675rem;
+  border: 2px solid var(--blue-hover);
+  border-radius: 0.375rem;
+}
+
+.horario-btn-submit {
+  width: calc(100% - 3rem);
+  margin: 0 1.5rem 1.5rem 1.5rem;
+  padding: 0.875rem;
+  background: var(--yellow-accent);
+  color: var(--text-dark);
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 0.375rem;
+}
+
+/* ========================================
+   PRINT
+   ======================================== */
+@media print {
+  .horario-header-actions,
+  .horario-btn-toggle,
+  .horario-modal-overlay {
+    display: none !important;
+  }
+  .horario-page {
+    background: white;
+  }
+}
+
+/* Utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+/* ========================================
+   VARIABLES & DESIGN TOKENS
+   ======================================== */
+:root {
+  --blue-primary: #1b396a;
+  --yellow-accent: #fe9e10;
+  --blue-hover: #8eafef;
+  --text-dark: #333333;
+  --white: #ffffff;
+  --bg-light: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --danger: #ef4444;
+  --radius-md: 12px;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  font-family: "Montserrat", sans-serif;
+}
+
+/* ========================================
+   CONTENEDORES BASE
+   ======================================== */
+.horario-page {
+  min-height: 100vh;
+  background: var(--bg-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.horario-lista-container {
+  width: 100%;
+  max-width: 1200px;
+  padding: 20px;
+  background: var(--white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  margin: 1.5rem auto;
+}
+
+.horario-lista-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 24px;
+}
+
+.horario-actividades-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ========================================
+   1. ACTIVIDADES INSCRITAS (ESTILO CARD)
+   ======================================== */
+.horario-actividad-item.inscrita-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border-left: 5px solid var(--blue-primary);
+  border: 1px solid var(--gray-200);
+  border-left: 5px solid var(--blue-primary);
+}
+
+.horario-actividad-header {
+  padding: 20px;
+  cursor: pointer;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.badge-container {
+  display: flex;
+  gap: 8px;
+}
+
+.horario-actividad-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.horario-actividad-badge.inscrita {
+  background: linear-gradient(135deg, #1b396a 0%, #2563eb 100%);
+  color: white;
+}
+
+.activity-title {
+  font-size: 1.25rem;
+  margin: 0 0 10px 0;
+  color: var(--text-dark);
+}
+
+.horario-actividad-badges {
+  display: flex;
+  gap: 10px;
+}
+
+.horario-badge-code,
+.horario-badge.credits {
+  padding: 4px 10px;
+  background: var(--gray-100);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--gray-700);
+}
+
+/* Tabla de Horarios Interna */
+.horario-actividad-body {
+  padding: 0 20px 20px 20px;
+  background: #fafafa;
+}
+.horario-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+.horario-table th {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 2px solid var(--gray-200);
+}
+.horario-table td {
+  padding: 10px;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+/* ========================================
+   2. ACTIVIDADES PERSONALES (DISEÑO MEJORADO)
+   ======================================== */
+.personal-activity-card {
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  padding: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.personal-card-header {
+  margin-bottom: 20px;
+}
+
+.badge-and-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.horario-actividad-badge.personal {
+  background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+  color: white;
+}
+
+.btn-delete-activity {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-delete-activity:hover {
+  background: var(--danger);
+  color: white;
+}
+
+.personal-activity-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0 0 8px 0;
+  color: #1e293b;
+}
+
+.activity-location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--gray-600);
+  font-size: 0.9rem;
+}
+
+/* Grid de días (Cards internas) */
+.dias-schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.dia-schedule-card {
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: 10px;
+  padding: 12px;
+  transition: transform 0.2s;
+}
+
+.dia-schedule-card:hover {
+  transform: translateY(-3px);
+}
+
+.dia-schedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.dia-badge {
+  color: white;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.dia-actions-compact {
+  display: flex;
+  gap: 4px;
+}
+
+.btn-icon-edit,
+.btn-icon-delete {
+  background: none;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 4px;
+  color: var(--gray-600);
+}
+
+.btn-icon-edit:hover {
+  background: #f0f9ff;
+  color: #0284c7;
+}
+.btn-icon-delete:hover {
+  background: #fef2f2;
+  color: var(--danger);
+}
+
+.dia-schedule-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.time-display {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.special-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  color: #e11d48;
+  background: #fff1f2;
+  padding: 2px 6px;
+  border-radius: 4px;
+  width: fit-content;
+}
+
+/* ========================================
+   ESTADOS VACÍOS Y RESPONSIVO
+   ======================================== */
+.horario-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4rem;
+  text-align: center;
+  color: var(--gray-600);
+}
+
+@media (max-width: 768px) {
+  .dias-schedule-grid {
+    grid-template-columns: 1fr;
+  }
+  .personal-activity-title {
+    font-size: 1.2rem;
+  }
+  .horario-btn-text {
+    display: none;
+  }
+}
+/* =============================================
+   CONTENEDOR PRINCIPAL (OVERLAY)
+   ============================================= */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7); /* Oscurece el fondo */
+  display: flex;
+  align-items: center; /* Centrado vertical */
+  justify-content: center; /* Centrado horizontal */
+  z-index: 9999; /* Por encima de todo */
+  backdrop-filter: blur(4px); /* Efecto de desenfoque al fondo */
+  padding: 20px;
+}
+
+/* =============================================
+   TARJETA DEL MODAL
+   ============================================= */
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  max-width: 550px;
+  width: 100%;
+  max-height: 90vh; /* No permite que sea más alto que la pantalla */
+  overflow-y: auto; /* Scroll interno si el contenido es largo */
+  position: relative;
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.2),
+    0 10px 10px -5px rgba(0, 0, 0, 0.1);
+  animation: modalScaleIn 0.2s ease-out;
+}
+
+@keyframes modalScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* =============================================
+   CABECERA
+   ============================================= */
+.modal-header {
+  padding: 1.5rem;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.btn-close {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.btn-close:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* =============================================
+   CUERPO DEL FORMULARIO
+   ============================================= */
+.modal-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="time"] {
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* =============================================
+   GRID DE DÍAS Y HORARIOS
+   ============================================= */
+.dias-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
+  gap: 8px;
+}
+
+.dia-btn {
+  padding: 10px;
+  border: 2px solid #e2e8f0;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.dia-btn:hover {
+  border-color: #cbd5e1;
+}
+
+.dia-btn.active {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.horarios-individuales {
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.horario-dia-config {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.horario-dia-config:last-child {
+  border-bottom: none;
+}
+
+.dia-label {
+  font-weight: 600;
+  min-width: 80px;
+}
+
+/* =============================================
+   PALETA DE COLORES
+   ============================================= */
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.color-btn {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.color-btn.active {
+  border-color: #1e293b;
+  transform: scale(1.1);
+}
+
+/* =============================================
+   FOOTER Y BOTONES
+   ============================================= */
+.modal-footer {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.btn-cancel,
+.btn-submit {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-cancel {
+  background: #f1f5f9;
+  color: #475569;
+}
+.btn-cancel:hover {
+  background: #e2e8f0;
+}
+
+.btn-submit {
+  background: #3b82f6;
+  color: white;
+}
+.btn-submit:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+/* Contenedor de opciones de modo */
+.horario-mode-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+/* Botones tipo Radio Card */
+.mode-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.mode-option:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+/* Estado activo del botón */
+.mode-option.active {
+  background: #fdf2f2; /* Color sutil basado en tu diseño */
+  border-color: #ef4444; /* Rojo/Rosa de tu marca */
+  color: #991b1b;
+}
+
+/* Círculo de radio simulado */
+.radio-circle {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #cbd5e1;
+  border-radius: 50%;
+  position: relative;
+  background: white;
+}
+
+.mode-option.active .radio-circle {
+  border-color: #ef4444;
+}
+
+.mode-option.active .radio-circle::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  background: #ef4444;
+  border-radius: 50%;
+}
+
+/* Diseño de las etiquetas */
+.form-label {
+  font-weight: 700;
+  color: #1e293b;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* Ajuste de inputs para que se vean como tu captura */
+.modal-body input {
+  border: 1px solid #e2e8f0;
+  padding: 12px;
+  border-radius: 8px;
+  font-family: inherit;
+}
+/* Esto solo afectará a pantallas menores a 768px (móviles) */
+@media (max-width: 768px) {
+  .horario-welcome-title {
+    /* Ajusta el 40px a tu gusto para bajarlo más o menos */
+    margin-top: 40px !important;
+    margin-bottom: 20px;
+  }
+
+  /* Opcional: Si también quieres bajar el contenedor blanco completo */
+  .horario-header {
+    padding-top: 30px;
+    align-items: center;
+  }
+}
+/* Contenedor del selector de modo */
+.horario-mode-selector {
+  display: flex;
+  background-color: #f3f4f6; /* Fondo gris claro */
+  padding: 4px;
+  border-radius: 10px;
+  gap: 4px;
+  border: 1px solid #e5e7eb;
+  margin-top: 5px;
+}
+
+/* Estilo base para ambos botones */
+.mode-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 7px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #6b7280; /* Gris para el estado inactivo */
+  transition: all 0.2s ease;
+  white-space: nowrap; /* Evita que el texto se parta en dos líneas */
+}
+
+/* Estilo para el botón cuando está Activo */
+.mode-btn.active {
+  background-color: #ffffff;
+  color: #2563eb; /* Azul principal */
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.05),
+    0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Efecto hover opcional para el inactivo */
+.mode-btn:not(.active):hover {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+/* Contenedor de las filas de horas (opcional, para alineación) */
+.form-row {
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
+}

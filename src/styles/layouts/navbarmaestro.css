@@ -1,0 +1,326 @@
+/* ==========================
+   Navbar Maestro (Sidebar)
+========================== */
+.navbarmaestro {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  background-color: var(--blue-primary);
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+  transition: width 0.3s ease;
+  z-index: 1000;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  color: white;
+}
+
+.navbarmaestro.open {
+  width: 280px;
+}
+
+.navbarmaestro.closed {
+  width: 80px;
+}
+
+/* Ocultar texto y badge en versión cerrada */
+.navbarmaestro.closed .logo-text-container,
+.navbarmaestro.closed .admin-badge {
+  display: none;
+}
+
+/* Centrar íconos al colapsar */
+.navbarmaestro.closed .maestros-menu-link {
+  justify-content: center;
+  padding: 0.75rem 0;
+}
+
+.navbarmaestro.closed .maestros-menu-link .maestros-icon {
+  margin: 0 auto;
+  font-size: 1.7rem;
+}
+
+.navbarmaestro.closed .maestros-menu-link .maestros-title {
+  display: none;
+}
+
+/* ==========================
+   Header
+========================== */
+.navbarmaestro-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-text-container {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: 0.2rem;
+}
+
+.logo-text {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: white;
+}
+
+.admin-badge {
+  background-color: #2d5aa0;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+  width: fit-content;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.8rem;
+  color: var(--yellow-accent);
+  transition:
+    transform 0.3s ease,
+    color 0.3s ease;
+}
+
+.toggle-btn:hover {
+  transform: rotate(90deg);
+  color: var(--yellow-accent);
+}
+
+/* ==========================
+   Menú Maestros
+========================== */
+.maestros-menu-list {
+  list-style: none;
+  margin: 0;
+  padding: 2rem 0;
+  flex-grow: 1;
+}
+
+.maestros-menu-item {
+  margin-bottom: 0.5rem;
+}
+
+.maestros-menu-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: white;
+  text-decoration: none;
+  padding: 0.75rem 1.5rem;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+  font-size: 0.95rem;
+  border-radius: 0.5rem;
+  white-space: nowrap;
+}
+
+.maestros-menu-link:hover {
+  background-color: var(--blue-hover);
+  color: white;
+}
+
+.maestros-menu-link:hover .maestros-icon {
+  color: var(--yellow-accent);
+}
+
+.maestros-icon {
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--yellow-accent);
+}
+
+.maestros-title {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* ==========================
+   Logout
+========================== */
+.maestros-menu-item.logout-item {
+  margin-top: auto;
+  color: #ffb3b3;
+  cursor: pointer;
+}
+
+.maestros-menu-item.logout-item:hover .maestros-menu-link {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ff6666;
+}
+
+/* ==========================
+   Responsive
+========================== */
+@media (max-width: 768px) {
+  .navbarmaestro {
+    height: 100%;
+    z-index: 2000;
+  }
+
+  .navbarmaestro.open {
+    width: 240px;
+  }
+
+  .navbarmaestro.closed {
+    width: 0;
+    overflow: hidden;
+  }
+}
+
+/* ==========================
+   BOTONES
+========================== */
+.maestros-button-group {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.maestros-btn-primary {
+  padding: 14px 32px;
+  background: var(--yellow-accent);
+  border-radius: 9999px;
+  color: #ffffff;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.maestros-btn-primary:hover {
+  transform: scale(1.05);
+}
+
+.maestros-btn-secondary {
+  padding: 14px 32px;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 9999px;
+  color: #ffffff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.maestros-btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+/* ==========================
+   iPad y Celular (Breakpoints)
+========================== */
+@media (max-width: 1024px) {
+  .navbarmaestro {
+    width: 280px !important; /* Ancho fijo en móvil */
+    transform: translateX(-100%); /* Escondido a la izquierda */
+  }
+
+  .navbarmaestro.open {
+    transform: translateX(0); /* Entra la cortina */
+  }
+
+  /* Botón Hamburguesa Flotante */
+  .mobile-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 2100;
+    background: var(--blue-primary);
+    color: var(--yellow-accent);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    width: 45px;
+    height: 45px;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+
+  .toggle-btn {
+    display: none;
+  } /* Escondemos el botón de colapsar interno */
+
+  /* Asegurar que el texto se vea al abrir en móvil */
+  .navbarmaestro.open .maestros-title,
+  .navbarmaestro.open .logo-text-container {
+    display: flex !important;
+    opacity: 1 !important;
+  }
+}
+
+/* ==========================
+   Estilos de los Items
+========================== */
+.maestros-menu-list {
+  list-style: none;
+  padding: 20px 0;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.maestros-menu-item {
+  margin: 4px 12px;
+  border-radius: 8px;
+  transition: background 0.3s;
+}
+
+.maestros-menu-item.active {
+  background: rgba(254, 158, 16, 0.15);
+}
+
+.maestros-menu-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  gap: 15px;
+  color: white;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.maestros-icon {
+  font-size: 1.4rem;
+  min-width: 30px;
+  display: flex;
+  justify-content: center;
+  color: var(--yellow-accent);
+}
+
+.logout-item {
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 10px;
+  color: #ffb3b3;
+}
+
+.navbarmaestro-header {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}

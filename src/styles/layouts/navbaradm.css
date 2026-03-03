@@ -1,0 +1,162 @@
+:root {
+  --blue-primary: #1b396a;
+  --yellow-accent: #fe9e10;
+  --white: #ffffff;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sliderbaradm {
+  height: 100vh;
+  background-color: var(--blue-primary);
+  color: var(--white);
+  transition: var(--transition);
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+}
+
+/* ESTADOS ESCRITORIO */
+.sliderbaradm.open {
+  width: 260px;
+}
+.sliderbaradm.closed {
+  width: 75px;
+}
+
+.sliderbaradm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  height: 60px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.logo-text {
+  font-weight: bold;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+
+.sliderbaradm.closed .logo-text {
+  opacity: 0;
+}
+
+.desktop-toggle {
+  background: none;
+  border: none;
+  color: var(--yellow-accent);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* LISTA Y MENÚ */
+.menu-list {
+  padding: 10px 0;
+  list-style: none;
+}
+
+.menu-item {
+  position: relative;
+  transition: background 0.2s;
+}
+
+.menu-item.active {
+  background-color: rgba(254, 158, 16, 0.15);
+  border-left: 4px solid var(--yellow-accent);
+}
+
+.menu-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 25px;
+  text-decoration: none;
+  color: white;
+  gap: 15px;
+}
+
+.sliderbaradm.closed .menu-link {
+  justify-content: center;
+  padding: 12px 0;
+}
+
+.icon {
+  font-size: 1.4rem;
+  min-width: 25px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ETIQUETA FLOTANTE (Efecto Tooltip) */
+.etiqueta-flotante {
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+
+@media (min-width: 769px) {
+  .sliderbaradm.closed .etiqueta-flotante {
+    position: absolute;
+    left: 85px;
+    background: var(--blue-primary);
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-size: 13px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    pointer-events: none;
+    display: block;
+  }
+
+  .sliderbaradm.closed .menu-item:hover .etiqueta-flotante {
+    opacity: 1;
+    left: 75px;
+    transition: all 0.2s ease;
+  }
+}
+
+/* RESPONSIVE MÓVIL (Tu diseño original conservado) */
+@media (max-width: 768px) {
+  .desktop-toggle {
+    display: none;
+  }
+
+  .toggle-btn-mobile {
+    position: fixed;
+    right: 15px;
+    top: 15px;
+    z-index: 10000;
+    background: var(--yellow-accent);
+    border: none;
+    border-radius: 5px;
+    padding: 8px;
+    display: flex;
+    font-size: 1.5rem;
+  }
+
+  .sliderbaradm {
+    width: 100% !important;
+    height: 60px;
+    overflow: hidden;
+  }
+
+  .sliderbaradm.open {
+    height: 100vh;
+  }
+
+  .menu-link {
+    padding: 15px 10%;
+    justify-content: flex-start;
+  }
+}
