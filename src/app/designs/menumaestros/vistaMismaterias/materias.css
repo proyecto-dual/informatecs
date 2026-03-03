@@ -121,7 +121,7 @@
   gap: 15px;
 }
 
-.maestros .stat-badge {
+.maestros .materias-stat-badge {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -329,31 +329,91 @@
   color: var(--pa-txt2);
 }
 
-/* ==========================
-   Responsive Final
-========================= */
+/* --- OPTIMIZACIONES ESPECÍFICAS PARA MÓVILES --- */
 @media (max-width: 768px) {
-  .maestros .materias-main-wrapper {
-    margin-left: 0 !important;
+  /* Reducir el padding general para ganar espacio */
+  .maestros .materias-header {
+    padding: 20px 15px;
   }
 
-  .maestros .header-content {
-    flex-direction: column;
-    text-align: center;
+  .maestros .materias-content {
+    padding: 15px;
   }
 
-  .maestros .header-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    width: 100%;
+  /* Ajustar los badges de estadísticas para que no se desborden */
+  .maestros .materias-header-stats {
+    display: flex; /* Cambiamos de grid a flex para mejor control */
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
-  .maestros .materia-card-header {
-    flex-direction: column;
-    gap: 15px;
+  .maestros .materias-stat-badge {
+    flex: 1 1 calc(50% - 10px); /* Dos por fila en móviles */
+    padding: 10px;
+    font-size: 0.85rem;
+    justify-content: center;
   }
 
+  /* Toolbar: Buscador y Botón uno encima del otro */
   .maestros .estudiantes-toolbar {
     flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .maestros .search-box {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .maestros .btn-export {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* --- GESTIÓN DE LA TABLA DE ESTUDIANTES --- */
+  .maestros .estudiantes-table-wrapper {
+    margin: 0 -10px; /* Saca la tabla un poco a los bordes para ganar espacio */
+    width: calc(100% + 20px);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Scroll elástico en iOS */
+    border-radius: 0; /* Quitamos radio en móvil para que parezca nativo */
+  }
+
+  /* Evitar que las celdas se compriman demasiado */
+  .maestros .estudiantes-table th,
+  .maestros .estudiantes-table td {
+    padding: 12px 8px;
+    font-size: 0.85rem;
+    white-space: nowrap; /* Evita que los nombres se rompan en mil líneas */
+  }
+
+  /* Columna fija para el nombre del estudiante (Opcional) */
+  /* Si quieres que el nombre se quede fijo mientras scrolleas los datos */
+  .maestros .estudiantes-table th:nth-child(2),
+  .maestros .estudiantes-table td:nth-child(2) {
+    position: sticky;
+    left: 0;
+    background: white;
+    z-index: 2;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+  }
+
+  .maestros .estudiantes-table th:nth-child(2) {
+    background: var(--blue-primary);
+    z-index: 3;
+  }
+}
+
+/* --- AJUSTE PARA IPAD (769px a 1024px) --- */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .maestros .materias-content {
+    padding: 25px;
+  }
+
+  .maestros .materias-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Una columna en iPad vertical se ve mejor */
+    gap: 25px;
   }
 }

@@ -16,6 +16,7 @@ import {
   Edit2,
   Trash2,
   AlertTriangle,
+  UserX,
 } from "lucide-react";
 
 /**
@@ -29,6 +30,7 @@ import {
  *   onDelete             : (nombre) => void
  *   onRemoveDay          : (id, dia) => void
  *   onClose              : () => void
+ *   onDarseDeBaja        : (inscripcion) => void
  */
 export function MateriasDrawer({
   inscripciones = [],
@@ -37,6 +39,7 @@ export function MateriasDrawer({
   onDelete,
   onRemoveDay,
   onClose,
+  onDarseDeBaja,
 }) {
   const [tab, setTab] = useState("inscritas"); // "inscritas" | "personales"
   const [expandida, setExpandida] = useState(null);
@@ -51,7 +54,6 @@ export function MateriasDrawer({
     "#dc2626",
   ];
 
-  // Cambiar tab resetea el expandido
   const cambiarTab = (t) => {
     setTab(t);
     setExpandida(null);
@@ -173,13 +175,28 @@ export function MateriasDrawer({
                           </div>
                         )}
                       </div>
-                      <button className="md-toggle">
-                        {abierta ? (
-                          <ChevronUp size={18} />
-                        ) : (
-                          <ChevronDown size={18} />
-                        )}
-                      </button>
+
+                      {/* ── Botón baja + toggle ── */}
+                      <div className="md-card-header-actions">
+                        <button
+                          className="md-btn-baja"
+                          title="Darme de baja"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onDarseDeBaja?.(insc);
+                          }}
+                        >
+                          <UserX size={14} />
+                          Baja
+                        </button>
+                        <button className="md-toggle">
+                          {abierta ? (
+                            <ChevronUp size={18} />
+                          ) : (
+                            <ChevronDown size={18} />
+                          )}
+                        </button>
+                      </div>
                     </div>
 
                     {abierta && (
@@ -343,7 +360,6 @@ export function MateriasDrawer({
                         </div>
                       </div>
                       <div className="md-card-header-actions">
-                        {/* Botón eliminar todo */}
                         <button
                           className="md-btn-danger-icon"
                           title="Eliminar actividad completa"
@@ -409,7 +425,7 @@ export function MateriasDrawer({
                                       title={`Editar horario del ${dia}`}
                                       onClick={() => {
                                         onEdit?.(activity, dia);
-                                        onClose(); // cerrar drawer al abrir modal
+                                        onClose();
                                       }}
                                     >
                                       <Edit2 size={13} />
@@ -603,7 +619,7 @@ export function MateriasDrawer({
           font-size: 0.9rem;
         }
 
-        /* ── CARD COMPARTIDA ── */
+        /* ── CARD ── */
         .md-card {
           background: white;
           border: 1.5px solid #e2e8f0;
@@ -641,7 +657,7 @@ export function MateriasDrawer({
         .md-card-header-actions {
           display: flex;
           align-items: center;
-          gap: 2px;
+          gap: 4px;
           flex-shrink: 0;
         }
 
@@ -712,6 +728,28 @@ export function MateriasDrawer({
         .md-toggle:hover {
           color: #475569;
         }
+
+        /* ── BOTÓN BAJA (nuevo) ── */
+        .md-btn-baja {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          background: #fee2e2;
+          color: #dc2626;
+          border: none;
+          padding: 5px 10px;
+          border-radius: 6px;
+          font-size: 0.72rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s;
+          white-space: nowrap;
+        }
+        .md-btn-baja:hover {
+          background: #ef4444;
+          color: white;
+        }
+
         .md-btn-danger-icon {
           background: none;
           border: none;
@@ -728,7 +766,7 @@ export function MateriasDrawer({
           color: #dc2626;
         }
 
-        /* ── BODY EXPANDIDO INSCRITA ── */
+        /* ── BODY EXPANDIDO ── */
         .md-card-body {
           padding: 4px 14px 14px 20px;
           animation: mdExpand 0.22s ease;
@@ -917,6 +955,9 @@ export function MateriasDrawer({
           .md-dia-actions {
             width: 100%;
             justify-content: flex-end;
+          }
+          .md-btn-baja span {
+            display: none;
           }
         }
       `}</style>

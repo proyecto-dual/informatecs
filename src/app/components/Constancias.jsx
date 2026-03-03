@@ -9,7 +9,7 @@ import {
 
 const styles = StyleSheet.create({
   page: {
-    padding: "40 50",
+    padding: "40 50 120 50",
     fontSize: 10,
     fontFamily: "Helvetica",
     lineHeight: 1.5,
@@ -19,12 +19,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 40,
+    marginBottom: 30,
   },
-  logoEducacion: { width: 140 },
-  logoTecNM: { width: 140 },
-  // Tamaño para el escudo central o lateral
-  // ...
+  logoEducacion: { width: 350 },
+  logoTecNM: { width: 150 },
 
   // Sección de Folio a la izquierda y Título a la derecha
   topInfoContainer: {
@@ -84,7 +82,7 @@ export const ConstanciaPDF = ({ datos }) => (
       {/* 1. Logos */}
       <View style={styles.headerLogos}>
         <Image src="/imagenes/educacionlogo.png" style={styles.logoEducacion} />
-        <Image src="/imagenes/tecnlogo.png" style={styles.logoTecNM} />
+        <Image src="/imagenes/tecnologo.png" style={styles.logoTecNM} />
       </View>
 
       {/* 2. Folio y Títulos Superiores */}
@@ -172,12 +170,9 @@ export const ConstanciaPDF = ({ datos }) => (
         </View>
       </View>
 
-      {/* 6. Pie de página */}
-      <Text style={styles.footerPagina}>
-        Blvd. Tecnológico #150, Ex Ejido Chapultepec C.P.22780, Ensenada, Baja
-        California{"\n"}
-        Tel. (646) 1775680 e-mail: dir_ensenada@tecnm.mx | ensenada.tecnm.mx
-      </Text>
+      <View style={styles.footerPagina} fixed>
+        <Image src="/imagenes/logofooter.png" style={styles.logoFooter} />
+      </View>
     </Page>
   </Document>
 );

@@ -73,7 +73,7 @@
   min-height: 100vh;
   background: var(--pa-bg);
   padding: 2rem;
-  margin-left: 250px;
+
   transition: margin-left 0.3s ease;
 }
 
@@ -360,5 +360,54 @@
 
   .maestros .materia-codigo-row {
     font-size: 0.7rem;
+  }
+}
+/* --- OPTIMIZACIÓN DE SCROLL PARA MÓVILES --- */
+@media (max-width: 1024px) {
+  .maestros .horario-main-wrapper {
+    padding: 1rem 0.5rem; /* Menos espacio lateral en móvil */
+    margin-left: 0 !important;
+  }
+
+  .maestros .horario-container {
+    padding: 0;
+    overflow-x: auto; /* Habilita el scroll */
+    -webkit-overflow-scrolling: touch; /* Scroll suave tipo Apple */
+    border-radius: var(--pa-r-md);
+    position: relative;
+  }
+
+  .maestros .horario-grid-wrapper {
+    /* Forzamos un ancho mínimo para que las columnas tengan espacio */
+    min-width: 950px;
+    display: block;
+  }
+
+  /* --- EFECTO STICKY (COLUMNA FIJA) --- */
+  .maestros .horario-header-materia {
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    background: var(--blue-primary) !important;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .maestros .horario-materia-cell {
+    position: sticky;
+    left: 0;
+    z-index: 5;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+    /* Asegúrate de que el fondo no sea transparente para que no se vea el texto de atrás al scrollear */
+    background-color: white !important;
+  }
+
+  /* Ajustes de tamaño de texto para iPhone */
+  .maestros .horario-table th,
+  .maestros .horario-table td {
+    padding: 0.8rem 0.5rem;
+  }
+
+  .maestros .header-title {
+    font-size: 1.5rem;
   }
 }

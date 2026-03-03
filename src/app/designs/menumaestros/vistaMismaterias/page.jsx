@@ -138,11 +138,11 @@ export default function MisMateriasMaestroPage() {
               </p>
             </div>
             <div className="header-stats">
-              <div className="stat-badge">
+              <div className="materias-stat-badge">
                 <FiBook />
                 <span>{materias.length} Materias</span>
               </div>
-              <div className="stat-badge">
+              <div className="materias-stat-badge">
                 <FiUsers />
                 <span>
                   {materias.reduce(
