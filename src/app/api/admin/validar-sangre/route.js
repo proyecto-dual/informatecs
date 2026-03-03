@@ -1,68 +1,69 @@
-import { prisma } from '@/lib/prisma';
+import { prisma } from "@/lib/prisma";
 
-// PUT - Validar tipo de sangre
+export async function PATCH(request) {
+  return handleRequest(request);
+}
+
 export async function PUT(request) {
+  return handleRequest(request);
+}
+
+async function handleRequest(request) {
   try {
     const body = await request.json();
-    const { inscripcionId, aluctr } = body;
+    const { aluctr, accion, mensaje } = body;
 
-    if (!inscripcionId || !aluctr) {
-      return new Response(
-        JSON.stringify({ error: "Faltan datos requeridos" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
+    if (!aluctr) {
+      return new Response(JSON.stringify({ error: "Faltan datos (aluctr)" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
-    // Obtener la inscripción
-    const inscripcion = await prisma.inscripact.findUnique({
-      where: { id: inscripcionId },
-      select: {
-        tipoSangreSolicitado: true,
+    // 1. Lógica para RECHAZAR
+    if (accion === "rechazar") {
+      await prisma.inscripact.updateMany({
+        where: { estudianteId: aluctr },
+        data: {
+          mensajeAdmin: mensaje || "Documento rechazado.",
+          sangreValidada: false,
+        },
+      });
+      return new Response(JSON.stringify({ success: true }), { status: 200 });
+    }
+
+    // 2. Lógica para APROBAR
+    // Buscamos primero el tipo de sangre que el alumno solicitó
+    const registro = await prisma.inscripact.findFirst({
+      where: { estudianteId: aluctr },
+      select: { tipoSangreSolicitado: true },
+    });
+
+    // Actualizamos todas las inscripciones del alumno
+    await prisma.inscripact.updateMany({
+      where: { estudianteId: aluctr },
+      data: {
         sangreValidada: true,
-        estudianteId: true, // ✅ Cambiar de aluctr a estudianteId
-      }
+        mensajeAdmin: null, // <--- ESTO QUITA EL CUADRO ROJO
+      },
     });
 
-    if (!inscripcion) {
-      return new Response(
-        JSON.stringify({ error: "Inscripción no encontrada" }),
-        { status: 404, headers: { "Content-Type": "application/json" } }
-      );
+    // Actualizamos la tabla maestra de estudiantes
+    if (registro?.tipoSangreSolicitado) {
+      await prisma.estudiantes.update({
+        where: { aluctr: aluctr },
+        data: { alutsa: registro.tipoSangreSolicitado },
+      });
     }
 
-    if (inscripcion.sangreValidada) {
-      return new Response(
-        JSON.stringify({ error: "Esta solicitud ya fue validada" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
-    }
-
-    // Marcar como validada
-    await prisma.inscripact.update({
-      where: { id: inscripcionId },
-      data: { sangreValidada: true }
-    });
-
-    // Actualizar tipo de sangre en estudiantes
-    await prisma.estudiantes.update({
-      where: { aluctr }, // ✅ Aquí sí usamos aluctr porque es la tabla estudiantes
-      data: { alutsa: inscripcion.tipoSangreSolicitado }
-    });
-
-    console.log(`✅ Tipo de sangre ${inscripcion.tipoSangreSolicitado} validado para ${aluctr}`);
-
-    return new Response(JSON.stringify({ 
-      success: true,
-      mensaje: "Tipo de sangre validado correctamente"
-    }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  } catch (error) {
-    console.error("❌ Error en PUT /api/admin/validar-sangre:", error);
     return new Response(
-      JSON.stringify({ error: "Error interno", message: error.message }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+      JSON.stringify({ success: true, message: "Validado y limpiado" }),
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
+  } catch (error) {
+    console.error("Error en API:", error);
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+    });
   }
 }

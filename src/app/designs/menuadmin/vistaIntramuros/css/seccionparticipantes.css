@@ -475,3 +475,144 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
+/* Ocultar en el navegador */
+.sp-print-page {
+  display: none;
+}
+
+@media print {
+  /* Reset de visibilidad para impresión limpia */
+  body * {
+    visibility: hidden;
+  }
+
+  .sp-print-page,
+  .sp-print-page * {
+    visibility: visible;
+  }
+
+  .sp-print-page {
+    display: block !important;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 21.59cm; /* Carta */
+    min-height: 27.94cm;
+    padding: 1.5cm 1.5cm 1cm 1.5cm;
+    font-family: "Helvetica", Arial, sans-serif;
+    background: white;
+    font-size: 10pt;
+    line-height: 1.2;
+    color: black;
+  }
+
+  /* Logos Superiores */
+  .sp-pdf-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20pt;
+  }
+  .sp-pdf-logo-sep {
+    width: 280px;
+    height: auto;
+  }
+  .sp-pdf-logo-tec {
+    width: 120px;
+    height: auto;
+  }
+
+  /* Títulos y Folio */
+  .sp-pdf-top-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25pt;
+  }
+  .sp-pdf-titles {
+    text-align: right;
+  }
+  .sp-pdf-main-title {
+    font-size: 11pt;
+    font-weight: bold;
+    margin: 0;
+  }
+  .sp-pdf-sub-title {
+    font-size: 10pt;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+  }
+
+  /* Tabla Oficial */
+  .sp-pdf-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15pt;
+  }
+  .sp-pdf-table th,
+  .sp-pdf-table td {
+    border: 0.5pt solid black !important;
+    padding: 6pt;
+    font-size: 8.5pt;
+    text-align: left;
+  }
+  .sp-pdf-table th {
+    background-color: #f2f2f2 !important;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  /* Bloque Inferior */
+  .sp-pdf-footer-section {
+    margin-top: 30pt;
+    /* Evita que la firma se corte entre páginas */
+    page-break-inside: avoid;
+  }
+  .sp-pdf-lema {
+    font-style: italic;
+    font-size: 8pt;
+    margin: 0;
+  }
+
+  .sp-pdf-firma-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 10pt;
+  }
+
+  .sp-pdf-line {
+    border-top: 1pt solid black;
+    width: 250px;
+    margin-top: 45pt;
+    margin-bottom: 5pt;
+  }
+
+  /* Sello */
+  .sp-pdf-sello-box {
+    width: 90px;
+    height: 90px;
+    border: 1px dashed #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Footer Imagen Institucional */
+  .sp-pdf-footer-img-wrap {
+    position: fixed;
+    bottom: 20pt;
+    left: 40pt;
+    right: 40pt;
+    text-align: center;
+  }
+  .sp-pdf-img-footer {
+    width: 100%;
+    height: auto;
+    max-height: 80px;
+  }
+
+  .sp-pdf-bold {
+    font-weight: bold;
+  }
+}

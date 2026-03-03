@@ -33,7 +33,30 @@ const InscripcionesPanel = () => {
   }, []);
 
   // ── API ────────────────────────────────────────────────────────────────────
+  const onValidar = async (id, aluctr, mensaje = "") => {
+    try {
+      const res = await fetch(`/api/sangre`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          aluctr,
+          accion: "aprobar",
+          // Si mensaje es "", el backend limpiará el campo en la BD
+          mensaje: mensaje,
+        }),
+      });
 
+      if (res.ok) {
+        // Invalida la cache de React Query para refrescar la lista
+        queryClient.invalidateQueries(["inscripciones"]);
+        alert(
+          "Proceso completado: Se ha validado y limpiado el historial de mensajes.",
+        );
+      }
+    } catch (error) {
+      console.error("Error al validar:", error);
+    }
+  };
   const cargarDatos = async () => {
     try {
       setLoading(true);

@@ -1,14 +1,23 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
-import { Search, Printer } from "lucide-react";
+import React, { useState, useMemo, useEffect } from "react";
+import { Search, FileDown } from "lucide-react";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+
 import "../css/seccionparticipantes.css";
+import { CedulaPDF } from "@/app/components/CedulaImpresion";
 
 const SeccionParticipantes = ({ inscripciones }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filtroTipo, setFiltroTipo] = useState("Todos");
   const [filtroGenero, setFiltroGenero] = useState("Todos");
+  const [isClient, setIsClient] = useState(false);
 
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // --- TU LÓGICA ORIGINAL COMPLETA ---
   const { filtrados, estadisticas } = useMemo(() => {
     const mapaUnico = new Map();
     const DOMINIO_INST = "@ite.edu.mx";
@@ -88,26 +97,6 @@ const SeccionParticipantes = ({ inscripciones }) => {
 
   return (
     <div className="sp-wrapper">
-      {/* ── Encabezado PDF ── */}
-      <div className="sp-print-header">
-        <h1 className="sp-print-header__title">
-          Cédula de Registro y Control de Asistencia
-        </h1>
-        <p className="sp-print-header__sub">
-          Instituto Tecnológico — Departamento de Deportes y Cultura
-        </p>
-        <div className="sp-print-header__stats">
-          <span>
-            Hombres: {estadisticas.h} | Mujeres: {estadisticas.m}
-          </span>
-          <span>
-            ITE: {estadisticas.ite} | Externos: {estadisticas.ext}
-          </span>
-          <span>Total: {estadisticas.total} Registros</span>
-        </div>
-      </div>
-
-      {/* ── Filtros (ocultos en PDF) ── */}
       <div className="sp-filters sp-no-print">
         <div className="sp-search-wrap">
           <Search className="sp-search-icon" size={18} />
@@ -135,14 +124,24 @@ const SeccionParticipantes = ({ inscripciones }) => {
             <option value="M">Masc</option>
             <option value="F">Fem</option>
           </select>
-          <button className="sp-btn-print" onClick={() => window.print()}>
-            <Printer size={15} />
-            Imprimir
-          </button>
+
+          {isClient && (
+            <PDFDownloadLink
+              document={<CedulaPDF filtrados={filtrados} />}
+              fileName={`Cedula_${new Date().getTime()}.pdf`}
+              className="sp-btn-print"
+            >
+              {({ loading }) => (
+                <>
+                  <FileDown size={15} />
+                  {loading ? "Generando..." : "Descargar PDF"}
+                </>
+              )}
+            </PDFDownloadLink>
+          )}
         </div>
       </div>
 
-      {/* ── Tarjetas de totales (ocultas en PDF) ── */}
       <div className="sp-stats-grid sp-no-print">
         <div className="sp-stat-card">
           <span className="sp-stat-label">Total</span>
@@ -166,41 +165,32 @@ const SeccionParticipantes = ({ inscripciones }) => {
         </div>
       </div>
 
-      {/* ── Tabla ── */}
       <div className="sp-print-container">
         <table className="sp-table">
           <thead>
             <tr>
-              <th className="sp-col-n sp-print-only">#</th>
-              <th className="sp-col-nombre">Nombre del Atleta</th>
-              <th className="sp-col-act">Actividad / Deporte</th>
-              <th className="sp-col-equipo">Equipo / Rol</th>
-              <th className="sp-col-g sp-print-only sp-center">G</th>
-              <th className="sp-col-firma sp-center">Firma</th>
+              <th>#</th>
+              <th>Nombre del Atleta</th>
+              <th>Actividad</th>
+              <th>Equipo / Rol</th>
+              <th>G</th>
             </tr>
           </thead>
           <tbody>
             {filtrados.map((p, idx) => (
               <tr key={idx}>
-                <td className="sp-col-n sp-td-num sp-print-only">{idx + 1}</td>
+                <td className="sp-td-num">{idx + 1}</td>
                 <td className="sp-td-nombre">{p.nombre}</td>
                 <td className="sp-td-actividad">{p.actividad}</td>
                 <td>
                   <span className="sp-td-equipo">{p.equipo}</span>
-                  <span className="sp-td-rol">{p.rol}</span>
+                  <span className="sp-td-rol"> ({p.rol})</span>
                 </td>
-                <td className="sp-col-g sp-center sp-print-only">{p.genero}</td>
-                <td className="sp-col-firma" />
+                <td className="sp-center">{p.genero}</td>
               </tr>
             ))}
           </tbody>
         </table>
-      </div>
-
-      {/* ── Pie de firmas (solo PDF) ── */}
-      <div className="sp-print-footer">
-        <div className="sp-print-footer__line">Firma Responsable</div>
-        <div className="sp-print-footer__line">Sello de Institución</div>
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Document,
   Page,
@@ -9,26 +10,26 @@ import {
 
 const styles = StyleSheet.create({
   page: {
-    padding: "40 50 120 50",
+    padding: "30 50 40 50", // Reducido el padding inferior de 120 a 40 para evitar saltos
     fontSize: 10,
     fontFamily: "Helvetica",
-    lineHeight: 1.5,
+    lineHeight: 1.2,
   },
-  // Logos en los extremos superiores
+  // Logos superiores
   headerLogos: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 30,
+    marginBottom: 20,
   },
-  logoEducacion: { width: 350 },
-  logoTecNM: { width: 150 },
+  logoEducacion: { width: 280 }, // Reducido ligeramente para ganar altura
+  logoTecNM: { width: 120 },
 
-  // Sección de Folio a la izquierda y Título a la derecha
+  // Folio y Título
   topInfoContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 60,
+    marginBottom: 30, // Reducido de 60 a 30
   },
   folioColumn: { width: "40%" },
   titleColumn: {
@@ -40,39 +41,66 @@ const styles = StyleSheet.create({
   mainTitle: { fontSize: 11, fontWeight: "bold" },
   subTitle: { fontSize: 11, fontWeight: "bold", marginTop: 2 },
 
-  // Cuerpo del documento
-  section: { marginBottom: 20 },
-  destinatario: { marginBottom: 30 },
-  parrafo: { textAlign: "justify", marginBottom: 15 },
+  // Cuerpo
+  destinatario: { marginBottom: 20 },
+  parrafo: { textAlign: "justify", marginBottom: 10 },
 
-  // Firma y QR alineados
-  footerSign: {
-    marginTop: 40,
+  // --- SECCIÓN DE FIRMA Y QR (CORREGIDA) ---
+  firmaYQrContainer: {
+    marginTop: 25,
+  },
+  atentamenteBlock: {
+    marginBottom: 10,
+  },
+  atentamenteText: {
+    fontSize: 10,
+    fontWeight: "bold",
+    marginBottom: 2,
+  },
+  lemaText: {
+    fontStyle: "italic",
+    fontSize: 8,
+  },
+  firmaYQrFlex: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-end",
+    alignItems: "flex-end", // Alinea el QR con la base de la firma
+  },
+  firmaBlock: {
+    width: 250,
   },
   signatureLine: {
     borderTopWidth: 1,
     borderColor: "black",
-    width: 250,
-    marginTop: 60,
+    width: "100%",
+    marginTop: 40, // Espacio para la firma física
     marginBottom: 5,
   },
   qrContainer: {
     alignItems: "center",
-    width: 100,
+    width: 90,
   },
-  qrImage: { width: 80, height: 80 },
+  qrImage: {
+    width: 75,
+    height: 75,
+  },
+  qrText: {
+    fontSize: 7,
+    marginTop: 3,
+    textAlign: "center",
+  },
 
+  // Footer fijo (Imagen de fondo inferior)
   footerPagina: {
     position: "absolute",
-    bottom: 30,
-    left: 0,
-    right: 0,
+    bottom: 20,
+    left: 40,
+    right: 40,
     textAlign: "center",
-    fontSize: 7,
-    color: "#333",
+  },
+  logoFooterImg: {
+    width: "100%",
+    height: "auto",
   },
 });
 
@@ -85,7 +113,7 @@ export const ConstanciaPDF = ({ datos }) => (
         <Image src="/imagenes/tecnologo.png" style={styles.logoTecNM} />
       </View>
 
-      {/* 2. Folio y Títulos Superiores */}
+      {/* 2. Folio y Títulos */}
       <View style={styles.topInfoContainer}>
         <View style={styles.folioColumn}>
           <Text style={styles.bold}>Folio: {datos?.folio}</Text>
@@ -111,7 +139,7 @@ export const ConstanciaPDF = ({ datos }) => (
       {/* 3. Destinatario */}
       <View style={styles.destinatario}>
         <Text>A quien corresponda</Text>
-        <Text style={[styles.bold, { marginTop: 15 }]}>Presente</Text>
+        <Text style={[styles.bold, { marginTop: 10 }]}>Presente</Text>
       </View>
 
       {/* 4. Cuerpo del Texto */}
@@ -144,34 +172,37 @@ export const ConstanciaPDF = ({ datos }) => (
 
       <Text style={styles.parrafo}>Saludos.</Text>
 
-      {/* 5. Firma y QR */}
-      <View style={{ marginTop: 40 }}>
-        <Text style={styles.bold}>Atentamente</Text>
-        <Text style={{ fontStyle: "italic", fontSize: 9 }}>
-          «Excelencia en Educación Tecnológica»
-        </Text>
-        <Text style={{ fontStyle: "italic", fontSize: 9 }}>
-          «Por la tecnología de hoy y del futuro»
-        </Text>
-      </View>
-
-      <View style={styles.footerSign}>
-        <View>
-          <View style={styles.signatureLine} />
-          <Text>Juan Carlos Leal Nodal</Text>
-          <Text>Departamento de Actividades Extracurriculares</Text>
-        </View>
-
-        <View style={styles.qrContainer}>
-          {datos?.qrData && <Image src={datos.qrData} style={styles.qrImage} />}
-          <Text style={{ fontSize: 7, marginTop: 5 }}>
-            Escanea para verificar
+      {/* 5. Bloque de Firma y QR Corregido */}
+      <View style={styles.firmaYQrContainer}>
+        <View style={styles.atentamenteBlock}>
+          <Text style={styles.atentamenteText}>Atentamente</Text>
+          <Text style={styles.lemaText}>
+            «Excelencia en Educación Tecnológica»
+          </Text>
+          <Text style={styles.lemaText}>
+            «Por la tecnología de hoy y del futuro»
           </Text>
         </View>
+
+        <View style={styles.firmaYQrFlex}>
+          <View style={styles.firmaBlock}>
+            <View style={styles.signatureLine} />
+            <Text style={styles.bold}>Juan Carlos Leal Nodal</Text>
+            <Text>Departamento de Actividades Extraescolares</Text>
+          </View>
+
+          <View style={styles.qrContainer}>
+            {datos?.qrData && (
+              <Image src={datos.qrData} style={styles.qrImage} />
+            )}
+            <Text style={styles.qrText}>Escanea para verificar</Text>
+          </View>
+        </View>
       </View>
 
+      {/* Footer Fijo */}
       <View style={styles.footerPagina} fixed>
-        <Image src="/imagenes/logofooter.png" style={styles.logoFooter} />
+        <Image src="/imagenes/logofooter.png" style={styles.logoFooterImg} />
       </View>
     </Page>
   </Document>

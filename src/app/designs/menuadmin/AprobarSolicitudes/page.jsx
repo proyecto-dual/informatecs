@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import "@/styles/admin/AdminSolicitudes.css";
 
@@ -10,6 +10,11 @@ export default function AdminSolicitudes() {
   const [motivoRechazo, setMotivoRechazo] = useState("");
   const queryClient = useQueryClient();
 
+  // Limpiar el motivo de rechazo cada vez que se selecciona un alumno diferente
+  useEffect(() => {
+    setMotivoRechazo("");
+  }, [seleccionada]);
+
   const { data: solicitudes = [], isLoading } = useQuery({
     queryKey: ["inscripciones"],
     queryFn: async () => {
@@ -17,10 +22,10 @@ export default function AdminSolicitudes() {
       if (!res.ok) throw new Error("Error al cargar");
       return res.json();
     },
-    refetchInterval: 30000,
+    refetchInterval: 15000, // Bajamos a 15s para ver cambios más rápido
   });
 
-  const alumnosAgrupados = React.useMemo(() => {
+  const alumnosAgrupados = useMemo(() => {
     const grupos = {};
     solicitudes.forEach((reg) => {
       const id = reg.estudianteId;
@@ -38,38 +43,54 @@ export default function AdminSolicitudes() {
 
   const mutation = useMutation({
     mutationFn: async ({ aluctr, accion, actividades }) => {
+      // 1. Enviamos la validación de sangre
       const res = await fetch(`/api/sangre`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ aluctr, accion, mensaje: motivoRechazo }),
+        body: JSON.stringify({
+          aluctr,
+          accion,
+          // CLAVE: Si es aprobar, mandamos un string vacío explícito para borrar rechazos previos
+          mensaje: accion === "aprobar" ? "" : motivoRechazo,
+        }),
       });
-      if (!res.ok) throw new Error("Error en validación");
+
+      if (!res.ok) throw new Error("Error en la operación de sangre");
+
+      // 2. Si se aprueba, generamos las constancias
       if (accion === "aprobar") {
-        for (const act of actividades) {
-          await fetch("/api/constancias", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              numeroControl: aluctr,
-              actividadId: act.id,
-              actividadNombre: act.acodes,
-              periodo: "2026-1",
+        await Promise.all(
+          actividades.map((act) =>
+            fetch("/api/constancias", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                numeroControl: aluctr,
+                actividadId: act.id,
+                actividadNombre: act.acodes,
+                periodo: "2026-1",
+              }),
             }),
-          });
-        }
+          ),
+        );
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["inscripciones"]);
       setSeleccionada(null);
       setMotivoRechazo("");
-      alert("Proceso completado exitosamente");
+      alert(
+        "✅ ¡Proceso completado! El registro se ha actualizado correctamente.",
+      );
+    },
+    onError: (error) => {
+      alert("❌ Error: " + error.message);
     },
   });
 
-  const esPDF = seleccionada?.comprobanteSangrePDF?.startsWith(
-    "data:application/pdf",
-  );
+  const esPDF =
+    seleccionada?.comprobanteSangrePDF?.startsWith("data:application/pdf") ||
+    seleccionada?.comprobanteSangrePDF?.endsWith(".pdf");
 
   return (
     <div className="ssolicitudes-wrapper">
@@ -115,7 +136,6 @@ export default function AdminSolicitudes() {
                 onClick={() => setSeleccionada(alumno)}
                 className={`ssolicitudes-alumno-card ${seleccionada?.estudianteId === alumno.estudianteId ? "ssolicitudes-alumno-card--active" : ""}`}
               >
-                {/* Avatar */}
                 <div
                   className={`ssolicitudes-alumno-avatar ${seleccionada?.estudianteId === alumno.estudianteId ? "ssolicitudes-alumno-avatar--active" : ""}`}
                 >
@@ -126,15 +146,12 @@ export default function AdminSolicitudes() {
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
                   >
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                     <circle cx="12" cy="7" r="4" />
                   </svg>
                 </div>
 
-                {/* Info */}
                 <div className="ssolicitudes-alumno-info">
                   <h3 className="ssolicitudes-alumno-nombre">
                     {alumno.estudiante?.alunom} {alumno.estudiante?.aluapp}{" "}
@@ -145,11 +162,12 @@ export default function AdminSolicitudes() {
                   </p>
                 </div>
 
-                {/* Badge tipo sangre */}
                 <span
-                  className={`ssolicitudes-alumno-badge ${alumno.tipoSangreSolicitado ? "ssolicitudes-alumno-badge--sangre" : "ssolicitudes-alumno-badge--sd"}`}
+                  className={`ssolicitudes-alumno-badge ${alumno.sangreValidada ? "ssolicitudes-alumno-badge--success" : alumno.tipoSangreSolicitado ? "ssolicitudes-alumno-badge--sangre" : "ssolicitudes-alumno-badge--sd"}`}
                 >
-                  {alumno.tipoSangreSolicitado ?? "S/D"}
+                  {alumno.sangreValidada
+                    ? "Validado"
+                    : (alumno.tipoSangreSolicitado ?? "S/D")}
                 </span>
               </div>
             ))}
@@ -159,21 +177,18 @@ export default function AdminSolicitudes() {
           <div className="ssolicitudes-detail-col">
             {seleccionada ? (
               <div className="ssolicitudes-detail-card">
-                {/* Header detalle */}
                 <div className="ssolicitudes-detail-header">
                   <div>
                     <h2 className="ssolicitudes-detail-header-title">
                       Revisión de Expediente
                     </h2>
                     <p className="ssolicitudes-detail-header-sub">
-                      Revisa el comprobante antes de aprobar
+                      Alumno: {seleccionada.estudianteId}
                     </p>
                   </div>
                 </div>
 
-                {/* Body */}
                 <div className="ssolicitudes-detail-body">
-                  {/* Datos del estudiante */}
                   <div className="ssolicitudes-student-box">
                     <p className="ssolicitudes-student-box-title">
                       Datos del Estudiante
@@ -185,16 +200,16 @@ export default function AdminSolicitudes() {
                         </span>
                         <p className="ssolicitudes-student-grid-value">
                           {seleccionada.estudiante?.alunom}{" "}
-                          {seleccionada.estudiante?.aluapp}{" "}
-                          {seleccionada.estudiante?.aluapm}
+                          {seleccionada.estudiante?.aluapp}
                         </p>
                       </div>
                       <div>
                         <span className="ssolicitudes-student-grid-label">
-                          No. Control:
+                          Tipo Declarado:
                         </span>
                         <p className="ssolicitudes-student-grid-value ssolicitudes-student-grid-value--highlight">
-                          {seleccionada.estudianteId}
+                          {seleccionada.tipoSangreSolicitado ||
+                            "No especificado"}
                         </p>
                       </div>
                     </div>
@@ -219,60 +234,36 @@ export default function AdminSolicitudes() {
                     <p className="ssolicitudes-comprobante-title">
                       Comprobante Subido
                     </p>
-
-                    {seleccionada.nombreArchivoSangre && (
-                      <p className="ssolicitudes-comprobante-file">
-                        Archivo: <span>{seleccionada.nombreArchivoSangre}</span>
-                      </p>
-                    )}
-
                     <div className="ssolicitudes-comprobante-preview">
                       {seleccionada.comprobanteSangrePDF ? (
                         esPDF ? (
                           <iframe
                             src={seleccionada.comprobanteSangrePDF}
-                            title="Comprobante PDF"
                             className="ssolicitudes-comprobante-iframe"
                           />
                         ) : (
                           <img
                             src={seleccionada.comprobanteSangrePDF}
-                            alt="Comprobante"
                             className="ssolicitudes-comprobante-img"
+                            alt="Comprobante"
                           />
                         )
                       ) : (
                         <div className="ssolicitudes-comprobante-empty">
-                          Sin comprobante adjunto
+                          Sin comprobante
                         </div>
                       )}
                     </div>
-
-                    {seleccionada.comprobanteSangrePDF && (
-                      <a
-                        href={seleccionada.comprobanteSangrePDF}
-                        download={
-                          seleccionada.nombreArchivoSangre ?? "comprobante"
-                        }
-                        className="ssolicitudes-download-btn"
-                      >
-                        Descargar Comprobante
-                      </a>
-                    )}
                   </div>
 
                   {/* Motivo rechazo */}
                   <div className="ssolicitudes-rechazo-box">
-                    <label
-                      className="ssolicitudes-label"
-                      htmlFor="motivo-rechazo"
-                    >
-                      Motivo de rechazo (opcional)
+                    <label className="ssolicitudes-label">
+                      Motivo (Solo para rechazar):
                     </label>
                     <textarea
-                      id="motivo-rechazo"
                       className="ssolicitudes-rechazo-textarea"
-                      placeholder="Escribe el motivo de rechazo..."
+                      placeholder="Ej: El documento es ilegible..."
                       value={motivoRechazo}
                       onChange={(e) => setMotivoRechazo(e.target.value)}
                     />
@@ -283,7 +274,7 @@ export default function AdminSolicitudes() {
                 <div className="ssolicitudes-detail-footer">
                   <button
                     className="ssolicitudes-btn-rechazar"
-                    disabled={mutation.isPending}
+                    disabled={mutation.isPending || !motivoRechazo.trim()}
                     onClick={() =>
                       mutation.mutate({
                         aluctr: seleccionada.estudianteId,
@@ -297,42 +288,27 @@ export default function AdminSolicitudes() {
                   <button
                     className="ssolicitudes-btn-aprobar"
                     disabled={mutation.isPending}
-                    onClick={() =>
-                      mutation.mutate({
-                        aluctr: seleccionada.estudianteId,
-                        accion: "aprobar",
-                        actividades: seleccionada.todasLasActividades,
-                      })
-                    }
+                    onClick={() => {
+                      if (
+                        window.confirm(
+                          "¿Confirmar aprobación? Se borrará cualquier mensaje de error previo.",
+                        )
+                      ) {
+                        mutation.mutate({
+                          aluctr: seleccionada.estudianteId,
+                          accion: "aprobar",
+                          actividades: seleccionada.todasLasActividades,
+                        });
+                      }
+                    }}
                   >
                     {mutation.isPending ? "Procesando..." : "Aprobar y Validar"}
                   </button>
                 </div>
-
-                {mutation.isError && (
-                  <p className="ssolicitudes-error-msg">
-                    Ocurrió un error. Intenta de nuevo.
-                  </p>
-                )}
               </div>
             ) : (
               <div className="ssolicitudes-detail-placeholder">
-                <div className="ssolicitudes-placeholder-icon">
-                  <svg
-                    width="36"
-                    height="36"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <circle cx="11" cy="11" r="8" />
-                    <path d="m21 21-4.35-4.35" />
-                  </svg>
-                </div>
-                <p>Selecciona un alumno para revisar</p>
+                <p>Selecciona un alumno para revisar su expediente</p>
               </div>
             )}
           </div>
