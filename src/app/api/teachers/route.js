@@ -1,58 +1,55 @@
-import { prisma } from '@/lib/prisma';
+import { prisma } from "@/lib/prisma";
 
-// GET - Buscar maestros
+const jsonRes = (data, status = 200) =>
+  new Response(JSON.stringify(data), {
+    status,
+    headers: { "Content-Type": "application/json" },
+  });
+
+const formatMaestro = (m) => ({
+  ...m,
+  nombreCompleto: `${m.pernom || ""} ${m.perapp || ""} ${m.perapm || ""}`.trim(),
+  sexoTexto: m.persex === 1 ? "Masculino" : m.persex === 2 ? "Femenino" : "No especificado",
+});
+
+const selectBase = {
+  percve: true,
+  pernom: true,
+  perapp: true,
+  perapm: true,
+  perdvi: true,
+  perdce: true,
+  perdte: true,
+  persex: true,
+};
+
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
-    const search = searchParams.get('search');
-    const percve = searchParams.get('percve');
+    const percve = searchParams.get("percve");
+    const search = searchParams.get("search");
 
-    // 🔹 Si se busca un maestro específico por ID
+    // Buscar por ID específico
     if (percve) {
       const maestro = await prisma.maestros.findUnique({
         where: { percve: parseInt(percve) },
         select: {
-          percve: true,
-          pernom: true,
-          perapp: true,
-          perapm: true,
-          perdvi: true,
-          perdce: true,
-          perdte: true,
+          ...selectBase,
           perdep: true,
-          persex: true,
-          // 🔥 NUEVO: Incluir ofertas asignadas
           ofertasImpartidas: {
             where: { activa: true },
-            include: {
-              actividad: true,
-              inscripact: true,
-            }
-          }
-        }
+            include: { actividad: true, inscripact: true },
+          },
+        },
       });
 
-      if (!maestro) {
-        return new Response(
-          JSON.stringify({ error: "Maestro no encontrado" }),
-          { status: 404, headers: { "Content-Type": "application/json" } }
-        );
-      }
+      if (!maestro)
+        return jsonRes({ error: "Maestro no encontrado" }, 404);
 
-      // Construir nombre completo
-      const maestroFormateado = {
-        ...maestro,
-        nombreCompleto: `${maestro.pernom || ""} ${maestro.perapp || ""} ${maestro.perapm || ""}`.trim(),
-        sexoTexto: maestro.persex === 1 ? "Masculino" : maestro.persex === 2 ? "Femenino" : "No especificado"
-      };
-
-      return new Response(JSON.stringify(maestroFormateado), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
+      return jsonRes(formatMaestro(maestro));
     }
 
-    // 🔹 Si hay búsqueda por nombre o ID
+    // Buscar por nombre o ID
     if (search) {
       const searchTerm = search.trim();
       const isNumeric = !isNaN(parseInt(searchTerm));
@@ -61,87 +58,41 @@ export async function GET(request) {
         where: {
           OR: [
             isNumeric ? { percve: parseInt(searchTerm) } : undefined,
-            { pernom: { contains: searchTerm, mode: 'insensitive' } },
-            { perapp: { contains: searchTerm, mode: 'insensitive' } },
-            { perapm: { contains: searchTerm, mode: 'insensitive' } },
-          ].filter(Boolean) // Elimina undefined
+            { pernom: { contains: searchTerm, mode: "insensitive" } },
+            { perapp: { contains: searchTerm, mode: "insensitive" } },
+            { perapm: { contains: searchTerm, mode: "insensitive" } },
+          ].filter(Boolean),
         },
-        select: {
-          percve: true,
-          pernom: true,
-          perapp: true,
-          perapm: true,
-          perdvi: true,
-          perdce: true,
-          perdte: true,
-          persex: true,
-        },
-        take: 20, // Limitar a 20 resultados
-        orderBy: {
-          perapp: 'asc' // Ordenar por apellido
-        }
+        select: selectBase,
+        take: 20,
+        orderBy: { perapp: "asc" },
       });
 
-      // Formatear resultados
-      const maestrosFormateados = maestros.map(m => ({
-        ...m,
-        nombreCompleto: `${m.pernom || ""} ${m.perapp || ""} ${m.perapm || ""}`.trim(),
-        sexoTexto: m.persex === 1 ? "Masculino" : m.persex === 2 ? "Femenino" : "No especificado"
-      }));
-
-      return new Response(JSON.stringify(maestrosFormateados), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
+      return jsonRes(maestros.map(formatMaestro));
     }
 
-    // 🔹 Listar todos los maestros (con paginación)
-    const page = parseInt(searchParams.get('page')) || 1;
-    const limit = parseInt(searchParams.get('limit')) || 50;
-    const skip = (page - 1) * limit;
+    // Listar todos con paginación
+    const page = parseInt(searchParams.get("page")) || 1;
+    const limit = parseInt(searchParams.get("limit")) || 50;
 
     const [maestros, total] = await Promise.all([
       prisma.maestros.findMany({
-        select: {
-          percve: true,
-          pernom: true,
-          perapp: true,
-          perapm: true,
-          perdvi: true,
-          perdce: true,
-          perdte: true,
-          persex: true,
-          perdep: true,
-        },
-        skip,
+        select: { ...selectBase, perdep: true },
+        skip: (page - 1) * limit,
         take: limit,
-        orderBy: {
-          perapp: 'asc'
-        }
+        orderBy: { perapp: "asc" },
       }),
-      prisma.maestros.count()
+      prisma.maestros.count(),
     ]);
 
-    const maestrosFormateados = maestros.map(m => ({
-      ...m,
-      nombreCompleto: `${m.pernom || ""} ${m.perapp || ""} ${m.perapm || ""}`.trim(),
-      sexoTexto: m.persex === 1 ? "Masculino" : m.persex === 2 ? "Femenino" : "No especificado"
-    }));
-
-    return new Response(JSON.stringify({
-      maestros: maestrosFormateados,
+    return jsonRes({
+      maestros: maestros.map(formatMaestro),
       total,
       page,
-      totalPages: Math.ceil(total / limit)
-    }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
+      totalPages: Math.ceil(total / limit),
     });
   } catch (error) {
-    console.error("❌ Error en API maestros:", error);
-    return new Response(
-      JSON.stringify({ error: "Error interno", message: error.message }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
-    );
+    console.error(" Error en API maestros:", error.message);
+    return jsonRes({ error: "Error interno", message: error.message }, 500);
   }
 }

@@ -3,19 +3,11 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(req) {
   try {
-    const { searchParams } = new URL(req.url);
-    const percve = searchParams.get("percve");
+    const percve = new URL(req.url).searchParams.get("percve");
 
-    if (!percve) {
-      return NextResponse.json(
-        { message: "Falta el ID del maestro" },
-        { status: 400 },
-      );
-    }
+    if (!percve)
+      return NextResponse.json({ message: "Falta el ID del maestro" }, { status: 400 });
 
-    console.log("🔍 Buscando materias del maestro:", percve);
-
-    // Buscar actividades asignadas al maestro CON sus inscripciones
     const materias = await prisma.actividades.findMany({
       where: { maestroId: parseInt(percve) },
       include: {
@@ -25,9 +17,7 @@ export async function GET(req) {
             estudiante: {
               include: {
                 inscripciones: {
-                  include: {
-                    carrera: true,
-                  },
+                  include: { carrera: true },
                 },
               },
             },
@@ -36,11 +26,9 @@ export async function GET(req) {
       },
     });
 
-    console.log(`✅ Se encontraron ${materias.length} materias`);
-
     return NextResponse.json(materias);
   } catch (error) {
-    console.error("❌ Error al obtener materias del maestro:", error);
+    console.error(" Error al obtener materias del maestro:", error.message);
     return NextResponse.json(
       { message: "Error al obtener materias", error: error.message },
       { status: 500 },

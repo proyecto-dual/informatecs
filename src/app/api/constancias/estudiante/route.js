@@ -33,7 +33,7 @@ export async function GET(request) {
       }
     );
   } catch (error) {
-    console.error("❌ Error al obtener constancias:", error);
+    console.error(" Error al obtener constancias:", error);
     return new Response(
       JSON.stringify([]), // Array vacío en caso de error
       {

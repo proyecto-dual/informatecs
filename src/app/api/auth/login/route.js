@@ -6,7 +6,7 @@ export async function POST(req) {
   try {
     const { matricula, password } = await req.json();
 
-    // 🔹 1. Buscar estudiante con relaciones
+    //  1. Buscar estudiante con relaciones
     const estudiante = await prisma.estudiantes.findUnique({
       where: { aluctr: matricula },
       include: {
@@ -22,7 +22,7 @@ export async function POST(req) {
       return NextResponse.json({ message: "Matrícula no encontrada" }, { status: 404 });
     }
 
-    // 🔹 2. Buscar/Crear en authStudents
+    //  2. Buscar/Crear en authStudents
     let student = await prisma.authStudents.findUnique({ where: { matricula } });
 
     if (!student) {
@@ -39,13 +39,13 @@ export async function POST(req) {
       });
     }
 
-    // 🔹 3. Validar contraseña
+    //  3. Validar contraseña
     const passwordMatch = await bcrypt.compare(password, student.password);
     if (!passwordMatch) {
       return NextResponse.json({ message: "Contraseña incorrecta" }, { status: 401 });
     }
 
-    // 🔹 4. Procesar inscripción y carrera (Aquí obtenemos calcac)
+    //  4. Procesar inscripción y carrera (Aquí obtenemos calcac)
     const inscripciones = Array.isArray(estudiante.inscripciones)
       ? estudiante.inscripciones
       : [estudiante.inscripciones].filter(Boolean);
@@ -54,7 +54,7 @@ export async function POST(req) {
     const inscripcionPrincipal = inscripciones[0] || {};
     const carrera = inscripcionPrincipal.carrera;
 
-    // 🔹 5. Construir perfil completo
+    //  5. Construir perfil completo
     const perfilCompleto = {
       numeroControl: estudiante.aluctr,
       nombreCompleto: `${estudiante.alunom ?? ""} ${estudiante.aluapp ?? ""} ${estudiante.aluapm ?? ""}`.trim(),
@@ -75,10 +75,7 @@ export async function POST(req) {
       inscripciones,
     };
 
-    // ✅ LOGS DE VERIFICACIÓN
-    console.log("🚀 API EJECUTADA CORRECTAMENTE");
-    console.log("🩸 Sangre:", perfilCompleto.sangre);
-    console.log("🎓 Créditos (calcac):", perfilCompleto.creditosAprobados);
+   
 
     return NextResponse.json({
       message: `Bienvenido, ${student.nombreCompleto}`,

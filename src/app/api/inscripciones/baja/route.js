@@ -66,7 +66,7 @@ export async function PUT(request) {
       actividadNombre: inscripcion.actividad?.aconco || inscripcion.actividad?.aticve,
     });
   } catch (error) {
-    console.error("❌ Error al dar de baja:", error);
+    console.error(" Error al dar de baja:", error);
     return NextResponse.json(
       { error: "Error al procesar la baja", details: error.message },
       { status: 500 }

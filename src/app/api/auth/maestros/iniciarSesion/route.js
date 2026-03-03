@@ -10,20 +10,20 @@ export async function POST(req) {
 
     console.log("🔍 Intentando login con percve:", percve);
 
-    // 🔹 1. Buscar maestro en la tabla maestros
+    //  1. Buscar maestro en la tabla maestros
     const maestro = await prisma.maestros.findUnique({
       where: { percve: parseInt(percve) },
     });
 
     if (!maestro) {
-      console.log("❌ Maestro no encontrado");
+      console.log(" Maestro no encontrado");
       return NextResponse.json(
         { message: "ID de maestro no encontrado" },
         { status: 404 }
       );
     }
 
-    console.log("✅ Maestro encontrado:", maestro.pernom);
+    console.log(" Maestro encontrado:", maestro.pernom);
 
     // 🔹 2. Buscar o crear en authMaestros
     let authMaestro = await prisma.authMaestros.findUnique({
@@ -31,7 +31,7 @@ export async function POST(req) {
     });
 
     if (!authMaestro) {
-      console.log("📝 Creando registro en authMaestros...");
+      console.log(" Creando registro en authMaestros...");
       const nombreCompleto = `${maestro.pernom ?? ""} ${
         maestro.perapp ?? ""
       } ${maestro.perapm ?? ""}`.trim();
@@ -46,10 +46,10 @@ export async function POST(req) {
           isVerified: false,
         },
       });
-      console.log("✅ Registro creado en authMaestros");
+      console.log(" Registro creado en authMaestros");
     }
 
-    // 🔹 3. Validar contraseña
+    //  3. Validar contraseña
     const passwordMatch = await bcrypt.compare(password, authMaestro.password);
     if (!passwordMatch) {
       console.log("❌ Contraseña incorrecta");
@@ -59,11 +59,11 @@ export async function POST(req) {
       );
     }
 
-    console.log("✅ Contraseña correcta");
+    console.log(" Contraseña correcta");
 
     // 🔹 4. Verificar si ya cambió su contraseña
     if (!authMaestro.isVerified) {
-      console.log("⚠️ Cuenta no verificada");
+      console.log(" Cuenta no verificada");
       return NextResponse.json(
         {
           message: "Cuenta no verificada",
@@ -73,7 +73,7 @@ export async function POST(req) {
       );
     }
 
-    // 🔹 5. Construir perfil completo del maestro
+    //  5. Construir perfil completo del maestro
     const perfilMaestro = {
       percve: maestro.percve,
       nombreCompleto: `${maestro.pernom ?? ""} ${maestro.perapp ?? ""} ${
@@ -90,7 +90,7 @@ export async function POST(req) {
           : "No especificado",
     };
 
-    console.log("✅ Login exitoso:", perfilMaestro.nombreCompleto);
+    console.log(" Login exitoso:", perfilMaestro.nombreCompleto);
 
     return NextResponse.json({
       message: `Bienvenido, ${authMaestro.nombreCompleto}`,
@@ -98,7 +98,7 @@ export async function POST(req) {
       maestro: perfilMaestro,
     });
   } catch (error) {
-    console.error("❌ Error en login de maestro:", error);
+    console.error(" Error en login de maestro:", error);
     return NextResponse.json(
       { message: "Error interno del servidor", error: error.message },
       { status: 500 }

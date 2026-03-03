@@ -176,7 +176,7 @@ export async function POST(request) {
 
     return NextResponse.json({ success: true, constancia: nuevaConstancia });
   } catch (error) {
-    console.error("❌ Error:", error);
+    console.error(" Error:", error);
     return NextResponse.json(
       { error: "Error interno del servidor", details: error.message },
       { status: 500 },

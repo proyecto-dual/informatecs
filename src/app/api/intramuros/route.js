@@ -6,7 +6,7 @@ const GOOGLE_SCRIPT_URL =
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
 
-  // ✅ Reenviar TODOS los params a Google, no solo "hoja"
+  //  Reenviar TODOS los params a Google, no solo "hoja"
   const googleUrl = `${GOOGLE_SCRIPT_URL}?${searchParams.toString()}`;
 
   try {

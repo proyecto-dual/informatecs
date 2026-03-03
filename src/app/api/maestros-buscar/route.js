@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
-import { prisma } from '@/lib/prisma';
+import { prisma } from "@/lib/prisma";
 
 export async function GET(req) {
   try {
-    const { searchParams } = new URL(req.url);
-    const query = searchParams.get("q") || "";
+    const query = new URL(req.url).searchParams.get("q") || "";
 
     const maestros = await prisma.maestros.findMany({
       where: {
@@ -26,16 +25,16 @@ export async function GET(req) {
       },
     });
 
-    const maestrosFormateados = maestros.map((m) => ({
-      id: m.percve,
-      nombreCompleto: `${m.pernom || ""} ${m.perapp || ""} ${m.perapm || ""}`.trim(),
-      correo: m.perdce,
-      departamento: m.perdep,
-    }));
-
-    return NextResponse.json(maestrosFormateados);
+    return NextResponse.json(
+      maestros.map((m) => ({
+        id: m.percve,
+        nombreCompleto: `${m.pernom || ""} ${m.perapp || ""} ${m.perapm || ""}`.trim(),
+        correo: m.perdce,
+        departamento: m.perdep,
+      }))
+    );
   } catch (error) {
-    console.error("❌ Error al buscar maestros:", error);
+    console.error(" Error al buscar maestros:", error.message);
     return NextResponse.json(
       { message: "Error al buscar maestros", error: error.message },
       { status: 500 }

@@ -43,7 +43,10 @@ export async function GET(request) {
           },
         },
       },
-      orderBy: { fechaInscripcion: "desc" },
+      orderBy: [
+        { comprobanteSangrePDF: "desc" },
+        { fechaInscripcion: "desc" },
+      ],
     });
 
     const inscripcionesTransformadas = inscripciones.map((inscripcion) => {

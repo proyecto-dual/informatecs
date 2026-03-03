@@ -95,10 +95,10 @@ export async function POST(req) {
       nombre: studentAuth.nombreCompleto,
       estudiante: perfilCompleto,
     });
-    console.log("🟢 PERFIL COMPLETO:", perfilCompleto);
+    
 
   } catch (error) {
-    console.error("❌ Error en login route:", error);
+    console.error(" Error en login route:", error);
     return NextResponse.json(
       { message: "Error en el servidor", error: error.message },
       { status: 500 }

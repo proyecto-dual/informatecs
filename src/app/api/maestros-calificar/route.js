@@ -57,7 +57,7 @@ export async function POST(request) {
       }
     });
 
-    console.log(`✅ Calificación guardada: ${inscripcionExistente.estudiante.alunom} - ${calificacion}`);
+    console.log(` Calificación guardada: ${inscripcionExistente.estudiante.alunom} - ${calificacion}`);
 
     return new Response(JSON.stringify({
       message: "Calificación guardada correctamente",
@@ -73,7 +73,7 @@ export async function POST(request) {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("❌ Error al calificar estudiante:", error);
+    console.error(" Error al calificar estudiante:", error);
     return new Response(
       JSON.stringify({ error: "Error interno", message: error.message }),
       { status: 500, headers: { "Content-Type": "application/json" } }
@@ -118,7 +118,7 @@ export async function PUT(request) {
       })
     );
 
-    console.log(`✅ ${resultados.length} calificaciones guardadas en lote`);
+    console.log(` ${resultados.length} calificaciones guardadas en lote`);
 
     return new Response(JSON.stringify({
       message: `${resultados.length} calificaciones guardadas correctamente`,
@@ -128,7 +128,7 @@ export async function PUT(request) {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("❌ Error al calificar múltiples estudiantes:", error);
+    console.error(" Error al calificar múltiples estudiantes:", error);
     return new Response(
       JSON.stringify({ error: "Error interno", message: error.message }),
       { status: 500, headers: { "Content-Type": "application/json" } }

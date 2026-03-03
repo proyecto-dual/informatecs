@@ -6,7 +6,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-   directUrl = env("DIRECT_URL")
+   
 }
 
 model estudiantes {
@@ -190,6 +190,8 @@ model actividades {
   constancias constancias[]
   inscripact  inscripact[]
   ofertas     ofertaSemestre[]
+  @@index([maestroId])  // busqueda de actividades por maestro
+  @@index([aticve])     // busqueda por código en asignar-maestro
 }
 
 model ofertaSemestre {
@@ -228,7 +230,11 @@ model inscripact {
   estudiante           estudiantes    @relation(fields: [estudianteId], references: [aluctr])
   oferta               ofertaSemestre @relation(fields: [ofertaId], references: [id])
 
-  @@unique([estudianteId, actividadId])
+   @@unique([estudianteId, actividadId])
+  @@index([estudianteId])               // búsquedas por alumno (GET sangre, calificaciones)
+  @@index([actividadId])                // búsquedas por actividad (GET calificaciones)
+  @@index([estudianteId, actividadId])  // findFirst en PUT calificaciones
+  @@index([sangreValidada, mensajeAdmin]) // filtro en fix-sangre y PATCH sangre
   @@map("inscripciones_actividades")
 }
 
@@ -297,6 +303,7 @@ model maestros {
   actividades       actividades[]
   ofertasImpartidas ofertaSemestre[]
 
+  @@index([perapp, pernom])
   @@map("maestros")
 }
 

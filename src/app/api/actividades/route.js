@@ -6,16 +6,15 @@ export async function GET() {
     
     const actividades = await prisma.actividades.findMany({
       include: {
-        maestro: true, // ✅ INCLUIR RELACIÓN CON MAESTROS
+        maestro: true, //  incluir relacion con maestros
       },
       orderBy: { aconco: 'asc' }
     });
     
-    console.log(`✅ Se encontraron ${actividades.length} actividades`);
     
     return Response.json(actividades);
   } catch (error) {
-    console.error('❌ Error al cargar actividades:', error);
+    console.error(' Error al cargar actividades:', error);
     return Response.json({ error: 'Error al obtener actividades' }, { status: 500 });
   }
 }

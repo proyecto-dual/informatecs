@@ -26,20 +26,29 @@ export default function AdminSolicitudes() {
   });
 
   const alumnosAgrupados = useMemo(() => {
-    const grupos = {};
-    solicitudes.forEach((reg) => {
-      const id = reg.estudianteId;
-      if (!grupos[id]) {
-        grupos[id] = { ...reg, todasLasActividades: [] };
-      }
-      grupos[id].todasLasActividades.push(reg.actividad);
-    });
-    const lista = Object.values(grupos);
-    if (filtroEstado === "pendiente") {
-      return lista.filter((a) => a.tipoSangreSolicitado && !a.sangreValidada);
+  const grupos = {};
+  solicitudes.forEach((reg) => {
+    const id = reg.estudianteId;
+
+    if (!grupos[id]) {
+      // Primera vez que vemos este alumno
+      grupos[id] = { ...reg, todasLasActividades: [] };
+    } else if (reg.tipoSangreSolicitado && !grupos[id].tipoSangreSolicitado) {
+      // Este registro tiene sangre y el que teníamos no — lo reemplazamos
+      // pero conservamos las actividades ya acumuladas
+      grupos[id] = { ...reg, todasLasActividades: grupos[id].todasLasActividades };
     }
-    return lista;
-  }, [solicitudes, filtroEstado]);
+
+    // Siempre acumulamos la actividad
+    grupos[id].todasLasActividades.push(reg.actividad);
+  });
+
+  const lista = Object.values(grupos);
+  if (filtroEstado === "pendiente") {
+    return lista.filter((a) => a.tipoSangreSolicitado && !a.sangreValidada);
+  }
+  return lista;
+}, [solicitudes, filtroEstado]);
 
   const mutation = useMutation({
     mutationFn: async ({ aluctr, accion, actividades }) => {
@@ -80,11 +89,11 @@ export default function AdminSolicitudes() {
       setSeleccionada(null);
       setMotivoRechazo("");
       alert(
-        "✅ ¡Proceso completado! El registro se ha actualizado correctamente.",
+        " ¡Proceso completado! El registro se ha actualizado correctamente.",
       );
     },
     onError: (error) => {
-      alert("❌ Error: " + error.message);
+      alert(" Error: " + error.message);
     },
   });
 
@@ -276,6 +285,7 @@ export default function AdminSolicitudes() {
                     className="ssolicitudes-btn-rechazar"
                     disabled={mutation.isPending || !motivoRechazo.trim()}
                     onClick={() =>
+                     
                       mutation.mutate({
                         aluctr: seleccionada.estudianteId,
                         accion: "rechazar",

@@ -5,7 +5,7 @@ export async function GET() {
     const actividadesDisponibles = await prisma.ofertaSemestre.findMany({
       where: { 
         activa: true,
-        semestre: '2024-2' // Hacer dinámico después
+        semestre: '2024-2' // hacer dinamico después
       },
       include: {
         actividad: true

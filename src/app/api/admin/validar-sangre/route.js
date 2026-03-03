@@ -20,7 +20,7 @@ async function handleRequest(request) {
       });
     }
 
-    // 1. Lógica para RECHAZAR
+    //  logica para RECHAZAR
     if (accion === "rechazar") {
       await prisma.inscripact.updateMany({
         where: { estudianteId: aluctr },
@@ -32,23 +32,23 @@ async function handleRequest(request) {
       return new Response(JSON.stringify({ success: true }), { status: 200 });
     }
 
-    // 2. Lógica para APROBAR
-    // Buscamos primero el tipo de sangre que el alumno solicitó
+    // 2. logica para APROBAR
+    // buscamos primero el tipo de sangre que el alumno solicito
     const registro = await prisma.inscripact.findFirst({
       where: { estudianteId: aluctr },
       select: { tipoSangreSolicitado: true },
     });
 
-    // Actualizamos todas las inscripciones del alumno
+    // actualizamos todas las inscripciones del alumno
     await prisma.inscripact.updateMany({
       where: { estudianteId: aluctr },
       data: {
         sangreValidada: true,
-        mensajeAdmin: null, // <--- ESTO QUITA EL CUADRO ROJO
+        mensajeAdmin: null, 
       },
     });
 
-    // Actualizamos la tabla maestra de estudiantes
+    // actualizamos la tabla maestra de estudiantes
     if (registro?.tipoSangreSolicitado) {
       await prisma.estudiantes.update({
         where: { aluctr: aluctr },
