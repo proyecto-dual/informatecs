@@ -54,9 +54,7 @@ const SeccionPartidos = ({ actividades, resultados, onRefresh }) => {
         Marcador_L: "0",
         Marcador_V: "0",
       });
-      setTimeout(() => {
-        onRefresh();
-      }, 1500);
+      setTimeout(() => onRefresh(), 1500);
     } catch {
       alert("Error al conectar.");
     } finally {
@@ -64,9 +62,11 @@ const SeccionPartidos = ({ actividades, resultados, onRefresh }) => {
     }
   };
 
+  const hayResultados = resultados && resultados.length > 0;
+
   return (
     <div className="pt-wrapper">
-      {/* ── Header sin fondo ── */}
+      {/* ── Header ── */}
       <div className="pt-header">
         <div>
           <h2 className="pt-header__title">
@@ -80,8 +80,10 @@ const SeccionPartidos = ({ actividades, resultados, onRefresh }) => {
         </button>
       </div>
 
-      {/* ── Tabla ── */}
-      <div className="pt-table-wrap">
+      {/* ════════════════════════════════════════
+          TABLA — tablet / escritorio (≥ 641px)
+         ════════════════════════════════════════ */}
+      <div className="pt-table-wrap pt-desktop-only">
         <table className="pt-table">
           <thead>
             <tr>
@@ -94,7 +96,7 @@ const SeccionPartidos = ({ actividades, resultados, onRefresh }) => {
             </tr>
           </thead>
           <tbody>
-            {resultados && resultados.length > 0 ? (
+            {hayResultados ? (
               resultados.map((res, i) => (
                 <tr key={i}>
                   <td className="pt-td-fecha">{res.Fecha}</td>
@@ -126,6 +128,48 @@ const SeccionPartidos = ({ actividades, resultados, onRefresh }) => {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* ════════════════════════════════════════
+          CARDS — móvil (≤ 640px)
+         ════════════════════════════════════════ */}
+      <div className="pt-mobile-only">
+        {hayResultados ? (
+          resultados.map((res, i) => (
+            <div key={i} className="pt-card">
+              {/* Torneo + Fecha */}
+              <div className="pt-card__head">
+                <span className="pt-card__torneo">{res.Actividad}</span>
+                <span className="pt-card__fecha">{res.Fecha}</span>
+              </div>
+
+              {/* Local · Marcador · Visitante */}
+              <div className="pt-card__marcador">
+                <span className="pt-card__equipo">
+                  {res["Equipo Local"] || res.Equipo_Local}
+                </span>
+                <span className="pt-marcador">{res.Marcador}</span>
+                <span className="pt-card__equipo pt-card__equipo--right">
+                  {res["Equipo Visitante"] || res.Equipo_Visitante}
+                </span>
+              </div>
+
+              {/* Ganador */}
+              <div className="pt-card__row pt-card__row--last">
+                <span className="pt-card__label">Ganador</span>
+                <span
+                  className={`pt-badge ${res.Ganador === "Empate" ? "pt-badge--empate" : "pt-badge--ganador"}`}
+                >
+                  {res.Ganador}
+                </span>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="pt-empty-card">
+            No hay datos disponibles en la hoja "partidos".
+          </div>
+        )}
       </div>
 
       {/* ── Modal ── */}
@@ -165,6 +209,7 @@ const SeccionPartidos = ({ actividades, resultados, onRefresh }) => {
                     className="pt-form-input"
                     placeholder="Equipo Local"
                     required
+                    value={form.Equipo_Local}
                     onChange={(e) =>
                       setForm({ ...form, Equipo_Local: e.target.value })
                     }
@@ -183,6 +228,7 @@ const SeccionPartidos = ({ actividades, resultados, onRefresh }) => {
                     className="pt-form-input"
                     placeholder="Equipo Visitante"
                     required
+                    value={form.Equipo_Visitante}
                     onChange={(e) =>
                       setForm({ ...form, Equipo_Visitante: e.target.value })
                     }
