@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { PDFDownloadLink } from "@react-pdf/renderer";
-
 import {
   FiBook,
   FiUsers,
@@ -41,14 +40,13 @@ export default function VistaCalificacionesPage() {
   const cargarMaterias = async (percve) => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/maestros-materias?percve=${percve}`);
-      if (!response.ok) {
+      const res = await fetch(`/api/maestros-materias?percve=${percve}`);
+      if (!res.ok) {
         setMaterias([]);
         return;
       }
-      const data = await response.json();
-      setMaterias(data || []);
-    } catch (error) {
+      setMaterias((await res.json()) || []);
+    } catch {
       setMaterias([]);
     } finally {
       setLoading(false);
@@ -58,32 +56,29 @@ export default function VistaCalificacionesPage() {
   const seleccionarMateria = async (materia) => {
     setMateriaSeleccionada(materia);
     try {
-      const response = await fetch(
+      const res = await fetch(
         `/api/calificaciones?actividadId=${materia.id}&maestroId=${maestroData.percve}`,
         { cache: "no-store" },
       );
-
-      if (!response.ok) throw new Error("Error al cargar");
-
-      const inscripciones = await response.json();
-      const calificacionesIniciales = {};
-
+      if (!res.ok) throw new Error();
+      const inscripciones = await res.json();
+      const init = {};
       if (Array.isArray(inscripciones)) {
-        inscripciones.forEach((inscripcion) => {
-          calificacionesIniciales[inscripcion.estudiante.aluctr] = {
-            calificacion: inscripcion.calificacion || "",
-            observaciones: inscripcion.formularioData?.observaciones || "",
-            liberado: inscripcion.liberado || false,
+        inscripciones.forEach((ins) => {
+          init[ins.estudiante.aluctr] = {
+            calificacion: ins.calificacion || "",
+            observaciones: ins.formularioData?.observaciones || "",
+            liberado: ins.liberado || false,
           };
         });
       }
-      setCalificaciones(calificacionesIniciales);
-    } catch (error) {
-      const calificacionesVacias = {};
+      setCalificaciones(init);
+    } catch {
+      const vacias = {};
       if (Array.isArray(materia.inscripact)) {
         materia.inscripact.forEach((ins) => {
           if (ins?.estudiante?.aluctr) {
-            calificacionesVacias[ins.estudiante.aluctr] = {
+            vacias[ins.estudiante.aluctr] = {
               calificacion: ins.calificacion || "",
               observaciones: ins.observaciones || "",
               liberado: ins.liberado || false,
@@ -91,51 +86,47 @@ export default function VistaCalificacionesPage() {
           }
         });
       }
-      setCalificaciones(calificacionesVacias);
+      setCalificaciones(vacias);
     }
   };
 
-  const handleCalificacionChange = (aluctr, valor) => {
-    setCalificaciones((prev) => ({
-      ...prev,
-      [aluctr]: { ...prev[aluctr], calificacion: valor },
+  const handleCalificacionChange = (aluctr, valor) =>
+    setCalificaciones((p) => ({
+      ...p,
+      [aluctr]: { ...p[aluctr], calificacion: valor },
     }));
-  };
 
-  const handleObservacionChange = (aluctr, valor) => {
-    setCalificaciones((prev) => ({
-      ...prev,
-      [aluctr]: { ...prev[aluctr], observaciones: valor },
+  const handleObservacionChange = (aluctr, valor) =>
+    setCalificaciones((p) => ({
+      ...p,
+      [aluctr]: { ...p[aluctr], observaciones: valor },
     }));
-  };
 
   const guardarCalificaciones = async () => {
     try {
       setGuardando(true);
-      const response = await fetch("/api/calificaciones", {
+      const res = await fetch("/api/calificaciones", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           actividadId: materiaSeleccionada.id,
           maestroId: maestroData.percve,
-          calificaciones: calificaciones,
+          calificaciones,
         }),
       });
-
-      if (!response.ok) throw new Error("Error al guardar");
-
-      const resultado = await response.json();
-      alert(`✅ Se guardaron las calificaciones correctamente`);
+      if (!res.ok) throw new Error("Error al guardar");
+      alert("✅ Se guardaron las calificaciones correctamente");
       setModoEdicion(false);
       await cargarMaterias(maestroData.percve);
       await seleccionarMateria(materiaSeleccionada);
-    } catch (error) {
-      alert(`❌ Error: ${error.message}`);
+    } catch (e) {
+      alert(`❌ Error: ${e.message}`);
     } finally {
       setGuardando(false);
     }
   };
 
+  /* ── Loading ── */
   if (loading) {
     return (
       <div className="calificaciones-loading-screen">
@@ -145,6 +136,7 @@ export default function VistaCalificacionesPage() {
     );
   }
 
+  /* ── Lista de materias ── */
   if (!materiaSeleccionada) {
     return (
       <div className="calificaciones-main-wrapper">
@@ -160,7 +152,8 @@ export default function VistaCalificacionesPage() {
             </div>
             <div className="header-stats">
               <div className="stat-badge stat-purple">
-                <FiBook /> <span>{materias.length} Materias</span>
+                <FiBook />
+                <span>{materias.length} Materias</span>
               </div>
               <div className="stat-badge stat-blue">
                 <FiUsers />
@@ -175,7 +168,6 @@ export default function VistaCalificacionesPage() {
             </div>
           </div>
         </div>
-
         <div className="calificaciones-content">
           {materias.length === 0 ? (
             <div className="materias-empty">
@@ -203,10 +195,12 @@ export default function VistaCalificacionesPage() {
                     </div>
                     <div className="materia-stats">
                       <div className="stat-item">
-                        <FiUsers /> <span>{total} Estudiantes</span>
+                        <FiUsers />
+                        <span>{total} Estudiantes</span>
                       </div>
                       <div className="stat-item">
-                        <FiCheck /> <span>{evaluados} Evaluados</span>
+                        <FiCheck />
+                        <span>{evaluados} Evaluados</span>
                       </div>
                     </div>
                     <div className="progress-bar">
@@ -230,8 +224,12 @@ export default function VistaCalificacionesPage() {
     );
   }
 
+  /* ── Detalle calificaciones ── */
+  const inscripciones = materiaSeleccionada.inscripact || [];
+
   return (
     <div className="calificaciones-main-wrapper">
+      {/* Header detalle */}
       <div className="calificaciones-header-detalle">
         <button
           className="btn-back"
@@ -242,12 +240,10 @@ export default function VistaCalificacionesPage() {
         >
           <FiArrowLeft size={20} /> Volver
         </button>
-
         <div className="header-info">
           <h1>{materiaSeleccionada.aconco || materiaSeleccionada.aticve}</h1>
           <p>Código: {materiaSeleccionada.aticve}</p>
         </div>
-
         <div className="header-actions">
           {!modoEdicion ? (
             <>
@@ -257,7 +253,6 @@ export default function VistaCalificacionesPage() {
               >
                 <FiEdit size={18} /> Editar
               </button>
-
               <PDFDownloadLink
                 document={
                   <ActaPDF
@@ -297,6 +292,7 @@ export default function VistaCalificacionesPage() {
       </div>
 
       <div className="calificaciones-table-container">
+        {/* ── TABLA — desktop / iPad ── */}
         <table className="calificaciones-table">
           <thead>
             <tr>
@@ -309,15 +305,15 @@ export default function VistaCalificacionesPage() {
             </tr>
           </thead>
           <tbody>
-            {materiaSeleccionada.inscripact?.map((ins, index) => {
+            {inscripciones.map((ins, index) => {
               const est = ins.estudiante;
               const calif = calificaciones[est.aluctr]?.calificacion || "";
               const obs = calificaciones[est.aluctr]?.observaciones || "";
               return (
                 <tr key={est.aluctr}>
                   <td>{index + 1}</td>
-                  <td>{est.aluctr}</td>
-                  <td>{`${est.alunom} ${est.aluapp} ${est.aluapm}`}</td>
+                  <td className="font-mono">{est.aluctr}</td>
+                  <td className="font-semibold">{`${est.alunom} ${est.aluapp} ${est.aluapm}`}</td>
                   <td>{est.inscripciones?.calnpe || "N/A"}°</td>
                   <td>
                     {modoEdicion ? (
@@ -331,7 +327,7 @@ export default function VistaCalificacionesPage() {
                       />
                     ) : (
                       <span
-                        className={`calificacion-badge ${calif >= 70 ? "aprobado" : "reprobado"}`}
+                        className={`calificacion-badge ${!calif ? "sin-calif" : calif >= 70 ? "aprobado" : "reprobado"}`}
                       >
                         {calif || "N/A"}
                       </span>
@@ -348,7 +344,7 @@ export default function VistaCalificacionesPage() {
                         }
                       />
                     ) : (
-                      <span className="observacion-text">{obs || "-"}</span>
+                      <span className="observacion-text">{obs || "—"}</span>
                     )}
                   </td>
                 </tr>
@@ -356,6 +352,78 @@ export default function VistaCalificacionesPage() {
             })}
           </tbody>
         </table>
+
+        {/* ── TARJETAS — móvil ── */}
+        <div className="calif-cards-mobile">
+          {inscripciones.map((ins, index) => {
+            const est = ins.estudiante;
+            const calif = calificaciones[est.aluctr]?.calificacion || "";
+            const obs = calificaciones[est.aluctr]?.observaciones || "";
+            const nombre = `${est.alunom} ${est.aluapp} ${est.aluapm}`.trim();
+            return (
+              <div key={est.aluctr} className="calif-card">
+                {/* Header tarjeta */}
+                <div className="cc-header">
+                  <span className="cc-index">{index + 1}</span>
+                  <div className="cc-nombre">{nombre}</div>
+                  {!modoEdicion && (
+                    <span
+                      className={`calificacion-badge ${!calif ? "sin-calif" : calif >= 70 ? "aprobado" : "reprobado"}`}
+                    >
+                      {calif || "N/A"}
+                    </span>
+                  )}
+                </div>
+
+                {/* Body tarjeta */}
+                <div className="cc-body">
+                  <div className="cc-row">
+                    <span className="cc-label">No. Control</span>
+                    <span className="cc-value font-mono">{est.aluctr}</span>
+                  </div>
+                  <div className="cc-row">
+                    <span className="cc-label">Semestre</span>
+                    <span className="cc-value">
+                      {est.inscripciones?.calnpe || "N/A"}°
+                    </span>
+                  </div>
+
+                  {/* Calificación en modo edición */}
+                  {modoEdicion && (
+                    <div className="cc-row cc-row-edit">
+                      <span className="cc-label">Calificación</span>
+                      <input
+                        type="number"
+                        className="input-calificacion"
+                        value={calif}
+                        onChange={(e) =>
+                          handleCalificacionChange(est.aluctr, e.target.value)
+                        }
+                      />
+                    </div>
+                  )}
+
+                  <div className="cc-row cc-row-obs">
+                    <span className="cc-label">Observaciones</span>
+                    {modoEdicion ? (
+                      <input
+                        type="text"
+                        className="input-observacion"
+                        value={obs}
+                        placeholder="Sin observaciones"
+                        onChange={(e) =>
+                          handleObservacionChange(est.aluctr, e.target.value)
+                        }
+                      />
+                    ) : (
+                      <span className="observacion-text">{obs || "—"}</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

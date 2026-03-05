@@ -30,17 +30,13 @@ export default function DashboardPage() {
   const fetchStudentData = useCallback(() => {
     try {
       const savedData = localStorage.getItem("studentData");
-
-      if (!savedData) {
-        console.warn("Esperando datos de localStorage...");
-        return;
-      }
+      if (!savedData) return;
 
       const parsed = JSON.parse(savedData);
       const firstInscripcion = parsed.inscripciones?.[0] || {};
       const carreraObj = firstInscripcion.carrera || {};
 
-      const merged = {
+      setStudentData({
         ...initialStudentData,
         ...parsed,
         sangre: parsed.alutsa || parsed.sangre || "No disponible",
@@ -55,15 +51,11 @@ export default function DashboardPage() {
             : parsed.alusex === 2
               ? "Femenino"
               : parsed.sexo || "No disponible",
-      };
-
-      setStudentData(merged);
+      });
       setError(null);
     } catch (err) {
-      console.error("❌ Error al procesar datos:", err);
       setError("Error al procesar la información del estudiante.");
     } finally {
-      // Delay para asegurar que el CSS esté listo
       setTimeout(() => setLoading(false), 200);
     }
   }, []);
@@ -73,14 +65,34 @@ export default function DashboardPage() {
   }, [fetchStudentData]);
 
   useEffect(() => {
-    const handleStorageChange = (event) => {
-      if (event.key === "studentData") fetchStudentData();
+    const handleStorageChange = (e) => {
+      if (e.key === "studentData") fetchStudentData();
     };
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, [fetchStudentData]);
 
-  // Componente interno con clases corregidas
+  // Sincroniza clase en <body> cuando el sidebar se abre/cierra
+  // para que el CSS pueda mover el contenido con margin-left
+  useEffect(() => {
+    const sidebar = document.querySelector(".sidebar-estu");
+    if (!sidebar) return;
+
+    const sync = () => {
+      if (sidebar.classList.contains("open")) {
+        document.body.classList.add("sidebar-is-open");
+      } else {
+        document.body.classList.remove("sidebar-is-open");
+      }
+    };
+
+    const observer = new MutationObserver(sync);
+    observer.observe(sidebar, { attributes: true, attributeFilter: ["class"] });
+    sync(); // estado inicial
+
+    return () => observer.disconnect();
+  }, []);
+
   const InfoCard = ({ icon, title, items }) => (
     <div className="perfil-info-card">
       <div className="perfil-card-header">
@@ -119,20 +131,13 @@ export default function DashboardPage() {
         <div className="perfil-portfolio-wrapper">
           <header className="perfil-welcome-section">
             <div className="perfil-welcome-grid">
+              {/* Sin inline styles — el CSS controla tamaño */}
               <div className="perfil-profile-img-container">
                 <img
                   src={studentData.fotoUrl || "/imagenes/logoelegantee.png"}
                   className="perfil-profile-main-img"
-                  alt="Foto"
-                  width="180"
-                  height="180"
+                  alt="Foto de perfil"
                   loading="eager"
-                  style={{
-                    aspectRatio: "1/1",
-                    objectFit: "cover",
-                    width: "180px",
-                    height: "180px",
-                  }}
                   onError={(e) => {
                     e.target.src = "/imagenes/logoelegantee.png";
                   }}
