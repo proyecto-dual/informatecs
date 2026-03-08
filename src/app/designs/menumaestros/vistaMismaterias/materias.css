@@ -328,68 +328,478 @@
   text-align: center;
   color: var(--pa-txt2);
 }
+:root {
+  --blue-primary: #1b396a;
+  --yellow-accent: #fe9e10;
+  --blue-hover: #8eafef;
+  --text-dark: #333333;
+  --act-primary: #1b396a;
+  --act-primary-dark: #142a50;
+  --white: #ffffff;
+  --ite-text: #4a5568;
+  --ite-blue-dark: #1b396a;
+  --pa-blue-mid: #2d5ba8;
+  --pa-blue-light: #e8f0fb;
+  --pa-blue-ll: #f0f5ff;
+  --pa-yellow-d: #c97800;
+  --pa-yellow-l: #fff5e0;
+  --pa-hover-l: #dce9ff;
+  --pa-bg: #f2f5fb;
+  --pa-card: #ffffff;
+  --pa-brd: rgba(27, 57, 106, 0.1);
+  --pa-txt2: #4a5568;
+  --pa-txt3: #8fa3be;
+  --pa-sh-xs: 0 1px 3px rgba(46, 57, 75, 0.06);
+  --pa-sh-sm: 0 2px 10px rgba(27, 57, 106, 0.08);
+  --pa-sh-md: 0 6px 24px rgba(27, 57, 106, 0.13);
+  --pa-r-sm: 10px;
+  --pa-r-md: 16px;
+  --pa-r-lg: 22px;
+  --pa-r-xl: 28px;
+  font-family: "Montserrat", sans-serif;
+}
 
-/* --- OPTIMIZACIONES ESPECÍFICAS PARA MÓVILES --- */
-@media (max-width: 768px) {
-  /* Reducir el padding general para ganar espacio */
-  .maestros .materias-header {
-    padding: 20px 15px;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* ==========================
+   Loading
+========================== */
+.maestros .materias-loading-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: var(--pa-bg);
+}
+.maestros .loader-circle {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top-color: var(--white);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
+}
+.maestros .loader-text {
+  color: var(--blue-primary);
+  font-size: 1.2rem;
+  margin-top: 20px;
+  font-weight: 500;
+}
 
+/* ==========================
+   Main Wrapper
+========================== */
+.maestros .materias-main-wrapper {
+  margin-left: 0;
+  min-height: 100vh;
+  background: var(--pa-bg);
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+/* ==========================
+   Header
+========================== */
+.maestros .materias-header {
+  background: var(--white);
+  padding: 32px 40px;
+  color: var(--blue-primary);
+  border-bottom: 2px solid var(--pa-brd);
+}
+.maestros .header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.maestros .header-title {
+  font-size: clamp(1.4rem, 4vw, 2.5rem);
+  font-weight: 700;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.maestros .header-subtitle {
+  font-size: clamp(0.88rem, 2vw, 1.1rem);
+  color: var(--pa-txt2);
+}
+.maestros .header-stats {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+.maestros .materias-stat-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background: var(--pa-blue-light);
+  border: 1px solid var(--pa-brd);
+  border-radius: var(--pa-r-sm);
+  font-weight: 600;
+  color: var(--blue-primary);
+}
+
+/* ==========================
+   Content & Cards
+========================== */
+.maestros .materias-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px;
+}
+.maestros .materias-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.maestros .materia-card {
+  background: var(--pa-card);
+  border-radius: var(--pa-r-md);
+  box-shadow: var(--pa-sh-sm);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.maestros .materia-card:hover {
+  box-shadow: var(--pa-sh-md);
+}
+.maestros .materia-card-header {
+  padding: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+.maestros .materia-nombre {
+  font-size: clamp(1rem, 3vw, 1.5rem);
+  color: var(--text-dark);
+  margin-bottom: 12px;
+  font-weight: 700;
+  word-break: break-word;
+}
+.maestros .materia-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+.maestros .meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--pa-txt2);
+  font-size: 0.95rem;
+}
+.maestros .materia-card-body {
+  border-top: 2px solid var(--pa-brd);
+  padding: 25px;
+  background: var(--pa-blue-ll);
+}
+
+/* ==========================
+   Toolbar & Search
+========================== */
+.maestros .estudiantes-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+.maestros .search-box {
+  flex: 1;
+  min-width: 250px;
+  position: relative;
+}
+.maestros .search-box input {
+  width: 100%;
+  padding: 12px 15px 12px 45px;
+  border: 2px solid var(--pa-brd);
+  border-radius: var(--pa-r-sm);
+  font-size: 1rem;
+  font-family: "Montserrat", sans-serif;
+  transition: all 0.3s ease;
+}
+.maestros .search-box input:focus {
+  outline: none;
+  border-color: var(--blue-primary);
+}
+.maestros .btn-export {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: var(--yellow-accent);
+  color: var(--white);
+  border: none;
+  border-radius: var(--pa-r-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: "Montserrat", sans-serif;
+  white-space: nowrap;
+}
+.maestros .btn-export:hover {
+  background: var(--pa-yellow-d);
+  transform: translateY(-2px);
+}
+
+/* ==========================
+   TABLA — visible en desktop/iPad
+========================== */
+.maestros .estudiantes-table-wrapper {
+  overflow-x: auto;
+  border-radius: var(--pa-r-md);
+  box-shadow: var(--pa-sh-xs);
+  background: var(--pa-card);
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+  /* Ocultar en móvil */
+  display: block;
+}
+.maestros .estudiantes-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 650px;
+}
+.maestros .estudiantes-table thead {
+  background: var(--blue-primary);
+  color: var(--white);
+}
+.maestros .estudiantes-table th {
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+.maestros .estudiantes-table tbody tr {
+  border-bottom: 1px solid var(--pa-brd);
+}
+.maestros .estudiantes-table tbody tr:hover {
+  background: var(--pa-hover-l);
+}
+.maestros .estudiantes-table td {
+  padding: 15px;
+  font-size: 0.95rem;
+}
+.maestros .no-results {
+  text-align: center;
+  padding: 30px;
+  color: var(--pa-txt2);
+}
+
+/* ==========================
+   TARJETAS MÓVIL — ocultas en desktop
+========================== */
+.maestros .estudiantes-cards-mobile {
+  display: none; /* Solo se muestra en móvil */
+  flex-direction: column;
+  gap: 12px;
+}
+
+.maestros .estudiante-card-mobile {
+  background: var(--pa-card);
+  border-radius: var(--pa-r-md);
+  box-shadow: var(--pa-sh-xs);
+  border: 1px solid var(--pa-brd);
+  overflow: hidden;
+}
+
+.maestros .ecm-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--blue-primary);
+}
+
+.maestros .ecm-nombre {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--white);
+  flex: 1;
+  word-break: break-word;
+}
+
+.maestros .ecm-body {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.maestros .ecm-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--pa-brd);
+  gap: 8px;
+}
+
+.maestros .ecm-row:last-child {
+  border-bottom: none;
+}
+
+.maestros .ecm-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--blue-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.maestros .ecm-value {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  text-align: right;
+  word-break: break-word;
+}
+
+.maestros .no-results-mobile {
+  text-align: center;
+  color: var(--pa-txt2);
+  padding: 24px;
+  font-size: 0.9rem;
+}
+
+/* Sexo badge en tarjeta móvil */
+.maestros .sexo-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.maestros .sexo-badge.masculino {
+  background: var(--pa-blue-light);
+  color: var(--blue-primary);
+}
+.maestros .sexo-badge.femenino {
+  background: var(--pa-yellow-l);
+  color: var(--pa-yellow-d);
+}
+
+/* ==========================
+   Empty & Footer
+========================== */
+.maestros .materias-empty,
+.maestros .estudiantes-empty {
+  text-align: center;
+  padding: 60px 40px;
+  background: var(--pa-card);
+  border-radius: var(--pa-r-md);
+}
+.maestros .estudiantes-footer {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 2px solid var(--pa-brd);
+  text-align: center;
+  color: var(--pa-txt2);
+  font-size: 0.9rem;
+}
+
+/* ================================================
+   iPad Pro 12.9" (≤1366px)
+   ================================================ */
+@media (max-width: 1366px) {
   .maestros .materias-content {
-    padding: 15px;
+    padding: 32px;
   }
+}
 
-  /* Ajustar los badges de estadísticas para que no se desborden */
-  .maestros .materias-header-stats {
-    display: flex; /* Cambiamos de grid a flex para mejor control */
+/* ================================================
+   iPad Pro 11" / iPad Air (≤1024px)
+   ================================================ */
+@media (max-width: 1024px) {
+  .maestros .materias-header {
+    padding: 24px 28px;
+  }
+  .maestros .materias-content {
+    padding: 24px 20px;
+  }
+  .maestros .materia-card-header {
+    padding: 20px;
+  }
+  .maestros .materia-card-body {
+    padding: 20px;
+  }
+  .maestros .materias-stat-badge {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+  }
+}
+
+/* ================================================
+   iPad Mini / iPad 9 — portrait (≤820px)
+   ================================================ */
+@media (max-width: 820px) {
+  .maestros .materias-header {
+    padding: 20px 18px;
+  }
+  .maestros .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .maestros .header-stats {
+    width: 100%;
+    gap: 10px;
+  }
+  .maestros .materias-stat-badge {
+    flex: 1 1 calc(50% - 5px);
+    justify-content: center;
+  }
+  .maestros .materias-content {
+    padding: 18px 14px;
+  }
+  .maestros .materia-card-header {
+    padding: 18px 16px;
     flex-wrap: wrap;
     gap: 10px;
   }
-
-  .maestros .materias-stat-badge {
-    flex: 1 1 calc(50% - 10px); /* Dos por fila en móviles */
-    padding: 10px;
-    font-size: 0.85rem;
-    justify-content: center;
+  .maestros .materia-card-body {
+    padding: 18px 16px;
   }
-
-  /* Toolbar: Buscador y Botón uno encima del otro */
+  .maestros .meta-item {
+    font-size: 0.88rem;
+  }
   .maestros .estudiantes-toolbar {
     flex-direction: column;
     align-items: stretch;
-    gap: 10px;
   }
-
   .maestros .search-box {
-    width: 100%;
     min-width: unset;
+    width: 100%;
   }
-
   .maestros .btn-export {
     width: 100%;
     justify-content: center;
   }
 
-  /* --- GESTIÓN DE LA TABLA DE ESTUDIANTES --- */
-  .maestros .estudiantes-table-wrapper {
-    margin: 0 -10px; /* Saca la tabla un poco a los bordes para ganar espacio */
-    width: calc(100% + 20px);
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch; /* Scroll elástico en iOS */
-    border-radius: 0; /* Quitamos radio en móvil para que parezca nativo */
-  }
-
-  /* Evitar que las celdas se compriman demasiado */
-  .maestros .estudiantes-table th,
-  .maestros .estudiantes-table td {
-    padding: 12px 8px;
-    font-size: 0.85rem;
-    white-space: nowrap; /* Evita que los nombres se rompan en mil líneas */
-  }
-
-  /* Columna fija para el nombre del estudiante (Opcional) */
-  /* Si quieres que el nombre se quede fijo mientras scrolleas los datos */
+  /* Columna nombre fija en tabla */
   .maestros .estudiantes-table th:nth-child(2),
   .maestros .estudiantes-table td:nth-child(2) {
     position: sticky;
@@ -398,22 +808,170 @@
     z-index: 2;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
   }
-
   .maestros .estudiantes-table th:nth-child(2) {
     background: var(--blue-primary);
     z-index: 3;
   }
 }
 
-/* --- AJUSTE PARA IPAD (769px a 1024px) --- */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .maestros .materias-content {
-    padding: 25px;
+/* ================================================
+   MÓVIL (≤768px) — tabla → tarjetas
+   ================================================ */
+@media (max-width: 768px) {
+  /* Ocultar tabla, mostrar tarjetas */
+  .maestros .estudiantes-table-wrapper {
+    display: none;
+  }
+  .maestros .estudiantes-cards-mobile {
+    display: flex;
   }
 
+  .maestros .materias-content {
+    padding: 14px 12px;
+  }
   .maestros .materias-grid {
-    display: grid;
-    grid-template-columns: 1fr; /* Una columna en iPad vertical se ve mejor */
-    gap: 25px;
+    gap: 14px;
+  }
+  .maestros .materia-card-header {
+    padding: 16px 14px;
+  }
+  .maestros .materia-card-body {
+    padding: 14px 12px;
+  }
+  .maestros .materias-stat-badge {
+    flex: 1 1 100%;
+    font-size: 0.82rem;
+    padding: 8px 12px;
+  }
+}
+
+/* ================================================
+   iPhone Pro Max / Plus (≤430px)
+   ================================================ */
+@media (max-width: 430px) {
+  .maestros .materias-header {
+    padding: 14px 12px;
+  }
+  .maestros .materias-content {
+    padding: 12px 10px;
+  }
+  .maestros .materia-card-header {
+    padding: 14px 12px;
+  }
+  .maestros .materia-card-body {
+    padding: 12px 10px;
+  }
+  .maestros .materia-nombre {
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+  }
+  .maestros .meta-item {
+    font-size: 0.8rem;
+  }
+  .maestros .ecm-nombre {
+    font-size: 0.9rem;
+  }
+  .maestros .ecm-label {
+    font-size: 0.68rem;
+  }
+  .maestros .ecm-value {
+    font-size: 0.84rem;
+  }
+}
+
+/* ================================================
+   iPhone SE / mini (≤375px)
+   ================================================ */
+@media (max-width: 375px) {
+  .maestros .materias-header {
+    padding: 12px 10px;
+  }
+  .maestros .materias-content {
+    padding: 10px 8px;
+  }
+  .maestros .header-title {
+    font-size: 1.2rem;
+    gap: 8px;
+  }
+  .maestros .header-subtitle {
+    font-size: 0.8rem;
+  }
+  .maestros .materia-card-header {
+    padding: 12px 10px;
+  }
+  .maestros .materia-card-body {
+    padding: 10px 8px;
+  }
+  .maestros .materia-nombre {
+    font-size: 0.88rem;
+  }
+  .maestros .meta-item {
+    font-size: 0.76rem;
+  }
+  .maestros .ecm-header {
+    padding: 12px;
+    gap: 10px;
+  }
+  .maestros .ecm-nombre {
+    font-size: 0.85rem;
+  }
+  .maestros .ecm-body {
+    padding: 10px 12px;
+  }
+  .maestros .ecm-label {
+    font-size: 0.64rem;
+  }
+  .maestros .ecm-value {
+    font-size: 0.8rem;
+  }
+  .maestros .sexo-badge {
+    width: 28px;
+    height: 28px;
+    font-size: 0.72rem;
+  }
+  .maestros .search-box input {
+    font-size: 0.85rem;
+    padding: 9px 10px 9px 34px;
+  }
+  .maestros .btn-export {
+    font-size: 0.85rem;
+    padding: 9px 14px;
+  }
+}
+
+/* ================================================
+   Landscape iPhones
+   ================================================ */
+@media (max-height: 500px) and (orientation: landscape) and (max-width: 768px) {
+  .maestros .materias-header {
+    padding: 10px 16px;
+  }
+  .maestros .header-content {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .maestros .materias-content {
+    padding: 10px 14px;
+  }
+  .maestros .materias-grid {
+    gap: 10px;
+  }
+  .maestros .materia-card-header {
+    padding: 10px 14px;
+  }
+  .maestros .materia-card-body {
+    padding: 10px 14px;
+  }
+  /* En landscape mostramos tabla con scroll horizontal (hay más espacio) */
+  .maestros .estudiantes-table-wrapper {
+    display: block;
+  }
+  .maestros .estudiantes-cards-mobile {
+    display: none;
+  }
+  .maestros .estudiantes-table th,
+  .maestros .estudiantes-table td {
+    padding: 8px;
+    font-size: 0.78rem;
   }
 }

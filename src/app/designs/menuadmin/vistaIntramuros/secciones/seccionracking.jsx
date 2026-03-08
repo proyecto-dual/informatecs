@@ -56,9 +56,11 @@ const SeccionRankings = ({ resultados, actividades }) => {
     return <span className="rk-pos-num">{idx + 1}</span>;
   };
 
+  const hayRanking = ranking.length > 0;
+
   return (
     <div className="rk-wrapper">
-      {/* ── Header sin fondo ── */}
+      {/* ── Header ── */}
       <div className="rk-header">
         <div>
           <h2 className="rk-header__title">
@@ -83,8 +85,10 @@ const SeccionRankings = ({ resultados, actividades }) => {
         </select>
       </div>
 
-      {/* ── Tabla ── */}
-      <div className="rk-table-wrap">
+      {/* ════════════════════════════════════════
+          TABLA — tablet / escritorio (≥ 641px)
+         ════════════════════════════════════════ */}
+      <div className="rk-table-wrap rk-desktop-only">
         <table className="rk-table">
           <thead>
             <tr>
@@ -100,7 +104,7 @@ const SeccionRankings = ({ resultados, actividades }) => {
             </tr>
           </thead>
           <tbody>
-            {ranking.length > 0 ? (
+            {hayRanking ? (
               ranking.map((eq, idx) => (
                 <tr key={idx}>
                   <td className="center">
@@ -132,6 +136,58 @@ const SeccionRankings = ({ resultados, actividades }) => {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* ════════════════════════════════════════
+          CARDS — móvil (≤ 640px)
+         ════════════════════════════════════════ */}
+      <div className="rk-mobile-only">
+        {hayRanking ? (
+          ranking.map((eq, idx) => (
+            <div
+              key={idx}
+              className={`rk-card ${idx === 0 ? "rk-card--gold" : idx === 1 ? "rk-card--silver" : idx === 2 ? "rk-card--bronze" : ""}`}
+            >
+              {/* Encabezado: posición + nombre */}
+              <div className="rk-card__head">
+                <div className="rk-pos-icon">{renderPos(idx)}</div>
+                <div className="rk-td-equipo">
+                  <div className="rk-td-shield">
+                    <Shield size={16} />
+                  </div>
+                  <span className="rk-td-name">{eq.nombre}</span>
+                </div>
+                <span className="rk-pts-badge rk-pts-badge--sm">
+                  {eq.pts} pts
+                </span>
+              </div>
+
+              {/* Stats en fila */}
+              <div className="rk-card__stats">
+                <div className="rk-card__stat">
+                  <span className="rk-card__stat-val">{eq.pj}</span>
+                  <span className="rk-card__stat-label">PJ</span>
+                </div>
+                <div className="rk-card__stat rk-card__stat--v">
+                  <span className="rk-card__stat-val">{eq.v}</span>
+                  <span className="rk-card__stat-label">V</span>
+                </div>
+                <div className="rk-card__stat rk-card__stat--e">
+                  <span className="rk-card__stat-val">{eq.e}</span>
+                  <span className="rk-card__stat-label">E</span>
+                </div>
+                <div className="rk-card__stat rk-card__stat--d">
+                  <span className="rk-card__stat-val">{eq.d}</span>
+                  <span className="rk-card__stat-label">D</span>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="rk-empty-card">
+            No hay resultados registrados para este torneo aún.
+          </div>
+        )}
       </div>
 
       {/* ── Leyenda ── */}

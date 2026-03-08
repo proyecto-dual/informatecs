@@ -1,7 +1,6 @@
 /* ============================================================
-   CALIFICACIONES — usa la paleta del proyecto
+   CALIFICACIONES — responsive completo
 ============================================================ */
-
 :root {
   --blue-primary: #1b396a;
   --yellow-accent: #fe9e10;
@@ -35,7 +34,6 @@
   background: var(--pa-bg);
   gap: 1rem;
 }
-
 .loader-circle {
   width: 52px;
   height: 52px;
@@ -44,13 +42,11 @@
   border-radius: 50%;
   animation: cal-spin 0.8s linear infinite;
 }
-
 .loader-text {
   color: var(--blue-primary);
   font-size: 0.9rem;
   font-weight: 600;
 }
-
 @keyframes cal-spin {
   to {
     transform: rotate(360deg);
@@ -65,13 +61,12 @@
   overflow-x: hidden;
 }
 
-/* ── Contenido ── */
 .calificaciones-content {
   max-width: 1400px;
   margin: 0 auto;
 }
 
-/* ── Header ── */
+/* ── Header lista ── */
 .calificaciones-header {
   background: var(--white);
   border-radius: var(--radius-lg);
@@ -80,7 +75,6 @@
   box-shadow: var(--pa-sh-sm);
   border: 1px solid var(--pa-brd);
 }
-
 .header-content {
   display: flex;
   justify-content: space-between;
@@ -88,7 +82,6 @@
   flex-wrap: wrap;
   gap: 1rem;
 }
-
 .header-title {
   font-size: clamp(1.3rem, 4vw, 2rem);
   font-weight: 800;
@@ -97,24 +90,20 @@
   align-items: center;
   gap: 0.5rem;
 }
-
 .inline-icon {
   color: var(--yellow-accent);
   flex-shrink: 0;
 }
-
 .header-subtitle {
   color: #718096;
   margin-top: 0.4rem;
   font-size: 0.875rem;
 }
-
 .header-stats {
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
 }
-
 .stat-badge {
   display: flex;
   align-items: center;
@@ -125,17 +114,15 @@
   font-size: 0.85rem;
   color: var(--white);
 }
-
 .stat-badge.stat-purple {
   background: var(--blue-primary);
 }
-
 .stat-badge.stat-blue {
   background: var(--blue-hover);
   color: var(--blue-primary);
 }
 
-/* ── Grid de materias ── */
+/* ── Grid materias ── */
 .materias-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -154,57 +141,36 @@
     transform 0.25s ease;
   cursor: pointer;
 }
-
 .materia-card-calif:hover {
   transform: translateY(-3px);
   box-shadow: var(--pa-sh-md);
   border-color: var(--blue-hover);
 }
-
 .materia-card-header-calif h3 {
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--blue-primary);
   margin-bottom: 0.4rem;
+  word-break: break-word;
 }
-
 .materia-codigo {
   color: #718096;
   font-size: 0.8rem;
 }
-
 .materia-stats {
   display: flex;
   justify-content: space-around;
   margin: 1.25rem 0;
 }
-
 .stat-item {
   display: flex;
   align-items: center;
   gap: 0.6rem;
 }
-
 .stat-item svg {
   color: var(--yellow-accent);
   flex-shrink: 0;
 }
-
-.stat-number {
-  display: block;
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: var(--blue-primary);
-}
-
-.stat-label {
-  display: block;
-  font-size: 0.72rem;
-  color: #718096;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
 .progress-bar {
   height: 6px;
   background: #e2e8f0;
@@ -212,14 +178,12 @@
   overflow: hidden;
   margin: 0.75rem 0;
 }
-
 .progress-fill {
   height: 100%;
   background: var(--blue-primary);
   border-radius: 99px;
   transition: width 0.4s ease;
 }
-
 .btn-evaluar {
   width: 100%;
   padding: 0.7rem;
@@ -236,7 +200,6 @@
     transform 0.15s ease;
   min-height: 40px;
 }
-
 .btn-evaluar:hover {
   background: var(--act-primary-dark);
   transform: translateY(-1px);
@@ -256,7 +219,6 @@
   box-shadow: var(--pa-sh-sm);
   border: 1px solid var(--pa-brd);
 }
-
 .btn-back {
   display: flex;
   align-items: center;
@@ -275,25 +237,21 @@
   color: var(--blue-primary);
   white-space: nowrap;
 }
-
 .btn-back:hover {
   background: #e8f0fb;
   border-color: var(--blue-hover);
 }
-
 .header-info h1 {
   font-size: clamp(1.1rem, 3vw, 1.5rem);
   font-weight: 800;
   color: var(--blue-primary);
   word-break: break-word;
 }
-
 .header-info p {
   color: #718096;
   margin-top: 0.2rem;
   font-size: 0.875rem;
 }
-
 .header-actions {
   display: flex;
   gap: 0.6rem;
@@ -319,7 +277,6 @@
   min-height: 40px;
   white-space: nowrap;
 }
-
 .btn-primary {
   background: var(--blue-primary);
   color: var(--white);
@@ -328,7 +285,6 @@
   background: var(--act-primary-dark);
   transform: translateY(-1px);
 }
-
 .btn-secondary {
   background: var(--yellow-accent);
   color: var(--act-primary-dark);
@@ -337,7 +293,6 @@
   background: #e58d0f;
   transform: translateY(-1px);
 }
-
 .btn-success {
   background: #2f855a;
   color: var(--white);
@@ -350,7 +305,6 @@
   cursor: not-allowed;
   transform: none;
 }
-
 .btn-danger {
   background: #c53030;
   color: var(--white);
@@ -359,7 +313,7 @@
   background: #9b2c2c;
 }
 
-/* ── Tabla ── */
+/* ── Tabla — visible en desktop/iPad ── */
 .calificaciones-table-container {
   background: var(--white);
   border-radius: var(--radius-lg);
@@ -369,17 +323,15 @@
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
-
 .calificaciones-table {
   width: 100%;
   border-collapse: collapse;
   min-width: 520px;
+  display: table; /* visible por defecto */
 }
-
 .calificaciones-table thead {
   background: var(--blue-primary);
 }
-
 .calificaciones-table th {
   padding: 0.9rem 1rem;
   text-align: left;
@@ -390,7 +342,6 @@
   color: var(--white);
   white-space: nowrap;
 }
-
 .calificaciones-table td {
   padding: 0.9rem 1rem;
   border-bottom: 1px solid #e2e8f0;
@@ -398,11 +349,9 @@
   color: var(--text-dark);
   word-break: break-word;
 }
-
 .calificaciones-table tbody tr:hover {
   background: #f0f5ff;
 }
-
 .font-mono {
   font-family: "Courier New", monospace;
   font-weight: 600;
@@ -410,7 +359,6 @@
 .font-semibold {
   font-weight: 600;
 }
-
 .carrera-cell {
   color: #4a5568;
   font-size: 0.85rem;
@@ -433,7 +381,6 @@
   border-color: var(--blue-primary);
   box-shadow: 0 0 0 3px rgba(27, 57, 106, 0.1);
 }
-
 .input-observacion {
   width: 100%;
   padding: 0.45rem 0.6rem;
@@ -449,7 +396,7 @@
   box-shadow: 0 0 0 3px rgba(27, 57, 106, 0.1);
 }
 
-/* ── Calificación badge ── */
+/* ── Badges calificación ── */
 .calificacion-badge {
   display: inline-block;
   padding: 0.35rem 0.9rem;
@@ -469,33 +416,13 @@
   background: #f3f4f6;
   color: #6b7280;
 }
-
 .observacion-text {
   color: #4a5568;
   font-style: italic;
   font-size: 0.85rem;
 }
 
-/* ── Footer ── */
-.calificaciones-footer {
-  background: var(--white);
-  border-radius: var(--radius-md);
-  padding: 0.9rem 1.5rem;
-  margin-top: 1rem;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  box-shadow: var(--pa-sh-sm);
-  border: 1px solid var(--pa-brd);
-}
-.calificaciones-footer p {
-  color: #718096;
-  font-weight: 500;
-  font-size: 0.875rem;
-}
-
-/* ── Empty state ── */
+/* ── Empty & footer ── */
 .materias-empty {
   text-align: center;
   padding: clamp(2rem, 6vw, 4rem) 2rem;
@@ -518,7 +445,6 @@
   color: #718096;
   font-size: 0.875rem;
 }
-
 .no-data {
   text-align: center;
   padding: 3rem;
@@ -526,22 +452,126 @@
   font-style: italic;
 }
 
-/* ── Responsive ── */
-@media (max-width: 640px) {
-  .calificaciones-header-detalle {
+/* ============================================================
+   TARJETAS MÓVIL — ocultas en desktop
+============================================================ */
+.calif-cards-mobile {
+  display: none;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.calif-card {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--pa-brd);
+  box-shadow: 0 1px 4px rgba(27, 57, 106, 0.07);
+  overflow: hidden;
+}
+
+.cc-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--blue-primary);
+}
+.cc-index {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--white);
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.cc-nombre {
+  flex: 1;
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--white);
+  word-break: break-word;
+}
+
+.cc-body {
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.cc-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+  gap: 8px;
+}
+.cc-row:last-child {
+  border-bottom: none;
+}
+
+.cc-row-edit {
+  align-items: center;
+}
+.cc-row-obs {
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.cc-row-obs .input-observacion {
+  margin-top: 4px;
+}
+
+.cc-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--blue-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.cc-value {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  text-align: right;
+  word-break: break-word;
+}
+
+/* ============================================================
+   BREAKPOINTS
+============================================================ */
+
+/* iPad Pro 12.9" (≤1366px) */
+@media (max-width: 1366px) {
+  .calificaciones-main-wrapper {
+    padding: 1.75rem;
+  }
+}
+
+/* iPad Pro 11" / Air (≤1024px) */
+@media (max-width: 1024px) {
+  .calificaciones-main-wrapper {
+    padding: 1.25rem;
+  }
+  .calificaciones-table th,
+  .calificaciones-table td {
+    padding: 0.75rem 0.75rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* iPad Mini / iPad 9 portrait (≤820px) */
+@media (max-width: 820px) {
+  .header-content {
     flex-direction: column;
     align-items: flex-start;
-  }
-  .header-actions {
-    width: 100%;
-    flex-direction: column;
-  }
-  .btn {
-    width: 100%;
-    justify-content: center;
-  }
-  .materias-grid {
-    grid-template-columns: 1fr;
   }
   .header-stats {
     width: 100%;
@@ -549,5 +579,188 @@
   .stat-badge {
     flex: 1;
     justify-content: center;
+  }
+  .calificaciones-header-detalle {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .header-actions {
+    width: 100%;
+  }
+  .btn {
+    flex: 1;
+    justify-content: center;
+  }
+  .materias-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── MÓVIL (≤768px) — tabla → tarjetas ── */
+@media (max-width: 768px) {
+  /* Ocultar tabla, mostrar tarjetas */
+  .calificaciones-table {
+    display: none;
+  }
+  .calif-cards-mobile {
+    display: flex;
+  }
+
+  .calificaciones-main-wrapper {
+    padding: 0.875rem;
+  }
+  .calificaciones-header,
+  .calificaciones-header-detalle {
+    margin-bottom: 1rem;
+  }
+  .calificaciones-table-container {
+    padding: 0.875rem;
+  }
+}
+
+/* iPhone Pro Max / Plus (≤430px) */
+@media (max-width: 430px) {
+  .calificaciones-main-wrapper {
+    padding: 0.75rem;
+  }
+  .calificaciones-table-container {
+    padding: 0.75rem;
+  }
+  .cc-nombre {
+    font-size: 0.86rem;
+  }
+  .cc-label {
+    font-size: 0.64rem;
+  }
+  .cc-value {
+    font-size: 0.84rem;
+  }
+  .input-calificacion {
+    width: 72px;
+  }
+}
+
+/* iPhone 14 / 15 (≤393px) */
+@media (max-width: 393px) {
+  .calificaciones-main-wrapper {
+    padding: 0.625rem;
+  }
+  .calificaciones-table-container {
+    padding: 0.625rem;
+    border-radius: var(--radius-md);
+  }
+  .cc-header {
+    padding: 10px 12px;
+  }
+  .cc-body {
+    padding: 8px 12px;
+  }
+  .cc-nombre {
+    font-size: 0.82rem;
+  }
+  .cc-label {
+    font-size: 0.62rem;
+  }
+  .cc-value {
+    font-size: 0.8rem;
+  }
+  .calificacion-badge {
+    font-size: 0.78rem;
+    padding: 0.28rem 0.7rem;
+  }
+  .btn {
+    font-size: 0.82rem;
+    padding: 0.6rem 0.9rem;
+  }
+  .btn-back {
+    font-size: 0.82rem;
+    padding: 0.55rem 0.9rem;
+  }
+  .materia-card-calif {
+    padding: 1.1rem;
+  }
+}
+
+/* iPhone SE / mini (≤375px) */
+@media (max-width: 375px) {
+  .calificaciones-main-wrapper {
+    padding: 0.5rem;
+  }
+  .calificaciones-table-container {
+    padding: 0.5rem;
+  }
+  .header-title {
+    font-size: 1.1rem;
+  }
+  .header-subtitle {
+    font-size: 0.78rem;
+  }
+  .cc-header {
+    padding: 9px 10px;
+    gap: 8px;
+  }
+  .cc-body {
+    padding: 6px 10px;
+  }
+  .cc-index {
+    width: 20px;
+    height: 20px;
+    font-size: 0.68rem;
+  }
+  .cc-nombre {
+    font-size: 0.78rem;
+  }
+  .cc-label {
+    font-size: 0.6rem;
+  }
+  .cc-value {
+    font-size: 0.76rem;
+  }
+  .cc-row {
+    padding: 6px 0;
+  }
+  .calificacion-badge {
+    font-size: 0.74rem;
+    padding: 0.25rem 0.6rem;
+  }
+  .input-calificacion {
+    width: 64px;
+    font-size: 0.84rem;
+  }
+  .btn {
+    font-size: 0.78rem;
+    padding: 0.55rem 0.75rem;
+    min-height: 36px;
+  }
+  .materia-card-calif {
+    padding: 1rem;
+    border-radius: var(--radius-md);
+  }
+  .materias-grid {
+    gap: 0.875rem;
+  }
+}
+
+/* Landscape iPhones */
+@media (max-height: 500px) and (orientation: landscape) and (max-width: 768px) {
+  /* En landscape hay más espacio horizontal — volvemos a la tabla */
+  .calificaciones-table {
+    display: table;
+  }
+  .calif-cards-mobile {
+    display: none;
+  }
+  .calificaciones-main-wrapper {
+    padding: 0.5rem;
+  }
+  .calificaciones-header,
+  .calificaciones-header-detalle {
+    margin-bottom: 0.5rem;
+    padding: 0.75rem 1rem;
+  }
+  .calificaciones-table th,
+  .calificaciones-table td {
+    padding: 0.5rem 0.6rem;
+    font-size: 0.78rem;
   }
 }

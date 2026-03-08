@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import NavbarMaestro from "@/app/components/layout/navbarmaestro";
 import {
   FiBook,
   FiUsers,
@@ -25,12 +24,10 @@ export default function MisMateriasMaestroPage() {
 
   useEffect(() => {
     const savedData = localStorage.getItem("maestroData");
-
     if (!savedData) {
       router.push("/designs/vistaLogin");
       return;
     }
-
     const parsed = JSON.parse(savedData);
     setMaestroData(parsed);
     cargarMaterias(parsed.percve);
@@ -40,18 +37,13 @@ export default function MisMateriasMaestroPage() {
     try {
       setLoading(true);
       const response = await fetch(`/api/maestros-materias?percve=${percve}`);
-
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Error de la API:", errorData);
         setMaterias([]);
         return;
       }
-
       const data = await response.json();
       setMaterias(data || []);
     } catch (error) {
-      console.error("Error al cargar materias:", error);
       setMaterias([]);
     } finally {
       setLoading(false);
@@ -65,10 +57,8 @@ export default function MisMateriasMaestroPage() {
   const exportarEstudiantes = (materia) => {
     const estudiantes = materia.inscripact.map((inscripcion) => {
       const est = inscripcion.estudiante;
-      const nombreCompleto = `${est.alunom || ""} ${est.aluapp || ""} ${
-        est.aluapm || ""
-      }`.trim();
-
+      const nombreCompleto =
+        `${est.alunom || ""} ${est.aluapp || ""} ${est.aluapm || ""}`.trim();
       return {
         "No. Control": est.aluctr,
         Nombre: nombreCompleto,
@@ -80,12 +70,10 @@ export default function MisMateriasMaestroPage() {
         ).toLocaleDateString(),
       };
     });
-
     const csv = [
       Object.keys(estudiantes[0]).join(","),
       ...estudiantes.map((est) => Object.values(est).join(",")),
     ].join("\n");
-
     const blob = new Blob([csv], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -96,14 +84,11 @@ export default function MisMateriasMaestroPage() {
 
   const filtrarEstudiantes = (inscripciones) => {
     if (!busquedaEstudiante) return inscripciones;
-
     return inscripciones.filter((inscripcion) => {
       const est = inscripcion.estudiante;
-      const nombreCompleto = `${est.alunom || ""} ${est.aluapp || ""} ${
-        est.aluapm || ""
-      }`.toLowerCase();
+      const nombreCompleto =
+        `${est.alunom || ""} ${est.aluapp || ""} ${est.aluapm || ""}`.toLowerCase();
       const busqueda = busquedaEstudiante.toLowerCase();
-
       return (
         est.aluctr?.toString().includes(busqueda) ||
         nombreCompleto.includes(busqueda)
@@ -177,7 +162,7 @@ export default function MisMateriasMaestroPage() {
 
                 return (
                   <div key={materia.id} className="materia-card">
-                    {/* Header de la materia */}
+                    {/* Header materia */}
                     <div
                       className="materia-card-header"
                       onClick={() => toggleMateria(materia.id)}
@@ -200,7 +185,6 @@ export default function MisMateriasMaestroPage() {
                             {materia.acohrs} horas
                           </span>
                         </div>
-
                         {materia.horario && (
                           <div className="materia-horario">
                             <FiCalendar size={14} />
@@ -217,7 +201,6 @@ export default function MisMateriasMaestroPage() {
                           </div>
                         )}
                       </div>
-
                       <div className="materia-actions">
                         <span className="estudiantes-badge">
                           {totalEstudiantes}
@@ -230,7 +213,7 @@ export default function MisMateriasMaestroPage() {
                       </div>
                     </div>
 
-                    {/* Lista de estudiantes (expandible) */}
+                    {/* Estudiantes expandible */}
                     {isExpanded && (
                       <div className="materia-card-body">
                         {totalEstudiantes === 0 ? (
@@ -261,6 +244,7 @@ export default function MisMateriasMaestroPage() {
                               </button>
                             </div>
 
+                            {/* ── TABLA (desktop / iPad) ── */}
                             <div className="estudiantes-table-wrapper">
                               <table className="estudiantes-table">
                                 <thead>
@@ -283,12 +267,8 @@ export default function MisMateriasMaestroPage() {
                                   ) : (
                                     estudiantesFiltrados.map((inscripcion) => {
                                       const est = inscripcion.estudiante;
-                                      const nombreCompleto = `${
-                                        est.alunom || ""
-                                      } ${est.aluapp || ""} ${
-                                        est.aluapm || ""
-                                      }`.trim();
-
+                                      const nombreCompleto =
+                                        `${est.alunom || ""} ${est.aluapp || ""} ${est.aluapm || ""}`.trim();
                                       return (
                                         <tr key={inscripcion.id}>
                                           <td className="font-mono">
@@ -307,11 +287,7 @@ export default function MisMateriasMaestroPage() {
                                           </td>
                                           <td>
                                             <span
-                                              className={`sexo-badge ${
-                                                est.alusex === 1
-                                                  ? "masculino"
-                                                  : "femenino"
-                                              }`}
+                                              className={`sexo-badge ${est.alusex === 1 ? "masculino" : "femenino"}`}
                                             >
                                               {est.alusex === 1
                                                 ? "M"
@@ -335,6 +311,84 @@ export default function MisMateriasMaestroPage() {
                                   )}
                                 </tbody>
                               </table>
+                            </div>
+
+                            {/* ── TARJETAS (móvil) ── */}
+                            <div className="estudiantes-cards-mobile">
+                              {estudiantesFiltrados.length === 0 ? (
+                                <p className="no-results-mobile">
+                                  No se encontraron estudiantes
+                                </p>
+                              ) : (
+                                estudiantesFiltrados.map((inscripcion) => {
+                                  const est = inscripcion.estudiante;
+                                  const nombreCompleto =
+                                    `${est.alunom || ""} ${est.aluapp || ""} ${est.aluapm || ""}`.trim();
+                                  return (
+                                    <div
+                                      key={inscripcion.id}
+                                      className="estudiante-card-mobile"
+                                    >
+                                      <div className="ecm-header">
+                                        <span
+                                          className={`sexo-badge ${est.alusex === 1 ? "masculino" : "femenino"}`}
+                                        >
+                                          {est.alusex === 1
+                                            ? "M"
+                                            : est.alusex === 2
+                                              ? "F"
+                                              : "?"}
+                                        </span>
+                                        <div className="ecm-nombre">
+                                          {nombreCompleto || "Sin nombre"}
+                                        </div>
+                                      </div>
+                                      <div className="ecm-body">
+                                        <div className="ecm-row">
+                                          <span className="ecm-label">
+                                            No. Control
+                                          </span>
+                                          <span className="ecm-value font-mono">
+                                            {est.aluctr}
+                                          </span>
+                                        </div>
+                                        <div className="ecm-row">
+                                          <span className="ecm-label">
+                                            Semestre
+                                          </span>
+                                          <span className="ecm-value">
+                                            {est.inscripciones?.calnpe || "N/A"}
+                                            °
+                                          </span>
+                                        </div>
+                                        <div className="ecm-row">
+                                          <span className="ecm-label">
+                                            Carrera
+                                          </span>
+                                          <span className="ecm-value">
+                                            {est.inscripciones?.carrera
+                                              ?.carnco || "N/A"}
+                                          </span>
+                                        </div>
+                                        <div className="ecm-row">
+                                          <span className="ecm-label">
+                                            Inscripción
+                                          </span>
+                                          <span className="ecm-value">
+                                            {new Date(
+                                              inscripcion.fechaInscripcion,
+                                            ).toLocaleDateString("es-MX", {
+                                              day: "2-digit",
+                                              month: "short",
+                                              year: "numeric",
+                                            })}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })
+                              )}
                             </div>
 
                             <div className="estudiantes-footer">

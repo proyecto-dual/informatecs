@@ -4,54 +4,62 @@ import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import NavbarMaestro from "@/app/components/layout/navbarmaestro";
 
-export default function EstudiantesLayout({ children }) {
-  // El estado 'open' vive aquí para que afecte a NavbarMaestro Y al main
+export default function MaestrosLayout({ children }) {
   const [open, setOpen] = useState(true);
-  const [queryClient] = useState(() => new QueryClient());
+
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 60 * 1000,
+            refetchOnWindowFocus: false,
+          },
+        },
+      }),
+  );
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="layout-wrapper">
-        {/* Pasamos 'open' y 'setOpen' correctamente al componente */}
+      <div className="maestros-layout-wrapper">
         <NavbarMaestro open={open} setOpen={setOpen} />
 
-        {/* El MAIN usa clases dinámicas según el estado 'open' */}
         <main
-          className={`main-content ${open ? "sidebar-open" : "sidebar-closed"}`}
+          className={`maestros-main-content ${open ? "sidebar-open" : "sidebar-closed"}`}
         >
           {children}
         </main>
       </div>
 
       <style jsx>{`
-        .layout-wrapper {
+        .maestros-layout-wrapper {
           display: flex;
           min-height: 100vh;
         }
 
-        .main-content {
+        .maestros-main-content {
           flex: 1;
-          /* Transición sincronizada con el navbar (0.3s) */
-          transition: margin-left 0.3s ease;
-          padding: 20px;
+          transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          min-width: 0;
+          overflow-x: hidden;
           background-color: #f4f7f6;
         }
 
-        /* ESCRITORIO: Ajuste de márgenes según los nuevos anchos */
+        /* DESKTOP: sidebar lateral */
         @media (min-width: 769px) {
           .sidebar-open {
-            margin-left: 280px; /* Coincide con .navbarmaestro.open */
+            margin-left: 280px;
           }
           .sidebar-closed {
-            margin-left: 80px; /* Coincide con .navbarmaestro.closed */
+            margin-left: 80px;
           }
         }
 
-        /* MÓVIL: Sin margen lateral */
+        /* MÓVIL: navbar top bar, sin margen lateral */
         @media (max-width: 768px) {
-          .main-content {
+          .maestros-main-content {
             margin-left: 0 !important;
-            padding-top: 80px; /* Espacio para el botón hamburguesa móvil */
+            padding-top: 80px;
           }
         }
       `}</style>
