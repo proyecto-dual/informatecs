@@ -12,6 +12,7 @@ import {
   FiMenu,
   FiFile,
   FiX,
+  FiTrendingUp,
 } from "react-icons/fi";
 import { FaCheck, FaStar } from "react-icons/fa6";
 import { Edit } from "lucide-react";
@@ -48,6 +49,11 @@ const menuItems = [
     href: "/designs/menuadmin/vistaIntramuros",
     icon: <FaStar />,
     label: "Intramuros",
+  },
+  {
+    href: "/designs/menuadmin/GraficasPta",
+    icon: <FiTrendingUp />,
+    label: "Gráficas PTA",
   },
   {
     href: "/designs/menuadmin/publicaciones",

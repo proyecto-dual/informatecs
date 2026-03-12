@@ -422,7 +422,7 @@
 =========================== */
 .wave-divider {
   position: absolute;
-  left: 50%;
+  left: 45%;
   top: 0;
   width: 200px;
   height: 100%; /* ← era 100vh; ahora sigue la altura del contenedor */

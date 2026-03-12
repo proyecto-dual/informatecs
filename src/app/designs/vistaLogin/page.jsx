@@ -2,19 +2,23 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { FaUser, FaLock, FaChalkboardTeacher } from "react-icons/fa";
+import {
+  FaUser,
+  FaLock,
+  FaChalkboardTeacher,
+  FaUserShield,
+} from "react-icons/fa";
 // Importación de Hooks y estilos
 import { useAuth } from "@/app/components/hooks/authHandlers";
 import { useMaestroAuth } from "@/app/components/hooks/useMaestroAuth";
 import "@/styles/auth/login.css";
 
-// Importar formularios (NOTA: Corregir importación de MascotCarousel)
+// Importar formularios
 import TeacherForm from "@/app/components/forms/TeacherForm";
 import AdminForm from "@/app/components/forms/AdminForm";
 import RegisterForm from "@/app/components/forms/RegisterForm";
 import LoginForm from "@/app/components/forms/loginform";
 import AskEmailForm from "@/app/components/forms/AskEmailForm";
-// NOTA: Si VerifyCodeForm es un componente, generalmente no va en /hooks/
 import VerifyCodeForm from "@/app/components/hooks/VerifyCodeForm";
 import UpdatePasswordForm from "@/app/components/forms/UpdatePasswordForm";
 import SchoolRainEffect from "@/app/components/animation/SchoolRainEffect";
@@ -38,6 +42,8 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const [adminUser, setAdminUser] = useState("");
   const [adminPassword, setAdminPassword] = useState("");
+  const [subAdminUser, setSubAdminUser] = useState("");
+  const [subAdminPassword, setSubAdminPassword] = useState("");
   const [particles, setParticles] = useState([]);
 
   // --- Hooks de autenticación ---
@@ -47,7 +53,7 @@ const LoginPage = () => {
     handleSendCode,
     handleVerifyCode,
     handleUpdatePassword,
-  } = useAuth(setStep, setFullName, setError, setStudentData); // CORRECCIÓN 1: Se agrega setFullName
+  } = useAuth(setStep, setFullName, setError, setStudentData);
 
   const {
     handleMaestroLogin,
@@ -55,7 +61,7 @@ const LoginPage = () => {
     handleMaestroSendCode,
     handleMaestroVerifyCode,
     handleMaestroUpdatePassword,
-  } = useMaestroAuth(setStep, setFullName, setError, setMaestroData); // CORRECCIÓN 1: Se agrega setFullName
+  } = useMaestroAuth(setStep, setFullName, setError, setMaestroData);
 
   useEffect(() => {
     const generatedParticles = [...Array(20)].map((_, i) => ({
@@ -73,6 +79,8 @@ const LoginPage = () => {
     setTeacherId("");
     setAdminUser("");
     setAdminPassword("");
+    setSubAdminUser("");
+    setSubAdminPassword("");
     setEmail("");
     setCode("");
     setNewPassword("");
@@ -81,7 +89,7 @@ const LoginPage = () => {
   };
 
   // ----------------------
-  // Funciones de envío ESTUDIANTES (se mantiene)
+  // Funciones de envío ESTUDIANTES
   // ----------------------
   const onLoginSubmit = (e) => {
     e.preventDefault();
@@ -150,13 +158,21 @@ const LoginPage = () => {
   const onAdminSubmit = (e) => {
     e.preventDefault();
     if (adminUser === "NodalTec" && adminPassword === "eventosadmin2025") {
-      // 1. Guardamos el dato en la "mochila" del navegador
       localStorage.setItem("adminName", "Juan Carlos Leal Nodal");
-
-      // 2. Nos vamos al dashboard
       router.push("/designs/menuadmin");
     }
   };
+
+  const onSubAdminSubmit = (e) => {
+    e.preventDefault();
+    if (subAdminUser === "SubAdmin" && subAdminPassword === "subadmin2025") {
+      localStorage.setItem("subAdminName", "Sub Administrador");
+      router.push("/designs/menusubadmin");
+    } else {
+      setError("Usuario o contraseña incorrectos");
+    }
+  };
+
   // ----------------------
   // Componente interno de redirección para estudiantes
   // ----------------------
@@ -165,13 +181,9 @@ const LoginPage = () => {
 
     useEffect(() => {
       if (studentData) {
-        // Mapeo exhaustivo para asegurar que "jalen" los datos nuevos
         const cleanedData = {
-          // Datos básicos
           nombreCompleto: studentData.nombreCompleto || fullName || "",
           numeroControl: studentData.numeroControl || studentData.aluctr || "",
-
-          // Información Personal (mapeada de tu esquema Prisma)
           ubicacion: studentData.ubicacion || studentData.aluciu || "",
           fotoUrl: studentData.fotoUrl || studentData.alufac || "",
           fechaNacimiento:
@@ -181,35 +193,29 @@ const LoginPage = () => {
           telefono: studentData.telefono || studentData.alute1 || "",
           email: studentData.email || studentData.alumai || "",
           sexo: studentData.sexo || "",
-
           sangre: studentData.sangre || studentData.alutsa || "No disponible",
           creditosAprobados:
             studentData.creditosAprobados ||
             studentData.calcac ||
             studentData.aluegr ||
             0,
-
-          // Información Académica
           carrera: studentData.carrera || "Sin carrera asignada",
           carreraId: studentData.carreraId || studentData.carcve || "N/A",
           semestre: studentData.semestre || "No disponible",
           inscripciones: studentData.inscripciones || [],
         };
 
-        // Guardamos en localStorage para que el Dashboard lo lea
         localStorage.setItem("studentData", JSON.stringify(cleanedData));
 
-        //console.log("✅ Datos preparados para el perfil:", cleanedData);
-
-        // Redirección al menú de estudiantes
         internalRouter.push(
           `/designs/menuestu?name=${encodeURIComponent(fullName || cleanedData.nombreCompleto)}`,
         );
       }
     }, [internalRouter, fullName, studentData]);
   };
+
   const RedirectAfterMaestroLogin = ({ fullName, maestroData }) => {
-    const internalRouter = useRouter(); // Usar internalRouter para evitar confusión
+    const internalRouter = useRouter();
 
     useEffect(() => {
       if (maestroData) {
@@ -238,6 +244,14 @@ const LoginPage = () => {
         showPassword={showPassword}
         setShowPassword={setShowPassword}
         onSubmit={onLoginSubmit}
+        onForgotPassword={() => {
+          resetForm();
+          setStep("askEmail");
+        }}
+        onRegister={() => {
+          resetForm();
+          setStep("register");
+        }}
       />
     ),
     register: (
@@ -251,14 +265,12 @@ const LoginPage = () => {
         onSubmit={onRegisterSubmit}
       />
     ),
-    // ESTE ES EL PASO QUE SIGUE AL REGISTRO EXITOSO
     askEmail: (
       <AskEmailForm email={email} setEmail={setEmail} onSubmit={onSendCode} />
     ),
     verify: (
       <VerifyCodeForm code={code} setCode={setCode} onSubmit={onVerifyCode} />
     ),
-
     update: (
       <UpdatePasswordForm
         newPassword={newPassword}
@@ -266,8 +278,6 @@ const LoginPage = () => {
         onSubmit={onUpdatePassword}
       />
     ),
-
-    // Solo se llega aquí DESPUÉS de cambiar la contraseña en 'update'
     success: (
       <RedirectAfterLogin fullName={fullName} studentData={studentData} />
     ),
@@ -282,6 +292,14 @@ const LoginPage = () => {
         showPassword={showPassword}
         setShowPassword={setShowPassword}
         onSubmit={onTeacherSubmit}
+        onForgotPassword={() => {
+          resetForm();
+          setStep("askEmailMaestro");
+        }}
+        onRegister={() => {
+          resetForm();
+          setStep("teacherRegister");
+        }}
       />
     ),
     askEmailMaestro: (
@@ -305,7 +323,6 @@ const LoginPage = () => {
         onSubmit={onMaestroUpdatePassword}
       />
     ),
-    // CORRECCIÓN 2: Se usa 'fullName'
     successMaestro: (
       <RedirectAfterMaestroLogin
         fullName={fullName}
@@ -323,23 +340,42 @@ const LoginPage = () => {
         showPassword={showPassword}
         setShowPassword={setShowPassword}
         onSubmit={onAdminSubmit}
+        onForgotPassword={() =>
+          setError("Contacta al administrador del sistema")
+        }
       />
     ),
 
-    // CORRECCIÓN 3: Se elimina el paso 'maestroSuccess' duplicado
-    // maestroSuccess: <RedirectAfterMaestroLogin maestroData={maestroData} />,
+    // SUB ADMIN
+    subadm: (
+      <AdminForm
+        adminUser={subAdminUser}
+        setAdminUser={setSubAdminUser}
+        adminPassword={subAdminPassword}
+        setAdminPassword={setSubAdminPassword}
+        showPassword={showPassword}
+        setShowPassword={setShowPassword}
+        onSubmit={onSubAdminSubmit}
+        onForgotPassword={() =>
+          setError("Contacta al administrador del sistema")
+        }
+      />
+    ),
   };
 
+  // Tabs SIN el botón de registro (se movió abajo del formulario)
   const tabs = [
     { id: "login", label: "Estudiantes", icon: <FaUser /> },
-    { id: "register", label: "Registro", icon: <FaUser /> },
     { id: "teacher", label: "Maestros", icon: <FaChalkboardTeacher /> },
     { id: "adm", label: "Admin", icon: <FaLock /> },
+    { id: "subadm", label: "Sub Admin", icon: <FaUserShield /> },
   ];
+
+  // Mostrar enlace de registro solo en pasos donde tiene sentido
+  const showRegisterLink = step === "login" || step === "teacher";
 
   return (
     <div className="login-container">
-      {/* ... (Contenido del componente se mantiene igual) ... */}
       <div className="particles">
         {particles.map((particle) => (
           <div
@@ -387,6 +423,81 @@ const LoginPage = () => {
           )}
 
           <div className="form-container">{formSteps[step]}</div>
+
+          {showRegisterLink && (
+            <div
+              style={{
+                textAlign: "center",
+                marginTop: "1.25rem",
+                paddingTop: "1rem",
+                borderTop: "1px solid rgba(0,0,0,0.08)",
+              }}
+            >
+              <span style={{ fontSize: "0.875rem", color: "#666" }}>
+                ¿No tienes cuenta?{" "}
+              </span>
+              <button
+                onClick={() => {
+                  resetForm();
+                  setStep("register");
+                }}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "#1b396a",
+                  fontWeight: "700",
+                  cursor: "pointer",
+                  fontSize: "0.875rem",
+                  textDecoration: "underline",
+                  textUnderlineOffset: "3px",
+                  padding: 0,
+                  transition: "opacity 0.2s",
+                }}
+                onMouseEnter={(e) => (e.target.style.opacity = "0.7")}
+                onMouseLeave={(e) => (e.target.style.opacity = "1")}
+              >
+                Regístrate aquí
+              </button>
+            </div>
+          )}
+
+          {/* Volver al login desde el formulario de registro */}
+          {step === "register" && (
+            <div
+              style={{
+                textAlign: "center",
+                marginTop: "1.25rem",
+                paddingTop: "1rem",
+                borderTop: "1px solid rgba(0,0,0,0.08)",
+              }}
+            >
+              <span style={{ fontSize: "0.875rem", color: "#666" }}>
+                ¿Ya tienes cuenta?{" "}
+              </span>
+              <button
+                onClick={() => {
+                  resetForm();
+                  setStep("login");
+                }}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "#1b396a",
+                  fontWeight: "700",
+                  cursor: "pointer",
+                  fontSize: "0.875rem",
+                  textDecoration: "underline",
+                  textUnderlineOffset: "3px",
+                  padding: 0,
+                  transition: "opacity 0.2s",
+                }}
+                onMouseEnter={(e) => (e.target.style.opacity = "0.7")}
+                onMouseLeave={(e) => (e.target.style.opacity = "1")}
+              >
+                Inicia sesión
+              </button>
+            </div>
+          )}
         </div>
       </div>
 

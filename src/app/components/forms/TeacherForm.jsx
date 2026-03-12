@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from "react";
 import { FaLock, FaChalkboardTeacher, FaEye, FaEyeSlash } from "react-icons/fa";
 
@@ -10,6 +10,8 @@ const TeacherForm = ({
   showPassword,
   setShowPassword,
   onSubmit,
+  onForgotPassword,
+  onRegister,
 }) => (
   <form onSubmit={onSubmit} className="login-form">
     <label className="login-label">
@@ -47,9 +49,57 @@ const TeacherForm = ({
       </span>
     </div>
 
+    {/* Olvidé contraseña */}
+    {onForgotPassword && (
+      <div style={{ textAlign: "right", marginBottom: "0.75rem" }}>
+        <button
+          type="button"
+          onClick={onForgotPassword}
+          style={{
+            background: "none",
+            border: "none",
+            color: "#1b396a",
+            fontSize: "0.8rem",
+            cursor: "pointer",
+            textDecoration: "underline",
+            textUnderlineOffset: "3px",
+            padding: 0,
+          }}
+        >
+          ¿Olvidaste tu contraseña?
+        </button>
+      </div>
+    )}
+
     <button type="submit" className="submit-button teacher-button">
       Acceso Maestro
     </button>
+
+    {/* Registrarse */}
+    {onRegister && (
+      <div style={{ textAlign: "center", marginTop: "1rem" }}>
+        <span style={{ fontSize: "0.875rem", color: "#666" }}>
+          ¿No tienes cuenta?{" "}
+        </span>
+        <button
+          type="button"
+          onClick={onRegister}
+          style={{
+            background: "none",
+            border: "none",
+            color: "#1b396a",
+            fontWeight: "700",
+            cursor: "pointer",
+            fontSize: "0.875rem",
+            textDecoration: "underline",
+            textUnderlineOffset: "3px",
+            padding: 0,
+          }}
+        >
+          Regístrate aquí
+        </button>
+      </div>
+    )}
   </form>
 );
 
