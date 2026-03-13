@@ -345,3 +345,19 @@ model constancias {
   @@index([folio])
   @@map("constancias")
 }
+model AdminCredentials {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  email     String?  // ← agrega esta línea
+  updatedAt DateTime @updatedAt
+}
+
+model AdminRecoveryToken {
+  id        Int      @id @default(autoincrement())
+  username  String
+  token     String   @unique
+  used      Boolean  @default(false)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}

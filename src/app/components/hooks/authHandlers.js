@@ -1,12 +1,6 @@
-// src/components/hooks/useAuthHandlers.js
-import { useRouter } from "next/navigation";
+// src/app/components/hooks/authHandlers.js
 
 export function useAuth(setStep, setFullName, setError, setStudentData) {
-  const router = useRouter();
-
-  // ========================================
-  // LOGIN (Pestaña Estudiantes)
-  // ========================================
   async function handleLogin(e, matricula, password) {
     e.preventDefault();
     setError("");
@@ -23,67 +17,28 @@ export function useAuth(setStep, setFullName, setError, setStudentData) {
         setStudentData(data.estudiante);
         setStep("success");
       } else if (res.status === 403 && data.requiresVerification) {
-        // No se permite el acceso si no está verificado
         setError(
-          "Tu cuenta no ha sido verificada. Usa la pestaña 'Registro' para verificarla.",
+          "Tu cuenta no ha sido verificada. Usa '¿Olvidaste tu contraseña?' para activarla.",
         );
       } else {
-        setError(data.message || "Error desconocido");
+        setError(data.message || "Matrícula o contraseña incorrectos");
       }
-    } catch (error) {
-      console.error("❌ Error en login:", error);
+    } catch {
       setError("Error al conectar con el servidor");
     }
   }
 
-  // ========================================
-  // REGISTRO (Pestaña Registro)
-  // ========================================
-  // src/components/hooks/useAuthHandlers.js
-
-  async function handleRegister(e, matricula) {
+  // Registro: valida correo institucional y envía código directamente
+  async function handleRegister(e, matricula, email) {
     e.preventDefault();
     setError("");
-    try {
-      // ⚠️ Importante: Asegúrate de que el endpoint sea el de login
-      // porque estamos validando si puede entrar con la genérica
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ matricula, password: "123456" }),
-      });
 
-      const data = await res.json();
-
-      // 1. Caso: El servidor confirma que requiere verificar (403 o 200)
-      if (data.requiresVerification || res.status === 403) {
-        setStep("askEmail");
-        return;
-      }
-
-      // 2. Caso: El login fue exitoso con 123456 pero NO activó requiresVerification
-      // Forzamos el cambio de contraseña de todos modos por seguridad
-      if (res.ok) {
-        setStep("askEmail");
-        return;
-      }
-
-      // 3. Caso: Error (ej. la matrícula no existe en la base de datos)
-      setError(
-        data.message || "La matrícula no es válida para registro inicial.",
-      );
-    } catch (error) {
-      console.error("❌ Error en registro:", error);
-      setError("Error al conectar con el servidor");
+    const expectedEmail = `al${matricula}@ite.edu.mx`.toLowerCase();
+    if (email.trim().toLowerCase() !== expectedEmail) {
+      setError(`El correo debe ser: al${matricula}@ite.edu.mx`);
+      return;
     }
-  }
 
-  // ========================================
-  // ENVIAR CÓDIGO
-  // ========================================
-  async function handleSendCode(e, matricula, email) {
-    e.preventDefault();
-    setError("");
     try {
       const res = await fetch("/api/auth/sendCode", {
         method: "POST",
@@ -93,20 +48,44 @@ export function useAuth(setStep, setFullName, setError, setStudentData) {
       const data = await res.json();
 
       if (res.ok) {
-        console.log("✅ Código enviado");
+        setStep("verify");
+      } else {
+        setError(data.message || "No se encontró la matrícula en el sistema");
+      }
+    } catch {
+      setError("Error al conectar con el servidor");
+    }
+  }
+
+  // Olvidé contraseña: envía código al correo institucional
+  async function handleSendCode(e, matricula, email) {
+    e.preventDefault();
+    setError("");
+
+    const expectedEmail = `al${matricula}@ite.edu.mx`.toLowerCase();
+    if (email.trim().toLowerCase() !== expectedEmail) {
+      setError(`El correo debe ser: al${matricula}@ite.edu.mx`);
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/auth/sendCode", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ matricula, correo: email }),
+      });
+      const data = await res.json();
+
+      if (res.ok) {
         setStep("verify");
       } else {
         setError(data.message || "Error enviando el código");
       }
-    } catch (error) {
-      console.error("❌ Error enviando código:", error);
+    } catch {
       setError("Error al enviar el código");
     }
   }
 
-  // ========================================
-  // VERIFICAR CÓDIGO
-  // ========================================
   async function handleVerifyCode(e, matricula, code) {
     e.preventDefault();
     setError("");
@@ -119,23 +98,24 @@ export function useAuth(setStep, setFullName, setError, setStudentData) {
       const data = await res.json();
 
       if (res.ok) {
-        console.log("✅ Código verificado");
         setStep("update");
       } else {
-        setError(data.message || "Código incorrecto");
+        setError(data.message || "Código incorrecto o expirado");
       }
-    } catch (error) {
-      console.error("❌ Error verificando código:", error);
+    } catch {
       setError("Error verificando el código");
     }
   }
 
-  // ========================================
-  // ACTUALIZAR CONTRASEÑA
-  // ========================================
   async function handleUpdatePassword(e, matricula, newPassword) {
     e.preventDefault();
     setError("");
+
+    if (!newPassword || newPassword.length < 6) {
+      setError("La contraseña debe tener al menos 6 caracteres");
+      return;
+    }
+
     try {
       const res = await fetch("/api/auth/changePass", {
         method: "POST",
@@ -145,15 +125,12 @@ export function useAuth(setStep, setFullName, setError, setStudentData) {
       const data = await res.json();
 
       if (res.ok) {
-        console.log("✅ Contraseña actualizada, haciendo login...");
-
-        // Hacer login automáticamente con la nueva contraseña
+        // Auto-login con la nueva contraseña
         const loginRes = await fetch("/api/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ matricula, password: newPassword }),
         });
-
         const loginData = await loginRes.json();
 
         if (loginRes.ok) {
@@ -161,24 +138,22 @@ export function useAuth(setStep, setFullName, setError, setStudentData) {
           setStudentData(loginData.estudiante);
           setStep("success");
         } else {
-          setError(
-            "Contraseña actualizada. Inicia sesión en la pestaña 'Estudiantes'.",
-          );
+          setError("Contraseña creada. Inicia sesión.");
+          setStep("login");
         }
       } else {
         setError(data.message || "Error actualizando la contraseña");
       }
-    } catch (error) {
-      console.error("❌ Error actualizando contraseña:", error);
+    } catch {
       setError("Error actualizando la contraseña");
     }
   }
 
   return {
     handleLogin,
+    handleRegister,
     handleSendCode,
     handleVerifyCode,
     handleUpdatePassword,
-    handleRegister,
   };
 }

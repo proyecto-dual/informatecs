@@ -8,14 +8,13 @@ import {
   FaChalkboardTeacher,
   FaUserShield,
 } from "react-icons/fa";
-// Importación de Hooks y estilos
 import { useAuth } from "@/app/components/hooks/authHandlers";
 import { useMaestroAuth } from "@/app/components/hooks/useMaestroAuth";
 import "@/styles/auth/login.css";
 
-// Importar formularios
 import TeacherForm from "@/app/components/forms/TeacherForm";
 import AdminForm from "@/app/components/forms/AdminForm";
+
 import RegisterForm from "@/app/components/forms/RegisterForm";
 import LoginForm from "@/app/components/forms/loginform";
 import AskEmailForm from "@/app/components/forms/AskEmailForm";
@@ -23,11 +22,11 @@ import VerifyCodeForm from "@/app/components/hooks/VerifyCodeForm";
 import UpdatePasswordForm from "@/app/components/forms/UpdatePasswordForm";
 import SchoolRainEffect from "@/app/components/animation/SchoolRainEffect";
 import MascotCarousel from "@/app/components/ MascotCarousel";
+import AdminForgotForm from "@/app/components/forms/AdminForgot";
 
 const LoginPage = () => {
   const router = useRouter();
 
-  // --- Estados generales ---
   const [step, setStep] = useState("login");
   const [matricula, setMatricula] = useState("");
   const [password, setPassword] = useState("");
@@ -46,7 +45,6 @@ const LoginPage = () => {
   const [subAdminPassword, setSubAdminPassword] = useState("");
   const [particles, setParticles] = useState([]);
 
-  // --- Hooks de autenticación ---
   const {
     handleLogin,
     handleRegister,
@@ -57,7 +55,6 @@ const LoginPage = () => {
 
   const {
     handleMaestroLogin,
-    handleMaestroRegister,
     handleMaestroSendCode,
     handleMaestroVerifyCode,
     handleMaestroUpdatePassword,
@@ -89,7 +86,7 @@ const LoginPage = () => {
   };
 
   // ----------------------
-  // Funciones de envío ESTUDIANTES
+  // ESTUDIANTES
   // ----------------------
   const onLoginSubmit = (e) => {
     e.preventDefault();
@@ -100,44 +97,42 @@ const LoginPage = () => {
 
   const onRegisterSubmit = (e) => {
     e.preventDefault();
-    if (!matricula || !password)
-      return setError("Escribe matrícula y contraseña");
-    if (password !== "123456")
-      return setError('La contraseña para registro debe ser "123456"');
-    handleRegister(e, matricula, password);
+    if (!matricula || !email) return setError("Completa todos los campos");
+    const expectedEmail = `al${matricula}@ite.edu.mx`.toLowerCase();
+    if (email.trim().toLowerCase() !== expectedEmail)
+      return setError(`El correo debe ser: al${matricula}@ite.edu.mx`);
+    handleRegister(e, matricula, email);
   };
 
   const onSendCode = (e) => {
     e.preventDefault();
+    if (!matricula || !email) return setError("Completa todos los campos");
+    const expectedEmail = `al${matricula}@ite.edu.mx`.toLowerCase();
+    if (email.trim().toLowerCase() !== expectedEmail)
+      return setError(`El correo debe ser: al${matricula}@ite.edu.mx`);
     handleSendCode(e, matricula, email);
   };
 
   const onVerifyCode = (e) => {
     e.preventDefault();
+    if (!code) return setError("Ingresa el código");
     handleVerifyCode(e, matricula, code);
   };
 
   const onUpdatePassword = (e) => {
     e.preventDefault();
+    if (!newPassword) return setError("Ingresa una contraseña");
     handleUpdatePassword(e, matricula, newPassword);
   };
 
   // ----------------------
-  // Funciones de envío MAESTROS
+  // MAESTROS
   // ----------------------
   const onTeacherSubmit = (e) => {
     e.preventDefault();
     if (!teacherId || !password)
       return setError("Escribe ID y contraseña de maestro");
     handleMaestroLogin(e, teacherId, password);
-  };
-
-  const onTeacherRegisterSubmit = (e) => {
-    e.preventDefault();
-    if (!teacherId || !password) return setError("Escribe ID de maestro");
-    if (password !== "profe123")
-      return setError('La contraseña para registro debe ser "profe123"');
-    handleMaestroRegister(e, teacherId);
   };
 
   const onMaestroSendCode = (e) => {
@@ -155,14 +150,48 @@ const LoginPage = () => {
     handleMaestroUpdatePassword(e, teacherId, newPassword);
   };
 
-  const onAdminSubmit = (e) => {
+  // ----------------------
+  // ADMIN
+  // ----------------------
+  // ── REEMPLAZA tu onAdminSubmit en LoginPage ──────────────────────────────────
+  // Busca "const onAdminSubmit" y reemplaza toda esa función con esto:
+
+  const onAdminSubmit = async (e) => {
     e.preventDefault();
-    if (adminUser === "NodalTec" && adminPassword === "eventosadmin2025") {
-      localStorage.setItem("adminName", "Juan Carlos Leal Nodal");
-      router.push("/designs/menuadmin");
+    if (!adminUser || !adminPassword)
+      return setError("Escribe usuario y contraseña");
+
+    setAdminLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: adminUser, password: adminPassword }),
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        localStorage.setItem("adminName", "Juan Carlos Leal Nodal");
+        localStorage.setItem("adminUsername", data.username);
+        router.push("/designs/menuadmin");
+      } else {
+        setError(data.message || "Usuario o contraseña incorrectos");
+      }
+    } catch {
+      setError("Error al conectar con el servidor");
+    } finally {
+      setAdminLoading(false);
     }
   };
 
+  // ── AGREGA este estado junto a los otros useState ─────────────────────────────
+  // const [adminLoading, setAdminLoading] = useState(false);
+
+  // ── EN EL FORM de admin, el botón de submit puede mostrar loading ─────────────
+  // Si quieres mostrar "Iniciando..." mientras carga, pasa adminLoading al AdminForm
+  // y úsalo en el botón: disabled={adminLoading}
   const onSubAdminSubmit = (e) => {
     e.preventDefault();
     if (subAdminUser === "SubAdmin" && subAdminPassword === "subadmin2025") {
@@ -174,11 +203,10 @@ const LoginPage = () => {
   };
 
   // ----------------------
-  // Componente interno de redirección para estudiantes
+  // Redirecciones
   // ----------------------
   const RedirectAfterLogin = ({ fullName, studentData }) => {
     const internalRouter = useRouter();
-
     useEffect(() => {
       if (studentData) {
         const cleanedData = {
@@ -204,34 +232,30 @@ const LoginPage = () => {
           semestre: studentData.semestre || "No disponible",
           inscripciones: studentData.inscripciones || [],
         };
-
         localStorage.setItem("studentData", JSON.stringify(cleanedData));
-
         internalRouter.push(
           `/designs/menuestu?name=${encodeURIComponent(fullName || cleanedData.nombreCompleto)}`,
         );
       }
     }, [internalRouter, fullName, studentData]);
+    return null;
   };
 
   const RedirectAfterMaestroLogin = ({ fullName, maestroData }) => {
     const internalRouter = useRouter();
-
     useEffect(() => {
       if (maestroData) {
         localStorage.setItem("maestroData", JSON.stringify(maestroData));
-        console.log("✅ Datos del maestro guardados:", maestroData);
         internalRouter.push(
           `/designs/menumaestros?name=${encodeURIComponent(fullName)}`,
         );
       }
     }, [internalRouter, fullName, maestroData]);
-
     return null;
   };
 
   // ----------------------
-  // Definición de Pasos (FormSteps)
+  // FormSteps
   // ----------------------
   const formSteps = {
     // ESTUDIANTES
@@ -258,15 +282,19 @@ const LoginPage = () => {
       <RegisterForm
         matricula={matricula}
         setMatricula={setMatricula}
-        password={password}
-        setPassword={setPassword}
-        showPassword={showPassword}
-        setShowPassword={setShowPassword}
+        email={email}
+        setEmail={setEmail}
         onSubmit={onRegisterSubmit}
       />
     ),
     askEmail: (
-      <AskEmailForm email={email} setEmail={setEmail} onSubmit={onSendCode} />
+      <AskEmailForm
+        matricula={matricula}
+        setMatricula={setMatricula}
+        email={email}
+        setEmail={setEmail}
+        onSubmit={onSendCode}
+      />
     ),
     verify: (
       <VerifyCodeForm code={code} setCode={setCode} onSubmit={onVerifyCode} />
@@ -340,15 +368,26 @@ const LoginPage = () => {
         showPassword={showPassword}
         setShowPassword={setShowPassword}
         onSubmit={onAdminSubmit}
-        onForgotPassword={() =>
-          setError("Contacta al administrador del sistema")
-        }
+        // ✅ Ahora va a admForgot en lugar de mostrar un error
+        onForgotPassword={() => {
+          resetForm();
+          setStep("admForgot");
+        }}
+      />
+    ),
+    // ✅ Paso de recuperación admin
+    admForgot: (
+      <AdminForgotForm
+        onBack={() => {
+          resetForm();
+          setStep("adm");
+        }}
       />
     ),
 
     // SUB ADMIN
     subadm: (
-      <AdminForm
+      <AdminForgotForm
         adminUser={subAdminUser}
         setAdminUser={setSubAdminUser}
         adminPassword={subAdminPassword}
@@ -356,14 +395,23 @@ const LoginPage = () => {
         showPassword={showPassword}
         setShowPassword={setShowPassword}
         onSubmit={onSubAdminSubmit}
-        onForgotPassword={() =>
-          setError("Contacta al administrador del sistema")
-        }
+        // ✅ Sub admin también puede solicitar recuperación
+        onForgotPassword={() => {
+          resetForm();
+          setStep("subadmForgot");
+        }}
+      />
+    ),
+    subadmForgot: (
+      <AdminForgotForm
+        onBack={() => {
+          resetForm();
+          setStep("subadm");
+        }}
       />
     ),
   };
 
-  // Tabs SIN el botón de registro (se movió abajo del formulario)
   const tabs = [
     { id: "login", label: "Estudiantes", icon: <FaUser /> },
     { id: "teacher", label: "Maestros", icon: <FaChalkboardTeacher /> },
@@ -371,8 +419,12 @@ const LoginPage = () => {
     { id: "subadm", label: "Sub Admin", icon: <FaUserShield /> },
   ];
 
-  // Mostrar enlace de registro solo en pasos donde tiene sentido
   const showRegisterLink = step === "login" || step === "teacher";
+  const showBackToLogin =
+    step === "register" ||
+    step === "askEmail" ||
+    step === "verify" ||
+    step === "update";
 
   return (
     <div className="login-container">
@@ -386,7 +438,7 @@ const LoginPage = () => {
               animationDelay: particle.animationDelay,
               animationDuration: particle.animationDuration,
             }}
-          ></div>
+          />
         ))}
       </div>
 
@@ -451,7 +503,6 @@ const LoginPage = () => {
                   textDecoration: "underline",
                   textUnderlineOffset: "3px",
                   padding: 0,
-                  transition: "opacity 0.2s",
                 }}
                 onMouseEnter={(e) => (e.target.style.opacity = "0.7")}
                 onMouseLeave={(e) => (e.target.style.opacity = "1")}
@@ -461,8 +512,7 @@ const LoginPage = () => {
             </div>
           )}
 
-          {/* Volver al login desde el formulario de registro */}
-          {step === "register" && (
+          {showBackToLogin && (
             <div
               style={{
                 textAlign: "center",
@@ -471,9 +521,6 @@ const LoginPage = () => {
                 borderTop: "1px solid rgba(0,0,0,0.08)",
               }}
             >
-              <span style={{ fontSize: "0.875rem", color: "#666" }}>
-                ¿Ya tienes cuenta?{" "}
-              </span>
               <button
                 onClick={() => {
                   resetForm();
@@ -489,12 +536,11 @@ const LoginPage = () => {
                   textDecoration: "underline",
                   textUnderlineOffset: "3px",
                   padding: 0,
-                  transition: "opacity 0.2s",
                 }}
                 onMouseEnter={(e) => (e.target.style.opacity = "0.7")}
                 onMouseLeave={(e) => (e.target.style.opacity = "1")}
               >
-                Inicia sesión
+                ← Volver al inicio de sesión
               </button>
             </div>
           )}
@@ -511,7 +557,7 @@ const LoginPage = () => {
             fill="#1b396a"
             fillOpacity="1"
             d="M0,160L17.1,176C34.3,192,69,224,103,234.7C137.1,245,171,235,206,218.7C240,203,274,181,309,170.7C342.9,160,377,160,411,181.3C445.7,203,480,245,514,245.3C548.6,245,583,203,617,170.7C651.4,139,686,117,720,128C754.3,139,789,181,823,181.3C857.1,181,891,139,926,138.7C960,139,994,181,1029,202.7C1062.9,224,1097,224,1131,213.3C1165.7,203,1200,181,1234,186.7C1268.6,192,1303,224,1337,240C1371.4,256,1406,256,1423,256L1440,256L1440,320L1422.9,320C1405.7,320,1371,320,1337,320C1302.9,320,1269,320,1234,320C1200,320,1166,320,1131,320C1097.1,320,1063,320,1029,320C994.3,320,960,320,926,320C891.4,320,857,320,823,320C788.6,320,754,320,720,320C685.7,320,651,320,617,320C582.9,320,549,320,514,320C480,320,446,320,411,320C377.1,320,343,320,309,320C274.3,320,240,320,206,320C171.4,320,137,320,103,320C68.6,320,34,320,17,320L0,320Z"
-          ></path>
+          />
         </svg>
       </div>
 
