@@ -1,15 +1,14 @@
-// app/api/auth/adminRecovery/route.js
-// Admin solicita recuperación → correo a las dueñas para que SOLO aprueben
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import nodemailer from "nodemailer";
 import crypto from "crypto";
 
+// Configuración del transporte de correo
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.EMAIL_USER, // frida22408@gmail.com
-    pass: process.env.EMAIL_PASS, // gcsmnnrrjerwhiuh
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS, // Recuerda: Debe ser "Contraseña de Aplicación" de 16 letras
   },
 });
 
@@ -24,11 +23,12 @@ export async function POST(req) {
       );
     }
 
+    // Buscar al administrador
     const admin = await prisma.adminCredentials.findUnique({
       where: { username: adminUser.trim() },
     });
 
-    // Respuesta genérica para no revelar si existe
+    // Respuesta genérica por seguridad
     if (!admin) {
       return NextResponse.json({
         message:
@@ -36,34 +36,36 @@ export async function POST(req) {
       });
     }
 
-    // Invalidar tokens anteriores
+    // 1. Invalidar tokens anteriores para este usuario
     await prisma.adminRecoveryToken.updateMany({
       where: { username: admin.username, used: false },
       data: { used: true },
     });
 
-    // Crear token de aprobación (1 hora)
+    // 2. Crear nuevo token de aprobación (Válido por 1 hora)
     const token = crypto.randomBytes(32).toString("hex");
     await prisma.adminRecoveryToken.create({
       data: {
         username: admin.username,
-        token,
+        token: token,
         expiresAt: new Date(Date.now() + 60 * 60 * 1000),
         used: false,
       },
     });
 
-    // Correo a las dueñas — SOLO botón de aprobar, ellas NO ponen contraseña
+    // 3. Configurar destinatarios (Dueñas)
     const owners = [
       process.env.DB_OWNER_EMAIL_1 || process.env.EMAIL_USER,
       process.env.DB_OWNER_EMAIL_2,
     ].filter(Boolean);
 
-    const BASE_URL = (process.env.BASE_URL || "http://localhost:3000").replace(
-      /\/$/,
-      "",
-    );
-    const resetLink = `${BASE_URL}/admin-reset?token=${resetToken}`;
+    // 4. Construir el enlace de aprobación
+    const BASE_URL = (
+      process.env.BASE_URL || "https://informatecs.vercel.app"
+    ).replace(/\/$/, "");
+    const approvalLink = `${BASE_URL}/admin-reset?token=${token}`;
+
+    // 5. Enviar el correo
     await transporter.sendMail({
       from: `"Eventos ITE" <${process.env.EMAIL_USER}>`,
       to: owners.join(", "),
@@ -78,17 +80,16 @@ export async function POST(req) {
           </div>
           <div style="padding:32px">
             <p style="font-size:15px;color:#333;margin-top:0">
-              El administrador <strong style="color:#1b396a">${admin.username}</strong>
+              El administrador <strong style="color:#1b396a">${admin.username}</strong> 
               ha solicitado recuperar su contraseña en <strong>Eventos ITE</strong>.
             </p>
             <p style="font-size:14px;color:#555">
-              Si reconoces esta solicitud, haz clic en <strong>"Aprobar solicitud"</strong>.<br>
-              Se le enviará automáticamente un enlace al administrador para que él mismo
-              establezca su nueva contraseña.<br><br>
-              Si <strong>no</strong> reconoces esta solicitud, ignora este correo.
+              Si reconoces esta solicitud, haz clic en el botón de abajo para aprobarla.<br>
+              Esto permitirá al administrador establecer una nueva contraseña.<br><br>
+              Si <strong>no</strong> reconoces esta solicitud, simplemente ignora este correo.
             </p>
             <div style="text-align:center;margin:32px 0">
-              <a href="${approvalLink}"
+              <a href="${approvalLink}" 
                  style="background:#1b396a;color:#fff;padding:14px 36px;border-radius:8px;
                         text-decoration:none;font-size:15px;font-weight:bold;display:inline-block">
                 ✅ Aprobar solicitud
@@ -96,7 +97,7 @@ export async function POST(req) {
             </div>
             <hr style="border:none;border-top:1px solid #eee;margin:24px 0">
             <p style="font-size:12px;color:#aaa;text-align:center;margin:0">
-              Expira en <strong>1 hora</strong> · Usuario: <strong>${admin.username}</strong>
+              Este enlace expira en <strong>1 hora</strong> · Usuario solicitado: <strong>${admin.username}</strong>
             </p>
           </div>
         </div>
@@ -108,9 +109,14 @@ export async function POST(req) {
         "Solicitud enviada. Las administradoras recibirán un correo para aprobar el cambio.",
     });
   } catch (error) {
-    console.error("[adminRecovery] Error:", error);
+    // Esto imprimirá el error real en los logs de Vercel
+    console.error("[adminRecovery] Error Detallado:", error);
+
     return NextResponse.json(
-      { message: "Error interno del servidor." },
+      {
+        message: "Error interno del servidor.",
+        details: error.message, // Útil para debug, quitar en producción si prefieres privacidad
+      },
       { status: 500 },
     );
   }
