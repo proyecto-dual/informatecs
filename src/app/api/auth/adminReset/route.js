@@ -1,16 +1,15 @@
+// src/app/api/auth/adminReset/route.js
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
 export async function POST(req) {
   try {
-    const body = await req.json();
-    const { token, newPassword } = body;
+    const { token, newPassword } = await req.json();
 
-    // 1. Validaciones iniciales
     if (!token || !newPassword) {
       return NextResponse.json(
-        { message: "Token y contraseña son requeridos." },
+        { message: "Datos incompletos." },
         { status: 400 },
       );
     }
@@ -22,66 +21,66 @@ export async function POST(req) {
       );
     }
 
-    // 2. Validar existencia y estado del token
+    // 1. Validar token
     const record = await prisma.adminRecoveryToken.findUnique({
       where: { token },
     });
+    console.log("🔍 Token encontrado:", record);
 
-    if (!record) {
+    if (!record)
       return NextResponse.json(
         { message: "Enlace inválido." },
         { status: 400 },
       );
-    }
-
-    if (record.used) {
+    if (record.used)
       return NextResponse.json(
         { message: "Este enlace ya fue utilizado." },
         { status: 400 },
       );
-    }
-
-    if (new Date(record.expiresAt) < new Date()) {
+    if (record.expiresAt < new Date())
       return NextResponse.json(
         { message: "El enlace ha expirado." },
         { status: 400 },
       );
-    }
 
-    // 3. Hashear la nueva contraseña
+    // 2. Hashear contraseña
     const hashedPassword = await bcrypt.hash(newPassword, 10);
+    console.log("🔐 Hash generado para:", record.username);
 
-    // 4. Transacción atómica: Actualizar contraseña y marcar token como usado
-    // Usamos $transaction para asegurar que si algo falla, no se marque el token como usado
-    await prisma.$transaction([
-      // Upsert: Actualiza si existe, crea si no (basado en el username)
-      prisma.adminCredentials.upsert({
+    // 3. Verificar si ya existe el registro
+    const existing = await prisma.adminCredentials.findUnique({
+      where: { username: record.username },
+    });
+    console.log("📋 Registro existente en AdminCredentials:", existing);
+
+    // 4. Guardar — update si existe, create si no
+    let result;
+    if (existing) {
+      result = await prisma.adminCredentials.update({
         where: { username: record.username },
-        update: { password: hashedPassword },
-        create: {
-          username: record.username,
-          password: hashedPassword,
-        },
-      }),
-      // Marcar token como usado
-      prisma.adminRecoveryToken.update({
-        where: { token },
-        data: { used: true },
-      }),
-    ]);
+        data: { password: hashedPassword },
+      });
+    } else {
+      result = await prisma.adminCredentials.create({
+        data: { username: record.username, password: hashedPassword },
+      });
+    }
+    console.log("✅ Contraseña guardada en BD:", result);
 
-    console.log(`✅ Contraseña actualizada para: ${record.username}`);
+    // 5. Marcar token como usado
+    await prisma.adminRecoveryToken.update({
+      where: { token },
+      data: { used: true },
+    });
+    console.log("🔒 Token marcado como usado");
 
     return NextResponse.json({
       message: "Contraseña actualizada correctamente.",
     });
   } catch (error) {
-    console.error("❌ [adminReset] Error:", error);
+    console.error("❌ [adminReset] Error completo:", error);
     return NextResponse.json(
-      {
-        message: "Error interno al procesar la solicitud.",
-        details: error.message,
-      },
+      { message: `Error al guardar: ${error.message}` },
       { status: 500 },
     );
   }

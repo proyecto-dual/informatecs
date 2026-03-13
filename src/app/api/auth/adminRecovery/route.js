@@ -60,9 +60,10 @@ export async function POST(req) {
     ].filter(Boolean);
 
     // 4. Construir el enlace de aprobación
-    const BASE_URL = (
-      process.env.BASE_URL || "https://informatecs.vercel.app"
-    ).replace(/\/$/, "");
+    const BASE_URL = (process.env.BASE_URL || "localhost:3000").replace(
+      /\/$/,
+      "",
+    );
     const approvalLink = `${BASE_URL}/admin-reset?token=${token}`;
 
     // 5. Enviar el correo

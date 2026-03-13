@@ -1,18 +1,18 @@
-// app/components/forms/AdminApproval.jsx
+// src/app/admin-approval/page.jsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
-const AdminApproval = () => {
+function AdminApprovalContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
-  const [status, setStatus] = useState("loading");
+  const [status, setStatus] = useState("loading"); // loading | ready | approving | success | invalid
   const [message, setMessage] = useState("");
   const [username, setUsername] = useState("");
-  const [submitting, setSubmitting] = useState(false);
 
+  // Validar token al cargar
   useEffect(() => {
     if (!token) {
       setStatus("invalid");
@@ -25,7 +25,7 @@ const AdminApproval = () => {
       .then((data) => {
         if (data.valid) {
           setUsername(data.username);
-          setStatus("valid");
+          setStatus("ready");
         } else {
           setStatus("invalid");
           setMessage(data.message);
@@ -37,9 +37,9 @@ const AdminApproval = () => {
       });
   }, [token]);
 
+  // lizets018 aprueba → API genera token de reset y manda correo al admin
   const handleApprove = async () => {
-    setSubmitting(true);
-    setMessage("");
+    setStatus("approving");
     try {
       const res = await fetch("/api/auth/adminApproval", {
         method: "POST",
@@ -47,39 +47,48 @@ const AdminApproval = () => {
         body: JSON.stringify({ token }),
       });
       const data = await res.json();
+
       if (res.ok) {
         setStatus("success");
         setMessage(data.message);
       } else {
-        setStatus("error");
-        setMessage(data.message || "Error al aprobar.");
+        setStatus("invalid");
+        setMessage(data.message || "Error al procesar la aprobación.");
       }
     } catch {
-      setStatus("error");
+      setStatus("invalid");
       setMessage("Error al conectar con el servidor.");
-    } finally {
-      setSubmitting(false);
     }
   };
 
   return (
-    <div style={s.page}>
-      <div style={s.card}>
-        <h2 style={s.title}>🔐 Eventos ITE</h2>
-        <p style={s.subtitle}>Panel de aprobación administrativa</p>
+    <div style={styles.page}>
+      <div style={styles.card}>
+        <h2 style={styles.title}>🔐 Eventos ITE</h2>
+        <p style={styles.subtitle}>Panel de aprobación de recuperación</p>
 
-        {status === "loading" && <p style={s.center}>Verificando enlace...</p>}
+        {/* Verificando */}
+        {status === "loading" && (
+          <p style={{ color: "#666", textAlign: "center" }}>
+            Verificando enlace...
+          </p>
+        )}
 
-        {status === "invalid" && <div style={s.errorBox}>❌ {message}</div>}
+        {/* Token inválido / expirado */}
+        {status === "invalid" && (
+          <div style={styles.errorBox}>
+            <p style={{ margin: 0 }}>❌ {message}</p>
+          </div>
+        )}
 
-        {status === "valid" && (
-          <div>
+        {/* Listo para aprobar */}
+        {status === "ready" && (
+          <div style={{ textAlign: "center" }}>
             <p
               style={{
                 color: "#444",
-                fontSize: "15px",
-                textAlign: "center",
-                marginBottom: "6px",
+                fontSize: "0.95rem",
+                marginBottom: "1.5rem",
               }}
             >
               El administrador{" "}
@@ -88,60 +97,81 @@ const AdminApproval = () => {
             </p>
             <p
               style={{
-                color: "#666",
-                fontSize: "13px",
-                textAlign: "center",
-                marginBottom: "28px",
+                color: "#555",
+                fontSize: "0.88rem",
+                marginBottom: "2rem",
               }}
             >
-              Al aprobar, se le enviará un correo con un enlace para que{" "}
-              <strong>él mismo</strong> establezca su nueva contraseña.
+              Al aprobar, se le enviará automáticamente un enlace a su correo
+              para que él mismo establezca su nueva contraseña.
             </p>
-            {message && (
-              <p
-                style={{
-                  color: "#c0392b",
-                  fontSize: "13px",
-                  textAlign: "center",
-                  marginBottom: "12px",
-                }}
-              >
-                ⚠️ {message}
-              </p>
-            )}
-            <button
-              onClick={handleApprove}
-              disabled={submitting}
-              style={{ ...s.btn, opacity: submitting ? 0.7 : 1 }}
-            >
-              {submitting ? "Enviando..." : "✅ Aprobar solicitud"}
+            <button onClick={handleApprove} style={styles.approveBtn}>
+              ✅ Aprobar solicitud
             </button>
+            <p
+              style={{ color: "#aaa", fontSize: "0.78rem", marginTop: "1rem" }}
+            >
+              Si no reconoces esta solicitud, simplemente cierra esta página.
+            </p>
           </div>
         )}
 
+        {/* Aprobando */}
+        {status === "approving" && (
+          <p style={{ color: "#666", textAlign: "center" }}>
+            Procesando aprobación...
+          </p>
+        )}
+
+        {/* Éxito */}
         {status === "success" && (
-          <div style={s.successBox}>
-            <p style={{ margin: 0, fontWeight: 700, fontSize: "15px" }}>
-              ✅ ¡Solicitud aprobada!
+          <div style={styles.successBox}>
+            <p style={{ margin: 0, fontWeight: 600, fontSize: "1rem" }}>
+              ✅ Aprobación confirmada
             </p>
-            <p style={{ margin: "8px 0 0", fontSize: "13px", color: "#555" }}>
+            <p
+              style={{
+                margin: "0.75rem 0 0",
+                fontSize: "0.87rem",
+                color: "#555",
+              }}
+            >
               {message}
             </p>
+            <p
+              style={{
+                margin: "0.5rem 0 0",
+                fontSize: "0.82rem",
+                color: "#888",
+              }}
+            >
+              Ya puedes cerrar esta página.
+            </p>
           </div>
         )}
-
-        {status === "error" && <div style={s.errorBox}>❌ {message}</div>}
       </div>
     </div>
   );
-};
+}
 
-export default AdminApproval;
+export default function AdminApprovalPage() {
+  return (
+    <Suspense
+      fallback={
+        <div style={{ textAlign: "center", marginTop: "3rem", color: "#666" }}>
+          Cargando...
+        </div>
+      }
+    >
+      <AdminApprovalContent />
+    </Suspense>
+  );
+}
 
-const s = {
+const styles = {
   page: {
     minHeight: "100vh",
-    background: "linear-gradient(135deg,#1b396a,#2e5fa3)",
+    background: "linear-gradient(135deg, #1b396a 0%, #2e5fa3 100%)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -153,34 +183,25 @@ const s = {
     padding: "2rem",
     width: "100%",
     maxWidth: "440px",
-    boxShadow: "0 8px 32px rgba(0,0,0,.15)",
+    boxShadow: "0 8px 32px rgba(0,0,0,0.15)",
   },
-  title: { color: "#1b396a", textAlign: "center", margin: "0 0 4px" },
+  title: { color: "#1b396a", textAlign: "center", marginBottom: "0.25rem" },
   subtitle: {
     color: "#888",
     textAlign: "center",
     fontSize: "0.85rem",
     marginBottom: "1.5rem",
   },
-  center: { color: "#666", textAlign: "center" },
-  btn: {
-    width: "100%",
-    padding: "0.85rem",
-    background: "#1b396a",
+  approveBtn: {
+    background: "#27ae60",
     color: "#fff",
     border: "none",
     borderRadius: "8px",
+    padding: "0.85rem 2rem",
     fontSize: "1rem",
     fontWeight: 700,
     cursor: "pointer",
-  },
-  successBox: {
-    background: "#eafaf1",
-    border: "1px solid #27ae60",
-    borderRadius: "8px",
-    padding: "1.25rem",
-    color: "#27ae60",
-    textAlign: "center",
+    width: "100%",
   },
   errorBox: {
     background: "#fdecea",
@@ -189,5 +210,13 @@ const s = {
     padding: "1rem",
     color: "#c0392b",
     textAlign: "center",
+  },
+  successBox: {
+    background: "#eafaf1",
+    border: "1px solid #27ae60",
+    borderRadius: "8px",
+    padding: "1.25rem",
+    textAlign: "center",
+    color: "#27ae60",
   },
 };
