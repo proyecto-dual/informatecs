@@ -339,7 +339,6 @@ const LoginPage = () => {
         showPassword={showPassword}
         setShowPassword={setShowPassword}
         onSubmit={onAdminSubmit}
-        // ✅ Ahora va a admForgot en lugar de mostrar un error
         onForgotPassword={() => {
           resetForm();
           setStep("admForgot");

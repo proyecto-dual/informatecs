@@ -1,5 +1,3 @@
-// app/components/forms/Adminreset.jsx
-// Página para el ADMIN — llega desde su correo y pone su nueva contraseña
 "use client";
 
 import { useEffect, useState } from "react";

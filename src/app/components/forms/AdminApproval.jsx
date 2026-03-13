@@ -1,5 +1,3 @@
-// app/components/forms/AdminApproval.jsx
-// Página para las DUEÑAS — solo aprueban, el admin recibe el link por correo
 "use client";
 
 import { useEffect, useState } from "react";
