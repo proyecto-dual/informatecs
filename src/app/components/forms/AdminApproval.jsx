@@ -19,7 +19,7 @@ function AdminApprovalContent() {
       return;
     }
 
-    fetch(`/api/auth/adminApproval/validate?token=${token}`)
+    fetch(`/api/auth/adminApproval?token=${token}`)
       .then((r) => r.json())
       .then((data) => {
         if (data.valid) {
