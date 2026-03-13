@@ -1,6 +1,7 @@
 // src/app/admin-approval/page.jsx
 import { Suspense } from "react";
 import AdminApproval from "../components/forms/AdminApproval";
+import AdminApprovalPage from "../components/forms/AdminApproval";
 
 export default function Page() {
   return (
@@ -20,7 +21,7 @@ export default function Page() {
         </div>
       }
     >
-      <AdminApproval />
+      <AdminApprovalPage />
     </Suspense>
   );
 }
