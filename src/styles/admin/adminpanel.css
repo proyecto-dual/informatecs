@@ -1642,3 +1642,97 @@ svg {
     align-items: flex-start;
   }
 }
+/* Botones apilados en catálogo */
+.actividad-botones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+/* Botón eliminar del catálogo */
+.btn-eliminar-catalogo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  background: #fff0f0;
+  color: #c0392b;
+  border: 1px solid #e74c3c;
+  border-radius: 8px;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.btn-eliminar-catalogo:hover {
+  background: #fde8e8;
+}
+
+/* Barra de búsqueda + botón nueva actividad */
+.busqueda {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.busqueda input {
+  flex: 1;
+  min-width: 0;
+}
+
+.busqueda .search-icon {
+  position: static;
+  flex-shrink: 0;
+  color: #888;
+}
+
+/* Botón + nueva actividad */
+.btn-nueva-actividad {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1b396a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.btn-nueva-actividad:hover {
+  background: #142d55;
+}
+
+/* Responsivo móvil */
+@media (max-width: 480px) {
+  .actividad-botones {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .actividad-botones button {
+    flex: 1;
+    font-size: 0.75rem;
+    padding: 0.4rem 0.5rem;
+  }
+
+  .busqueda {
+    gap: 0.35rem;
+  }
+
+  .btn-nueva-actividad {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+  }
+}

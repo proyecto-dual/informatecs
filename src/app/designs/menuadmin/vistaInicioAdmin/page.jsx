@@ -31,6 +31,15 @@ const CARDS_ACTIVIDADES = [
   { label: "Catrines/Catrinas", cls: "lbl-13" },
 ];
 
+const TIPOS_ACTIVIDAD = [
+  "Cultural",
+  "Cívica",
+  "Deportiva",
+  "Artística",
+  "Recreativa",
+  "Otra",
+];
+
 const AdminPanel = () => {
   const [modalVerMaestro, setModalVerMaestro] = useState(null);
   const [todasActividades, setTodasActividades] = useState([]);
@@ -50,6 +59,17 @@ const AdminPanel = () => {
   const [maestrosEncontrados, setMaestrosEncontrados] = useState([]);
   const [buscandoMaestro, setBuscandoMaestro] = useState(false);
   const [guardando, setGuardando] = useState(false);
+
+  // ── NUEVO: modal para agregar actividad al catálogo ──
+  const [modalNuevaActividad, setModalNuevaActividad] = useState(false);
+  const [nuevaActividad, setNuevaActividad] = useState({
+    aticve: "",
+    aconco: "",
+    tipo: "Cultural",
+    acocre: "",
+    acohrs: "",
+  });
+  const [guardandoNueva, setGuardandoNueva] = useState(false);
 
   const [formulario, setFormulario] = useState({
     dias: [],
@@ -250,6 +270,87 @@ const AdminPanel = () => {
     );
   };
 
+  // ── NUEVO: eliminar actividad del catálogo ──
+  const eliminarDelCatalogo = async (actividad) => {
+    const nombre = actividad.aconco || actividad.aticve || "esta actividad";
+    if (
+      !confirm(
+        `¿Deseas eliminar "${nombre}" del catálogo?\n\nEsta acción no se puede deshacer.`
+      )
+    )
+      return;
+
+    try {
+      const response = await fetch(`/api/actividades/${actividad.id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("Error al eliminar del catálogo");
+
+      setTodasActividades((prev) =>
+        prev.filter((act) => act.id !== actividad.id)
+      );
+      setActividadesOfertadas((prev) =>
+        prev.filter((act) => act.id !== actividad.id)
+      );
+    } catch (error) {
+      console.error(error);
+      alert(`Error: ${error.message}`);
+    }
+  };
+
+  // ── NUEVO: agregar nueva actividad al catálogo ──
+  const abrirModalNueva = () => {
+    setNuevaActividad({
+      aticve: "",
+      aconco: "",
+      tipo: "Cultural",
+      acocre: "",
+      acohrs: "",
+    });
+    setModalNuevaActividad(true);
+  };
+
+  const guardarNuevaActividad = async () => {
+    if (!nuevaActividad.aticve.trim()) {
+      alert("El código de la actividad es obligatorio");
+      return;
+    }
+    if (!nuevaActividad.aconco.trim()) {
+      alert("El nombre de la actividad es obligatorio");
+      return;
+    }
+
+    try {
+      setGuardandoNueva(true);
+      const response = await fetch("/api/actividades", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          aticve: nuevaActividad.aticve.trim().toUpperCase(),
+          aconco: nuevaActividad.aconco.trim(),
+          tipo: nuevaActividad.tipo,
+          acocre: nuevaActividad.acocre ? Number(nuevaActividad.acocre) : 0,
+          acohrs: nuevaActividad.acohrs ? Number(nuevaActividad.acohrs) : 0,
+        }),
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.message || "Error al crear actividad");
+      }
+
+      const creada = await response.json();
+      setTodasActividades((prev) => [...prev, creada]);
+      setModalNuevaActividad(false);
+      alert(`Actividad "${creada.aconco}" agregada al catálogo`);
+    } catch (error) {
+      console.error(error);
+      alert(`Error: ${error.message}`);
+    } finally {
+      setGuardandoNueva(false);
+    }
+  };
+
   const publicarActividades = async () => {
     if (actividadesOfertadas.length === 0) {
       alert("Selecciona al menos una actividad para ofertar.");
@@ -282,7 +383,6 @@ const AdminPanel = () => {
     }
   };
 
-  //  eliminar una oferta publicada 
   const eliminarPublicada = async (oferta) => {
     const nombre =
       oferta.actividad?.aconco || oferta.actividad?.aticve || "esta actividad";
@@ -305,7 +405,6 @@ const AdminPanel = () => {
     }
   };
 
-  // reiniciar: eliminar todas las publicadas
   const reiniciarPublicadas = async () => {
     if (actividadesPublicadas.length === 0) return;
     if (
@@ -566,6 +665,115 @@ const AdminPanel = () => {
         </div>
       )}
 
+      {/* ── NUEVO: Modal agregar actividad al catálogo ── */}
+      {modalNuevaActividad && (
+        <div className="modal-overlay">
+          <div className="modal-content modal-small">
+            <div className="modal-header">
+              <div>
+                <h3>Nueva Actividad</h3>
+                <p className="modal-subtitle">Agregar al catálogo</p>
+              </div>
+              <button
+                className="btn-close"
+                onClick={() => setModalNuevaActividad(false)}
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <div className="seccion-form">
+                <label>Código: <span style={{ color: "#c0392b" }}>*</span></label>
+                <input
+                  type="text"
+                  value={nuevaActividad.aticve}
+                  onChange={(e) =>
+                    setNuevaActividad({ ...nuevaActividad, aticve: e.target.value })
+                  }
+                  placeholder="Ej: D001, C012"
+                  style={{ textTransform: "uppercase" }}
+                />
+
+                <label style={{ marginTop: "0.75rem" }}>Nombre: <span style={{ color: "#c0392b" }}>*</span></label>
+                <input
+                  type="text"
+                  value={nuevaActividad.aconco}
+                  onChange={(e) =>
+                    setNuevaActividad({ ...nuevaActividad, aconco: e.target.value })
+                  }
+                  placeholder="Ej: Danza contemporánea"
+                />
+
+                <label style={{ marginTop: "0.75rem" }}>Tipo:</label>
+                <select
+                  value={nuevaActividad.tipo}
+                  onChange={(e) =>
+                    setNuevaActividad({ ...nuevaActividad, tipo: e.target.value })
+                  }
+                  style={{
+                    width: "100%",
+                    padding: "0.5rem 0.75rem",
+                    borderRadius: "8px",
+                    border: "1px solid #ddd",
+                    fontSize: "0.9rem",
+                  }}
+                >
+                  {TIPOS_ACTIVIDAD.map((tipo) => (
+                    <option key={tipo} value={tipo}>{tipo}</option>
+                  ))}
+                </select>
+
+                <div className="grid-2-campos" style={{ marginTop: "0.75rem" }}>
+                  <div>
+                    <label>Créditos:</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={nuevaActividad.acocre}
+                      onChange={(e) =>
+                        setNuevaActividad({ ...nuevaActividad, acocre: e.target.value })
+                      }
+                      placeholder="Ej: 2"
+                    />
+                  </div>
+                  <div>
+                    <label>Horas:</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={nuevaActividad.acohrs}
+                      onChange={(e) =>
+                        setNuevaActividad({ ...nuevaActividad, acohrs: e.target.value })
+                      }
+                      placeholder="Ej: 3"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn-cancelar"
+                onClick={() => setModalNuevaActividad(false)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="btn-guardar"
+                onClick={guardarNuevaActividad}
+                disabled={guardandoNueva}
+              >
+                {guardandoNueva ? "Guardando..." : "Agregar al Catálogo"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ══ HEADER ══ */}
       <div className="card header-card">
         <div className="header-text titulo-wrap">
@@ -617,6 +825,8 @@ const AdminPanel = () => {
         {/* CATÁLOGO */}
         <div className="card catalogo">
           <h3>Catálogo ({todasActividades.length})</h3>
+
+          {/* Barra de búsqueda + botón nueva actividad */}
           <div className="busqueda">
             <input
               type="text"
@@ -625,6 +835,13 @@ const AdminPanel = () => {
               onChange={(e) => setBusqueda(e.target.value)}
             />
             <Search className="search-icon" size={18} />
+            <button
+              className="btn-nueva-actividad"
+              onClick={abrirModalNueva}
+              title="Agregar nueva actividad al catálogo"
+            >
+              <Plus size={18} />
+            </button>
           </div>
 
           <div className="lista-actividades">
@@ -660,21 +877,32 @@ const AdminPanel = () => {
                         )}
                       </div>
                     </div>
-                    <button
-                      className={agregada ? "btn-agregado" : "btn-configurar"}
-                      onClick={() => {
-                        if (!agregada) abrirModalAgregar(actividad);
-                      }}
-                      disabled={!!agregada}
-                    >
-                      {agregada ? (
-                        <>✓ Agregada</>
-                      ) : (
-                        <>
-                          <Plus size={16} /> Configurar y Agregar
-                        </>
-                      )}
-                    </button>
+
+                    {/* Botones apilados */}
+                    <div className="actividad-botones">
+                      <button
+                        className={agregada ? "btn-agregado" : "btn-configurar"}
+                        onClick={() => {
+                          if (!agregada) abrirModalAgregar(actividad);
+                        }}
+                        disabled={!!agregada}
+                      >
+                        {agregada ? (
+                          <>✓ Agregada</>
+                        ) : (
+                          <>
+                            <Plus size={16} /> Configurar y Agregar
+                          </>
+                        )}
+                      </button>
+                      <button
+                        className="btn-eliminar-catalogo"
+                        onClick={() => eliminarDelCatalogo(actividad)}
+                        title="Eliminar del catálogo"
+                      >
+                        <Trash2 size={16} /> Eliminar
+                      </button>
+                    </div>
                   </div>
                 );
               })
