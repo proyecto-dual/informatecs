@@ -1,4 +1,4 @@
-// app/api/auth/adminApproval/route.js
+// src/app/api/auth/adminApproval/route.js
 // Dueña confirma aprobación → envía correo al ADMIN con link para cambiar su contraseña
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
@@ -74,13 +74,18 @@ export async function POST(req) {
       },
     });
 
-    // Enviar correo al admin con el link para cambiar su propia contraseña
-    const BASE_URL = process.env.BASE_URL || " http://192.168.0.2:3000";
+    // ✅ BASE_URL sin slash final para evitar doble //
+    const BASE_URL = (process.env.BASE_URL || "http://localhost:3000").replace(
+      /\/$/,
+      "",
+    );
     const resetLink = `${BASE_URL}/admin-reset?token=${resetToken}`;
+
+    console.log("🔗 Link de reset generado:", resetLink);
 
     await transporter.sendMail({
       from: `"Eventos ITE" <${process.env.EMAIL_USER}>`,
-      to: admin.email, // al20760204@ite.edu.mx
+      to: admin.email,
       subject: "✅ Tu solicitud fue aprobada – Restablece tu contraseña",
       html: `
         <div style="font-family:Arial,sans-serif;max-width:580px;margin:auto;

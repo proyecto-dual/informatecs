@@ -59,9 +59,11 @@ export async function POST(req) {
       process.env.DB_OWNER_EMAIL_2,
     ].filter(Boolean);
 
-    const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
-    const approvalLink = `${BASE_URL}/admin-approval?token=${token}`;
-
+    const BASE_URL = (process.env.BASE_URL || "http://localhost:3000").replace(
+      /\/$/,
+      "",
+    );
+    const resetLink = `${BASE_URL}/admin-reset?token=${resetToken}`;
     await transporter.sendMail({
       from: `"Eventos ITE" <${process.env.EMAIL_USER}>`,
       to: owners.join(", "),

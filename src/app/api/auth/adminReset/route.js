@@ -21,54 +21,66 @@ export async function POST(req) {
       );
     }
 
-    // Validar token
+    // 1. Validar token
     const record = await prisma.adminRecoveryToken.findUnique({
       where: { token },
     });
+    console.log("🔍 Token encontrado:", record);
 
-    if (!record) {
+    if (!record)
       return NextResponse.json(
         { message: "Enlace inválido." },
         { status: 400 },
       );
-    }
-    if (record.used) {
+    if (record.used)
       return NextResponse.json(
         { message: "Este enlace ya fue utilizado." },
         { status: 400 },
       );
-    }
-    if (record.expiresAt < new Date()) {
+    if (record.expiresAt < new Date())
       return NextResponse.json(
         { message: "El enlace ha expirado." },
         { status: 400 },
       );
-    }
 
-    // ✅ Guardar nueva contraseña hasheada en la BD
+    // 2. Hashear contraseña
     const hashedPassword = await bcrypt.hash(newPassword, 10);
+    console.log("🔐 Hash generado para:", record.username);
 
-    await prisma.adminCredentials.upsert({
+    // 3. Verificar si ya existe el registro
+    const existing = await prisma.adminCredentials.findUnique({
       where: { username: record.username },
-      update: { password: hashedPassword },
-      create: { username: record.username, password: hashedPassword },
     });
+    console.log("📋 Registro existente en AdminCredentials:", existing);
 
-    // Marcar token como usado para que no se pueda reutilizar
+    // 4. Guardar — update si existe, create si no
+    let result;
+    if (existing) {
+      result = await prisma.adminCredentials.update({
+        where: { username: record.username },
+        data: { password: hashedPassword },
+      });
+    } else {
+      result = await prisma.adminCredentials.create({
+        data: { username: record.username, password: hashedPassword },
+      });
+    }
+    console.log("✅ Contraseña guardada en BD:", result);
+
+    // 5. Marcar token como usado
     await prisma.adminRecoveryToken.update({
       where: { token },
       data: { used: true },
     });
-
-    console.log(`✅ Contraseña actualizada en BD para: ${record.username}`);
+    console.log("🔒 Token marcado como usado");
 
     return NextResponse.json({
       message: "Contraseña actualizada correctamente.",
     });
   } catch (error) {
-    console.error("[adminReset] Error:", error);
+    console.error("❌ [adminReset] Error completo:", error);
     return NextResponse.json(
-      { message: "Error interno del servidor." },
+      { message: `Error al guardar: ${error.message}` },
       { status: 500 },
     );
   }
