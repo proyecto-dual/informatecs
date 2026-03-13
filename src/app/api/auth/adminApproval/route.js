@@ -75,7 +75,7 @@ export async function POST(req) {
     });
 
     // Enviar correo al admin con el link para cambiar su propia contraseña
-    const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
+    const BASE_URL = process.env.BASE_URL || " http://192.168.0.2:3000";
     const resetLink = `${BASE_URL}/admin-reset?token=${resetToken}`;
 
     await transporter.sendMail({

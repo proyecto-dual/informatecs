@@ -22,7 +22,7 @@ import VerifyCodeForm from "@/app/components/hooks/VerifyCodeForm";
 import UpdatePasswordForm from "@/app/components/forms/UpdatePasswordForm";
 import SchoolRainEffect from "@/app/components/animation/SchoolRainEffect";
 import MascotCarousel from "@/app/components/ MascotCarousel";
-import AdminForgotForm from "@/app/components/forms/AdminForgot";
+import AdminForgotForm from "@/app/admin-forgot/page";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -357,7 +357,7 @@ const LoginPage = () => {
 
     // SUB ADMIN
     subadm: (
-      <AdminForm
+      <AdminForgotForm
         adminUser={subAdminUser}
         setAdminUser={setSubAdminUser}
         adminPassword={subAdminPassword}
