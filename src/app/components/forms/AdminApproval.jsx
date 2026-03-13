@@ -12,7 +12,6 @@ function AdminApprovalContent() {
   const [message, setMessage] = useState("");
   const [username, setUsername] = useState("");
 
-  // Validar token al cargar
   useEffect(() => {
     if (!token) {
       setStatus("invalid");
@@ -37,7 +36,6 @@ function AdminApprovalContent() {
       });
   }, [token]);
 
-  // lizets018 aprueba → API genera token de reset y manda correo al admin
   const handleApprove = async () => {
     setStatus("approving");
     try {
@@ -67,21 +65,18 @@ function AdminApprovalContent() {
         <h2 style={styles.title}>🔐 Eventos ITE</h2>
         <p style={styles.subtitle}>Panel de aprobación de recuperación</p>
 
-        {/* Verificando */}
         {status === "loading" && (
           <p style={{ color: "#666", textAlign: "center" }}>
             Verificando enlace...
           </p>
         )}
 
-        {/* Token inválido / expirado */}
         {status === "invalid" && (
           <div style={styles.errorBox}>
             <p style={{ margin: 0 }}>❌ {message}</p>
           </div>
         )}
 
-        {/* Listo para aprobar */}
         {status === "ready" && (
           <div style={{ textAlign: "center" }}>
             <p
@@ -102,8 +97,8 @@ function AdminApprovalContent() {
                 marginBottom: "2rem",
               }}
             >
-              Al aprobar, se le enviará automáticamente un enlace a su correo
-              para que él mismo establezca su nueva contraseña.
+              Al aprobar, se enviará automáticamente un enlace a su correo para
+              que él mismo establezca su nueva contraseña.
             </p>
             <button onClick={handleApprove} style={styles.approveBtn}>
               ✅ Aprobar solicitud
@@ -116,14 +111,12 @@ function AdminApprovalContent() {
           </div>
         )}
 
-        {/* Aprobando */}
         {status === "approving" && (
           <p style={{ color: "#666", textAlign: "center" }}>
             Procesando aprobación...
           </p>
         )}
 
-        {/* Éxito */}
         {status === "success" && (
           <div style={styles.successBox}>
             <p style={{ margin: 0, fontWeight: 600, fontSize: "1rem" }}>
@@ -158,7 +151,7 @@ export default function AdminApprovalPage() {
   return (
     <Suspense
       fallback={
-        <div style={{ textAlign: "center", marginTop: "3rem", color: "#666" }}>
+        <div style={{ textAlign: "center", marginTop: "3rem" }}>
           Cargando...
         </div>
       }

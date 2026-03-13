@@ -1,188 +1,290 @@
+// src/app/admin-reset/page.jsx
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
-function ResetForm() {
+function AdminResetContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
-
-  // 1. Extraer el token de la URL (?token=...)
   const token = searchParams.get("token");
 
-  const [password, setPassword] = useState("");
+  const [status, setStatus] = useState("loading"); // loading | valid | invalid | success
+  const [pageMessage, setPageMessage] = useState("");
+  const [username, setUsername] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [status, setStatus] = useState({ type: "", msg: "" });
-  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState("");
 
-  // Verificación inicial: Si no hay token en la URL, mostramos error de inmediato
   useEffect(() => {
     if (!token) {
-      setStatus({
-        type: "error",
-        msg: "Enlace inválido. No se detectó un token de recuperación.",
-      });
+      setStatus("invalid");
+      setPageMessage("No se proporcionó ningún token.");
+      return;
     }
+
+    fetch(`/api/auth/adminApproval/validate?token=${token}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.valid) {
+          setUsername(data.username);
+          setStatus("valid");
+        } else {
+          setStatus("invalid");
+          setPageMessage(data.message);
+        }
+      })
+      .catch(() => {
+        setStatus("invalid");
+        setPageMessage("Error al verificar el enlace.");
+      });
   }, [token]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormError("");
 
-    // Validaciones de seguridad en el cliente
-    if (password !== confirmPassword) {
-      return setStatus({ type: "error", msg: "Las contraseñas no coinciden." });
+    if (newPassword !== confirmPassword) {
+      setFormError("Las contraseñas no coinciden.");
+      return;
     }
-    if (password.length < 6) {
-      return setStatus({
-        type: "error",
-        msg: "La contraseña debe tener al menos 6 caracteres.",
-      });
+    if (newPassword.length < 6) {
+      setFormError("La contraseña debe tener al menos 6 caracteres.");
+      return;
     }
 
-    setLoading(true);
-    setStatus({ type: "", msg: "" });
-
+    setSubmitting(true);
     try {
-      // Llamada a tu API (Asegúrate de que la carpeta sea 'adminReset' exactamente)
       const res = await fetch("/api/auth/adminReset", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, newPassword: password }),
+        body: JSON.stringify({ token, newPassword }),
       });
-
       const data = await res.json();
 
       if (res.ok) {
-        setStatus({
-          type: "success",
-          msg: "¡Contraseña actualizada! Redirigiendo al login...",
-        });
-        // Redirigir después de 3 segundos
-        setTimeout(() => router.push("/designs/vistaLogin"), 3000);
+        setStatus("success");
+        setPageMessage(data.message);
       } else {
-        setStatus({
-          type: "error",
-          msg: data.message || "Error al actualizar la contraseña.",
-        });
+        setFormError(data.message || "Error al actualizar la contraseña.");
       }
-    } catch (err) {
-      setStatus({
-        type: "error",
-        msg: "Error de conexión. Inténtalo de nuevo.",
-      });
+    } catch {
+      setFormError("Error al conectar con el servidor.");
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-900 p-4">
-      <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-2xl">
-        <div className="mb-8 text-center">
-          <h2 className="text-2xl font-bold text-slate-800">🔐 Eventos ITE</h2>
-          <p className="text-sm text-slate-500">
-            Restablece tu contraseña de administrador
-          </p>
-        </div>
+    <div style={styles.page}>
+      <div style={styles.card}>
+        <h2 style={styles.title}>🔑 Eventos ITE</h2>
+        <p style={styles.subtitle}>Restablece tu contraseña de administrador</p>
 
-        {/* Alertas de Estado */}
-        {status.msg && (
-          <div
-            className={`mb-6 rounded-lg p-4 text-sm font-medium border ${
-              status.type === "error"
-                ? "bg-red-50 text-red-700 border-red-200"
-                : "bg-green-50 text-green-700 border-green-200"
-            }`}
-          >
-            {status.type === "error" ? "❌ " : "✅ "} {status.msg}
+        {status === "loading" && (
+          <p style={{ color: "#666", textAlign: "center" }}>
+            Verificando enlace...
+          </p>
+        )}
+
+        {status === "invalid" && (
+          <div style={styles.errorBox}>
+            <p style={{ margin: 0 }}>❌ {pageMessage}</p>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-1">
-              Nueva Contraseña
-            </label>
-            <input
-              type="password"
-              placeholder="Mínimo 6 caracteres"
-              className="w-full rounded-lg border border-slate-300 p-3 outline-none focus:ring-2 focus:ring-blue-500 transition-all text-slate-900"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              disabled={!token || loading}
-            />
-          </div>
+        {status === "valid" && (
+          <form onSubmit={handleSubmit}>
+            <p
+              style={{
+                color: "#444",
+                marginBottom: "1.25rem",
+                textAlign: "center",
+              }}
+            >
+              Hola <strong style={{ color: "#1b396a" }}>{username}</strong>,
+              escribe tu nueva contraseña.
+            </p>
 
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-1">
-              Confirmar Contraseña
-            </label>
+            <label style={styles.label}>Nueva contraseña</label>
+            <div style={styles.inputWrap}>
+              <input
+                type={showPassword ? "text" : "password"}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Mínimo 6 caracteres"
+                style={styles.input}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={styles.eyeBtn}
+              >
+                {showPassword ? "🙈" : "👁️"}
+              </button>
+            </div>
+
+            <label style={styles.label}>Confirmar contraseña</label>
             <input
-              type="password"
-              placeholder="Repite tu nueva contraseña"
-              className="w-full rounded-lg border border-slate-300 p-3 outline-none focus:ring-2 focus:ring-blue-500 transition-all text-slate-900"
+              type={showPassword ? "text" : "password"}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Repite la contraseña"
+              style={{ ...styles.input, marginTop: "4px" }}
               required
-              disabled={!token || loading}
             />
-          </div>
 
-          <button
-            type="submit"
-            disabled={!token || loading || password.length < 6}
-            className="w-full rounded-lg bg-blue-700 p-3 font-bold text-white transition-all hover:bg-blue-800 active:scale-95 disabled:bg-slate-300 disabled:cursor-not-allowed flex justify-center items-center"
-          >
-            {loading ? (
-              <>
-                <svg
-                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-                Procesando...
-              </>
-            ) : (
-              "Actualizar Contraseña"
+            {formError && (
+              <p
+                style={{
+                  color: "#c0392b",
+                  fontSize: "0.83rem",
+                  marginTop: "0.5rem",
+                }}
+              >
+                ⚠️ {formError}
+              </p>
             )}
-          </button>
-        </form>
 
-        <div className="mt-8 text-center text-xs text-slate-400">
-          <p>Esta acción es irreversible una vez completada.</p>
-        </div>
+            <button
+              type="submit"
+              disabled={submitting}
+              style={{ ...styles.btn, opacity: submitting ? 0.7 : 1 }}
+            >
+              {submitting ? "Guardando..." : "Guardar nueva contraseña"}
+            </button>
+          </form>
+        )}
+
+        {status === "success" && (
+          <div style={styles.successBox}>
+            <p style={{ margin: 0, fontWeight: 600 }}>✅ {pageMessage}</p>
+            <p
+              style={{
+                margin: "0.5rem 0 0",
+                fontSize: "0.85rem",
+                color: "#555",
+              }}
+            >
+              Ya puedes iniciar sesión con tu nueva contraseña.
+            </p>
+            <a
+              href="/"
+              style={{
+                display: "inline-block",
+                marginTop: "1rem",
+                background: "#1b396a",
+                color: "#fff",
+                padding: "10px 24px",
+                borderRadius: "8px",
+                textDecoration: "none",
+                fontWeight: 700,
+                fontSize: "0.9rem",
+              }}
+            >
+              Ir al inicio de sesión
+            </a>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
-// Exportación principal envuelta en Suspense (Requisito de Next.js para useSearchParams)
 export default function AdminResetPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white font-medium">
-          Cargando formulario...
+        <div style={{ textAlign: "center", marginTop: "3rem" }}>
+          Cargando...
         </div>
       }
     >
-      <ResetForm />
+      <AdminResetContent />
     </Suspense>
   );
 }
+
+const styles = {
+  page: {
+    minHeight: "100vh",
+    background: "linear-gradient(135deg, #1b396a 0%, #2e5fa3 100%)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "1rem",
+  },
+  card: {
+    background: "#fff",
+    borderRadius: "16px",
+    padding: "2rem",
+    width: "100%",
+    maxWidth: "420px",
+    boxShadow: "0 8px 32px rgba(0,0,0,0.15)",
+  },
+  title: { color: "#1b396a", textAlign: "center", marginBottom: "0.25rem" },
+  subtitle: {
+    color: "#888",
+    textAlign: "center",
+    fontSize: "0.85rem",
+    marginBottom: "1.5rem",
+  },
+  label: {
+    display: "block",
+    fontSize: "0.83rem",
+    color: "#555",
+    fontWeight: 600,
+    marginBottom: "4px",
+    marginTop: "0.75rem",
+  },
+  inputWrap: { position: "relative" },
+  input: {
+    width: "100%",
+    padding: "0.6rem 0.75rem",
+    border: "1px solid #ddd",
+    borderRadius: "8px",
+    fontSize: "0.9rem",
+    boxSizing: "border-box",
+    outline: "none",
+  },
+  eyeBtn: {
+    position: "absolute",
+    right: "0.75rem",
+    top: "50%",
+    transform: "translateY(-50%)",
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+    fontSize: "1rem",
+  },
+  btn: {
+    width: "100%",
+    padding: "0.75rem",
+    background: "#1b396a",
+    color: "#fff",
+    border: "none",
+    borderRadius: "8px",
+    fontSize: "1rem",
+    fontWeight: 700,
+    cursor: "pointer",
+    marginTop: "1.25rem",
+  },
+  errorBox: {
+    background: "#fdecea",
+    border: "1px solid #e74c3c",
+    borderRadius: "8px",
+    padding: "1rem",
+    color: "#c0392b",
+    textAlign: "center",
+  },
+  successBox: {
+    background: "#eafaf1",
+    border: "1px solid #27ae60",
+    borderRadius: "8px",
+    padding: "1.25rem",
+    color: "#27ae60",
+    textAlign: "center",
+  },
+};

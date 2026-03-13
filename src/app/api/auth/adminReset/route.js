@@ -6,11 +6,6 @@ import bcrypt from "bcryptjs";
 export async function POST(req) {
   try {
     const body = await req.json();
-    console.log("📥 Body recibido:", {
-      token: body.token?.slice(0, 10) + "...",
-      newPassword: body.newPassword ? "✅ recibida" : "❌ vacía",
-    });
-
     const { token, newPassword } = body;
 
     if (!token || !newPassword) {
@@ -27,12 +22,12 @@ export async function POST(req) {
       );
     }
 
-    // 1. Buscar token en BD
+    // 1. Buscar y validar token
     const record = await prisma.adminRecoveryToken.findUnique({
       where: { token },
     });
     console.log(
-      "🔍 Token encontrado:",
+      "🔍 Token:",
       record
         ? `username=${record.username}, used=${record.used}`
         : "NO ENCONTRADO",
@@ -54,49 +49,33 @@ export async function POST(req) {
         { status: 400 },
       );
 
-    // 2. Hashear la contraseña nueva (NO el token)
+    // 2. Hashear la nueva contraseña
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    console.log(
-      "🔐 newPassword hasheada correctamente, longitud hash:",
-      hashedPassword.length,
-    );
+    console.log("🔐 Hash generado para:", record.username);
 
     // 3. Guardar en AdminCredentials
     const existing = await prisma.adminCredentials.findUnique({
       where: { username: record.username },
     });
-    console.log(
-      "📋 AdminCredentials existente:",
-      existing ? `id=${existing.id}` : "NO EXISTE, se creará",
-    );
 
     let result;
     if (existing) {
       result = await prisma.adminCredentials.update({
         where: { username: record.username },
-        data: { password: hashedPassword }, // ← solo el hash, nunca el token
+        data: { password: hashedPassword },
       });
     } else {
       result = await prisma.adminCredentials.create({
-        data: {
-          username: record.username,
-          password: hashedPassword, // ← solo el hash, nunca el token
-        },
+        data: { username: record.username, password: hashedPassword },
       });
     }
-    console.log(
-      "✅ Guardado en BD, id:",
-      result.id,
-      "username:",
-      result.username,
-    );
+    console.log("✅ Contraseña actualizada en BD para:", result.username);
 
     // 4. Marcar token como usado
     await prisma.adminRecoveryToken.update({
       where: { token },
       data: { used: true },
     });
-    console.log("🔒 Token marcado como usado");
 
     return NextResponse.json({
       message: "Contraseña actualizada correctamente.",
