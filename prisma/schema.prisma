@@ -6,7 +6,6 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-   
 }
 
 model estudiantes {
@@ -190,8 +189,9 @@ model actividades {
   constancias constancias[]
   inscripact  inscripact[]
   ofertas     ofertaSemestre[]
-  @@index([maestroId])  // busqueda de actividades por maestro
-  @@index([aticve])     // busqueda por código en asignar-maestro
+
+  @@index([maestroId])
+  @@index([aticve])
 }
 
 model ofertaSemestre {
@@ -230,11 +230,11 @@ model inscripact {
   estudiante           estudiantes    @relation(fields: [estudianteId], references: [aluctr])
   oferta               ofertaSemestre @relation(fields: [ofertaId], references: [id])
 
-   @@unique([estudianteId, actividadId])
-  @@index([estudianteId])               // búsquedas por alumno (GET sangre, calificaciones)
-  @@index([actividadId])                // búsquedas por actividad (GET calificaciones)
-  @@index([estudianteId, actividadId])  // findFirst en PUT calificaciones
-  @@index([sangreValidada, mensajeAdmin]) // filtro en fix-sangre y PATCH sangre
+  @@unique([estudianteId, actividadId])
+  @@index([estudianteId])
+  @@index([actividadId])
+  @@index([estudianteId, actividadId])
+  @@index([sangreValidada, mensajeAdmin])
   @@map("inscripciones_actividades")
 }
 
@@ -345,12 +345,13 @@ model constancias {
   @@index([folio])
   @@map("constancias")
 }
+
 model AdminCredentials {
   id        Int      @id @default(autoincrement())
   username  String   @unique
   password  String
-  email     String?  // ← agrega esta línea
   updatedAt DateTime @updatedAt
+  email     String?
 }
 
 model AdminRecoveryToken {
