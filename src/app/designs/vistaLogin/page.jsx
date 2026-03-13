@@ -153,45 +153,16 @@ const LoginPage = () => {
   // ----------------------
   // ADMIN
   // ----------------------
-  // ── REEMPLAZA tu onAdminSubmit en LoginPage ──────────────────────────────────
-  // Busca "const onAdminSubmit" y reemplaza toda esa función con esto:
-
-  const onAdminSubmit = async (e) => {
+  const onAdminSubmit = (e) => {
     e.preventDefault();
-    if (!adminUser || !adminPassword)
-      return setError("Escribe usuario y contraseña");
-
-    setAdminLoading(true);
-    setError("");
-
-    try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: adminUser, password: adminPassword }),
-      });
-      const data = await res.json();
-
-      if (res.ok) {
-        localStorage.setItem("adminName", "Juan Carlos Leal Nodal");
-        localStorage.setItem("adminUsername", data.username);
-        router.push("/designs/menuadmin");
-      } else {
-        setError(data.message || "Usuario o contraseña incorrectos");
-      }
-    } catch {
-      setError("Error al conectar con el servidor");
-    } finally {
-      setAdminLoading(false);
+    if (adminUser === "NodalTec" && adminPassword === "eventosadmin2025") {
+      localStorage.setItem("adminName", "Juan Carlos Leal Nodal");
+      router.push("/designs/menuadmin");
+    } else {
+      setError("Usuario o contraseña incorrectos");
     }
   };
 
-  // ── AGREGA este estado junto a los otros useState ─────────────────────────────
-  // const [adminLoading, setAdminLoading] = useState(false);
-
-  // ── EN EL FORM de admin, el botón de submit puede mostrar loading ─────────────
-  // Si quieres mostrar "Iniciando..." mientras carga, pasa adminLoading al AdminForm
-  // y úsalo en el botón: disabled={adminLoading}
   const onSubAdminSubmit = (e) => {
     e.preventDefault();
     if (subAdminUser === "SubAdmin" && subAdminPassword === "subadmin2025") {
@@ -387,7 +358,7 @@ const LoginPage = () => {
 
     // SUB ADMIN
     subadm: (
-      <AdminForgotForm
+      <AdminForm
         adminUser={subAdminUser}
         setAdminUser={setSubAdminUser}
         adminPassword={subAdminPassword}
