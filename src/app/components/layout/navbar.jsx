@@ -6,6 +6,9 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   // 1. Estado para el scroll
   const [scrolled, setScrolled] = useState(false);
+  const closeMenu = () => {
+    setIsOpen(false);
+  };
 
   // 2. Lógica para manejar el scroll
   useEffect(() => {
@@ -53,31 +56,47 @@ const Navbar = () => {
         {/* Menú */}
         <ul className={`navbar__menu ${isOpen ? "navbar__menu--open" : ""}`}>
           <li>
-            <Link href="/" className="navbar__link active">
+            <Link href="/" className="navbar__link" onClick={closeMenu}>
               INICIO
             </Link>
           </li>
+
           <li>
-            <Link href="/designs/vistaEventos" className="navbar__link active">
+            <Link
+              href="/designs/vistaEventos"
+              className="navbar__link"
+              onClick={closeMenu}
+            >
               NOTICIAS
             </Link>
           </li>
+
           <li>
             <Link
               href="/designs/vistaintramuros"
-              className="navbar__link active"
+              className="navbar__link"
+              onClick={closeMenu}
             >
               INTRAMUROS
             </Link>
           </li>
 
           <li>
-            <Link href="/designs/vistaHorarios" className="navbar__link active">
+            <Link
+              href="/designs/vistaHorarios"
+              className="navbar__link"
+              onClick={closeMenu}
+            >
               HORARIOS
             </Link>
           </li>
+
           <li>
-            <Link href="/designs/vistaLogin" className="navbar__link active">
+            <Link
+              href="/designs/vistaLogin"
+              className="navbar__link"
+              onClick={closeMenu}
+            >
               INICIAR SESION
             </Link>
           </li>

@@ -66,10 +66,18 @@ export default function AdminSidebar({ open, setOpen }) {
   const pathname = usePathname();
   const router = useRouter();
 
+  const closeMenu = () => {
+    setOpen(false);
+  };
+
   return (
     <>
-      {/* Botón Móvil (Hamburguesa/Cerrar) */}
-      <button className="toggle-btn-mobile" onClick={() => setOpen(!open)}>
+      {/* Botón Móvil */}
+      <button
+        className="toggle-btn-mobile"
+        onClick={() => setOpen(!open)}
+        aria-label="Toggle menu"
+      >
         {open ? <FiX /> : <FiMenu />}
       </button>
 
@@ -79,7 +87,12 @@ export default function AdminSidebar({ open, setOpen }) {
             <Image src="/imagenes/ite.svg" alt="Logo" width={30} height={30} />
             <span className="logo-text">Eventos ITE</span>
           </div>
-          <button className="desktop-toggle" onClick={() => setOpen(!open)}>
+
+          <button
+            className="desktop-toggle"
+            onClick={() => setOpen(!open)}
+            aria-label="Toggle sidebar"
+          >
             <FiMenu />
           </button>
         </div>
@@ -90,7 +103,7 @@ export default function AdminSidebar({ open, setOpen }) {
               key={item.href}
               className={`menu-item ${pathname === item.href ? "active" : ""}`}
             >
-              <Link href={item.href} className="menu-link">
+              <Link href={item.href} className="menu-link" onClick={closeMenu}>
                 <span className="icon">{item.icon}</span>
                 <span className="etiqueta-flotante">{item.label}</span>
               </Link>
@@ -99,7 +112,10 @@ export default function AdminSidebar({ open, setOpen }) {
 
           <li
             className="menu-item logout"
-            onClick={() => router.push("/designs/vistaLogin")}
+            onClick={() => {
+              closeMenu();
+              router.push("/designs/vistaLogin");
+            }}
           >
             <div className="menu-link">
               <span className="icon">

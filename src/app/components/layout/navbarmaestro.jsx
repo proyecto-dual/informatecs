@@ -18,8 +18,13 @@ export default function NavbarMaestro({ open, setOpen }) {
   const pathname = usePathname();
   const router = useRouter();
 
+  const closeMenu = () => {
+    if (setOpen) setOpen(false);
+  };
+
   const handleLogout = () => {
     if (window.confirm("¿Seguro que deseas cerrar sesión?")) {
+      closeMenu();
       localStorage.removeItem("maestroData");
       router.push("/designs/vistaLogin");
     }
@@ -50,12 +55,13 @@ export default function NavbarMaestro({ open, setOpen }) {
       <button
         className="mobile-toggle-btn"
         onClick={() => setOpen && setOpen(!open)}
+        aria-label="Toggle menu"
       >
         {open ? <FiX /> : <FiMenu />}
       </button>
 
       <aside className={`navbarmaestro ${open ? "open" : "closed"}`}>
-        {/* Header con Logo */}
+        {/* Header */}
         <div className="navbarmaestro-header">
           <div className="logo-container">
             <Image src="/imagenes/ite.svg" alt="Logo" width={35} height={35} />
@@ -64,30 +70,37 @@ export default function NavbarMaestro({ open, setOpen }) {
               <span className="admin-badge">MAESTRO</span>
             </div>
           </div>
-          {/* Botón para colapsar en Desktop */}
+
           <button
             className="toggle-btn"
             onClick={() => setOpen && setOpen(!open)}
+            aria-label="Toggle sidebar"
           >
             <FiMenu />
           </button>
         </div>
 
-        {/* Lista de Menú con prefijo maestros- */}
+        {/* Menú */}
         <ul className="maestros-menu-list">
           {menuItems.map((item) => (
             <li
               key={item.href}
-              className={`maestros-menu-item ${pathname === item.href ? "active" : ""}`}
+              className={`maestros-menu-item ${
+                pathname === item.href ? "active" : ""
+              }`}
             >
-              <Link href={item.href} className="maestros-menu-link">
+              <Link
+                href={item.href}
+                className="maestros-menu-link"
+                onClick={closeMenu}
+              >
                 <span className="maestros-icon">{item.icon}</span>
                 <span className="maestros-title">{item.label}</span>
               </Link>
             </li>
           ))}
 
-          {/* Item de Cerrar Sesión con clases corregidas */}
+          {/* Cerrar sesión */}
           <li className="maestros-menu-item logout-item" onClick={handleLogout}>
             <div className="maestros-menu-link">
               <span className="maestros-icon">
