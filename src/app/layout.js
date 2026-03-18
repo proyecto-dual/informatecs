@@ -15,7 +15,9 @@ export default function RootLayout({ children }) {
     "/designs/vistaLogin",
     "/designs/menuestu",
     "/designs/menuadmin",
-    "/designs/menumaestros", // Esto cubrirá misConstancias y cualquier otra sub-ruta
+    "/designs/menumaestros",
+    "/designs/menusubadmin",
+    // Esto cubrirá misConstancias y cualquier otra sub-ruta
   ];
 
   // Usamos .some y .startsWith para capturar todas las sub-rutas

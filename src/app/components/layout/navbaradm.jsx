@@ -14,7 +14,7 @@ import {
   FiX,
   FiTrendingUp,
 } from "react-icons/fi";
-import { FaCheck, FaStar } from "react-icons/fa6";
+import { FaCheck, FaStar, FaUserCheck } from "react-icons/fa6";
 import { Edit } from "lucide-react";
 import "@/styles/layouts/navbaradm.css";
 
@@ -28,7 +28,7 @@ const menuItems = [
   {
     href: "/designs/menuadmin/AprobarSolicitudes",
     icon: <FaCheck />,
-    label: "Solicitudes",
+    label: "Solicitudes/validar sangre",
   },
   {
     href: "/designs/menuadmin/vistaInscripcionesAdmin",
@@ -59,6 +59,11 @@ const menuItems = [
     href: "/designs/menuadmin/publicaciones",
     icon: <Edit />,
     label: "Publicaciones",
+  },
+  {
+    href: "/designs/menuadmin/solicitudesSubAdmin",
+    icon: <FaUserCheck />,
+    label: "Solicitudes SubAdmin",
   },
 ];
 

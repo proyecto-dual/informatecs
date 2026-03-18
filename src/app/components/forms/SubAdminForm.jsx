@@ -1,5 +1,5 @@
 "use client";
-import { FaUser, FaLock } from "react-icons/fa";
+import { FaUser, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function SubAdminForm({
   adminUser,
@@ -12,10 +12,23 @@ export default function SubAdminForm({
 }) {
   return (
     <form onSubmit={onSubmit} className="login-form">
-      <h3 style={{ color: "#1b396a", marginBottom: "0.25rem", textAlign: "center" }}>
-        Sub Administrador
+      <h3
+        style={{
+          color: "#1b396a",
+          marginBottom: "0.25rem",
+          textAlign: "center",
+        }}
+      >
+        SubAdministrador
       </h3>
-      <p style={{ fontSize: "0.82rem", color: "#666", textAlign: "center", marginBottom: "1.25rem" }}>
+      <p
+        style={{
+          fontSize: "0.82rem",
+          color: "#666",
+          textAlign: "center",
+          marginBottom: "1.25rem",
+        }}
+      >
         Acceso exclusivo para sub administrador
       </p>
 
@@ -26,33 +39,36 @@ export default function SubAdminForm({
           type="text"
           className="login-input with-left-icon"
           value={adminUser}
-          placeholder="Usuario"
+          placeholder="Ingresa tu usuario"
           onChange={(e) => setAdminUser(e.target.value)}
           required
         />
       </div>
 
-      <label className="login-label" style={{ marginTop: "0.75rem" }}>Contraseña:</label>
-      <div className="input-with-icon">
+      <label className="login-label">Contraseña:</label>
+      <div className="input-with-icon password-input-container">
         <FaLock className="input-icon-left" />
         <input
           type={showPassword ? "text" : "password"}
-          className="login-input with-left-icon with-right-icon"
+          className="login-input with-left-icon"
           value={adminPassword}
-          placeholder="Contraseña"
+          placeholder="Ingresa tu contraseña"
           onChange={(e) => setAdminPassword(e.target.value)}
           required
         />
-        <button
-          type="button"
-          className="toggle-password"
+        <span
           onClick={() => setShowPassword(!showPassword)}
+          className="password-toggle-icon"
         >
-          {showPassword ? "🙈" : "👁️"}
-        </button>
+          {showPassword ? <FaEyeSlash /> : <FaEye />}
+        </span>
       </div>
 
-      <button type="submit" className="submit-button" style={{ marginTop: "1.25rem" }}>
+      <button
+        type="submit"
+        className="submit-button"
+        style={{ marginTop: "1.25rem" }}
+      >
         Iniciar sesión
       </button>
     </form>

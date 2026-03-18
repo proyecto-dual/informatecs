@@ -154,36 +154,36 @@ const LoginPage = () => {
   // ----------------------
   // ADMIN
   // ----------------------
- const onAdminSubmit = async (e) => {
-  e.preventDefault();
-  if (!adminUser || !adminPassword)
-    return setError("Escribe usuario y contraseña");
-  try {
-    const res = await fetch("/api/auth/adminLogin", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: adminUser, password: adminPassword }),
-    });
-    const data = await res.json();
-    if (res.ok) {
-      localStorage.setItem("adminName", adminUser);
-      router.push("/designs/menuadmin");
-    } else {
-      setError(data.message || "Usuario o contraseña incorrectos");
+  const onAdminSubmit = async (e) => {
+    e.preventDefault();
+    if (!adminUser || !adminPassword)
+      return setError("Escribe usuario y contraseña");
+    try {
+      const res = await fetch("/api/auth/adminLogin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: adminUser, password: adminPassword }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        localStorage.setItem("adminName", adminUser);
+        router.push("/designs/menuadmin");
+      } else {
+        setError(data.message || "Usuario o contraseña incorrectos");
+      }
+    } catch {
+      setError("Error al conectar con el servidor");
     }
-  } catch {
-    setError("Error al conectar con el servidor");
-  }
-};
-const onSubAdminSubmit = (e) => {
-  e.preventDefault();
-  if (subAdminUser === "SubAdmin" && subAdminPassword === "admintec2026") {
-    localStorage.setItem("subAdminName", "Sub Administrador");
-    router.push("/designs/menusubadmin");
-  } else {
-    setError("Usuario o contraseña incorrectos");
-  }
-};
+  };
+  const onSubAdminSubmit = (e) => {
+    e.preventDefault();
+    if (subAdminUser === "SubAdmin" && subAdminPassword === "admintec2026") {
+      localStorage.setItem("subAdminName", "Sub Administrador");
+      router.push("/designs/menusubadmin");
+    } else {
+      setError("Usuario o contraseña incorrectos");
+    }
+  };
   // ----------------------
   // Redirecciones
   // ----------------------
@@ -368,16 +368,16 @@ const onSubAdminSubmit = (e) => {
 
     // SUB ADMIN
     subadm: (
-  <SubAdminForm
-    adminUser={subAdminUser}
-    setAdminUser={setSubAdminUser}
-    adminPassword={subAdminPassword}
-    setAdminPassword={setSubAdminPassword}
-    showPassword={showPassword}
-    setShowPassword={setShowPassword}
-    onSubmit={onSubAdminSubmit}
-  />
-),
+      <SubAdminForm
+        adminUser={subAdminUser}
+        setAdminUser={setSubAdminUser}
+        adminPassword={subAdminPassword}
+        setAdminPassword={setSubAdminPassword}
+        showPassword={showPassword}
+        setShowPassword={setShowPassword}
+        onSubmit={onSubAdminSubmit}
+      />
+    ),
     subadmForgot: (
       <AdminForgotForm
         onBack={() => {
@@ -392,7 +392,7 @@ const onSubAdminSubmit = (e) => {
     { id: "login", label: "Estudiantes", icon: <FaUser /> },
     { id: "teacher", label: "Maestros", icon: <FaChalkboardTeacher /> },
     { id: "adm", label: "Admin", icon: <FaLock /> },
-    { id: "subadm", label: "Sub Admin", icon: <FaUserShield /> },
+    { id: "subadm", label: "SubAdmin", icon: <FaUserShield /> },
   ];
 
   const showRegisterLink = step === "login" || step === "teacher";

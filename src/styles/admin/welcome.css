@@ -1,0 +1,334 @@
+/* ============================================================
+   welcomeAdmin.css — Panel de Administración ITE
+   Responsive: Desktop · iPad (≤1024px) · Mobile (≤600px)
+   ============================================================ */
+
+/* ── Variables ─────────────────────────────────────────────── */
+:root {
+  --color-primary: #1b396a;
+  --color-accent: #e8a020;
+  --color-accent-bg: #fffbf0;
+  --color-accent-bg2: #fff5d6;
+  --color-card-border: #e8eaf0;
+  --color-text-main: #1b396a;
+  --color-text-muted: #555;
+  --color-white: #fff;
+  --radius-card: 16px;
+  --radius-icon: 12px;
+  --shadow-blue: 0 8px 24px rgba(27, 57, 106, 0.13);
+  --shadow-gold: 0 8px 24px rgba(232, 160, 32, 0.25);
+  --transition-card: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* ── Layout base ────────────────────────────────────────────── */
+.dashboard-container {
+  min-height: 100vh;
+  background: #f4f6fb;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-main {
+  flex: 1;
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.welcome-main-enhanced {
+  padding: 2.5rem 2rem;
+}
+
+/* ── Hero wrapper ───────────────────────────────────────────── */
+.welcome-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.55s ease,
+    transform 0.55s ease;
+}
+
+.welcome-hero.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Header block ───────────────────────────────────────────── */
+.welcome-header {
+  width: 100%;
+}
+
+/* ── Badge ──────────────────────────────────────────────────── */
+.welcome-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(90deg, #e8f0fb 0%, #eef4ff 100%);
+  border: 1px solid #c6d6ef;
+  border-radius: 999px;
+  padding: 0.4rem 1rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.icon-trophy {
+  width: 16px;
+  height: 16px;
+  stroke: var(--color-primary);
+  flex-shrink: 0;
+}
+
+/* ── Headings ───────────────────────────────────────────────── */
+.welcome-title-enhanced {
+  font-size: clamp(1.6rem, 3vw, 2.25rem);
+  font-weight: 800;
+  color: var(--color-primary);
+  margin: 0 0 0.5rem;
+  line-height: 1.2;
+}
+
+.welcome-description {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  margin: 0;
+  max-width: 640px;
+}
+
+/* ── Cards grid ─────────────────────────────────────────────── */
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  width: 100%;
+}
+
+/* ── Card link wrapper ──────────────────────────────────────── */
+.admin-card-link {
+  text-decoration: none;
+  display: flex; /* makes the inner card stretch full height */
+}
+
+/* ── Card ───────────────────────────────────────────────────── */
+.admin-card {
+  background: var(--color-white);
+  border: 1.5px solid var(--color-card-border);
+  border-radius: var(--radius-card);
+  padding: 1.5rem 1.25rem;
+  cursor: pointer;
+  transition: var(--transition-card);
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  box-sizing: border-box;
+}
+
+.admin-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-blue);
+}
+
+/* Highlighted (gold) variant */
+.admin-card--highlight {
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-bg) 0%,
+    var(--color-accent-bg2) 100%
+  );
+  border: 2px solid var(--color-accent);
+}
+
+.admin-card--highlight:hover {
+  box-shadow: var(--shadow-gold);
+}
+
+/* ── Card icon ──────────────────────────────────────────────── */
+.admin-card__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-icon);
+  background: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-white);
+  flex-shrink: 0;
+}
+
+.admin-card--highlight .admin-card__icon {
+  background: var(--color-accent);
+}
+
+/* ── Card title row ─────────────────────────────────────────── */
+.admin-card__title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.admin-card__label {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-primary);
+}
+
+.admin-card--highlight .admin-card__label {
+  color: var(--color-accent);
+}
+
+/* "DASH" pill badge */
+.admin-card__badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  background: var(--color-accent);
+  color: var(--color-white);
+  border-radius: 4px;
+  padding: 2px 7px;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+}
+
+/* ── Card description ───────────────────────────────────────── */
+.admin-card__desc {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ============================================================
+   RESPONSIVE — iPad  (≤ 1024px → 2 columns)
+   ============================================================ */
+@media (max-width: 1024px) {
+  .welcome-main-enhanced {
+    padding: 2rem 1.5rem;
+  }
+
+  .admin-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .welcome-title-enhanced {
+    font-size: 1.9rem;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE — iPad mini / large phones (≤ 768px)
+   ============================================================ */
+@media (max-width: 768px) {
+  .dashboard-main,
+  .welcome-main-enhanced {
+    padding: 1.5rem 1rem;
+  }
+
+  .admin-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.9rem;
+  }
+
+  .welcome-title-enhanced {
+    font-size: 1.6rem;
+  }
+
+  .welcome-description {
+    font-size: 0.88rem;
+  }
+
+  .admin-card {
+    padding: 1.25rem 1rem;
+  }
+
+  .admin-card__icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .admin-card__label {
+    font-size: 0.9rem;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE — Mobile (≤ 600px → 1 column)
+   ============================================================ */
+@media (max-width: 600px) {
+  .welcome-main-enhanced {
+    padding: 1.25rem 0.85rem;
+  }
+
+  .welcome-hero {
+    gap: 1.5rem;
+  }
+
+  .welcome-badge {
+    font-size: 0.72rem;
+    padding: 0.35rem 0.85rem;
+  }
+
+  .welcome-title-enhanced {
+    font-size: 1.4rem;
+  }
+
+  .admin-grid {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .admin-card {
+    padding: 1.1rem 1rem;
+    flex-direction: row; /* icon left + text right on mobile */
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .admin-card__icon {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+  }
+
+  /* Stack title + desc as a column inside the row layout */
+  .admin-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .admin-card__title-row {
+    gap: 0.4rem;
+  }
+
+  .admin-card__label {
+    font-size: 0.88rem;
+  }
+
+  .admin-card__desc {
+    font-size: 0.78rem;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE — Small phones (≤ 380px)
+   ============================================================ */
+@media (max-width: 380px) {
+  .welcome-title-enhanced {
+    font-size: 1.25rem;
+  }
+
+  .admin-card {
+    padding: 0.9rem 0.85rem;
+  }
+}
