@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(req) {
   try {
-    const { percve, pernom, perapp, perapm, perdep, perdce } = await req.json();
+    const { percve, pernom, perapp, perapm, perdce } = await req.json();
 
     if (!percve || !pernom || !perapp) {
       return NextResponse.json(
@@ -30,15 +30,15 @@ export async function POST(req) {
         pernom: pernom.trim(),
         perapp: perapp.trim(),
         perapm: perapm?.trim() || "",
-        perdep: perdep?.trim() || "",
         perdce: perdce?.trim() || "",
+        // perdep es Int en BD, no lo mandamos
       },
     });
 
     return NextResponse.json({
       id: maestro.percve,
       nombreCompleto: `${maestro.pernom} ${maestro.perapp} ${maestro.perapm}`.trim(),
-      departamento: maestro.perdep,
+      departamento: null,
       correo: maestro.perdce,
     });
   } catch (error) {

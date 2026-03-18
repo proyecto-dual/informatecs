@@ -61,8 +61,8 @@ const AdminPanel = () => {
 
   const [modalNuevoMaestro, setModalNuevoMaestro] = useState(false);
   const [nuevoMaestro, setNuevoMaestro] = useState({
-    percve: "", pernom: "", perapp: "", perapm: "", perdep: "", perdce: "",
-  });
+  percve: "", pernom: "", perapp: "", perapm: "", perdce: "",
+});
   const [guardandoMaestro, setGuardandoMaestro] = useState(false);
 
   const [formulario, setFormulario] = useState({
@@ -441,13 +441,6 @@ const AdminPanel = () => {
                   value={nuevoMaestro.perapm}
                   onChange={(e) => setNuevoMaestro({ ...nuevoMaestro, perapm: e.target.value })}
                   placeholder="Ej: García"
-                />
-                <label style={{ marginTop: "0.75rem" }}>Departamento:</label>
-                <input
-                  type="text"
-                  value={nuevoMaestro.perdep}
-                  onChange={(e) => setNuevoMaestro({ ...nuevoMaestro, perdep: e.target.value })}
-                  placeholder="Ej: Sistemas Computacionales"
                 />
                 <label style={{ marginTop: "0.75rem" }}>Correo:</label>
                 <input
