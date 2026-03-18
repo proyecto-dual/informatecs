@@ -60,12 +60,7 @@ export async function POST(req) {
         { status: 400 },
       );
     }
-    if (newPassword !== confirmPassword) {
-      return NextResponse.json(
-        { message: "Las contraseñas no coinciden." },
-        { status: 400 },
-      );
-    }
+   
     if (newPassword.length < 6) {
       return NextResponse.json(
         { message: "Mínimo 6 caracteres." },

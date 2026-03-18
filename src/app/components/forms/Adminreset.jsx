@@ -24,7 +24,7 @@ function AdminResetContent() {
       return;
     }
 
-    fetch(`/api/auth/adminApproval/validate?token=${token}`)
+    fetch(`/api/auth/adminReset?token=${token}`)
       .then((r) => r.json())
       .then((data) => {
         if (data.valid) {

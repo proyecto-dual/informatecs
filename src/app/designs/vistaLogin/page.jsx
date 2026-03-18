@@ -14,7 +14,8 @@ import "@/styles/auth/login.css";
 
 import TeacherForm from "@/app/components/forms/TeacherForm";
 import AdminForm from "@/app/components/forms/AdminForm";
-
+// Agrega esta línea junto a los otros imports de forms
+import SubAdminForm from "@/app/components/forms/SubAdminForm";
 import RegisterForm from "@/app/components/forms/RegisterForm";
 import LoginForm from "@/app/components/forms/loginform";
 import AskEmailForm from "@/app/components/forms/AskEmailForm";
@@ -163,16 +164,16 @@ const LoginPage = () => {
     }
   };
 
-  const onSubAdminSubmit = (e) => {
-    e.preventDefault();
-    if (subAdminUser === "SubAdmin" && subAdminPassword === "subadmin2025") {
-      localStorage.setItem("subAdminName", "Sub Administrador");
-      router.push("/designs/menusubadmin");
-    } else {
-      setError("Usuario o contraseña incorrectos");
-    }
-  };
-
+ 
+const onSubAdminSubmit = (e) => {
+  e.preventDefault();
+  if (subAdminUser === "SubAdmin" && subAdminPassword === "admintec2026") {
+    localStorage.setItem("subAdminName", "Sub Administrador");
+    router.push("/designs/menusubadmin");
+  } else {
+    setError("Usuario o contraseña incorrectos");
+  }
+};
   // ----------------------
   // Redirecciones
   // ----------------------
@@ -357,21 +358,16 @@ const LoginPage = () => {
 
     // SUB ADMIN
     subadm: (
-      <AdminForgotForm
-        adminUser={subAdminUser}
-        setAdminUser={setSubAdminUser}
-        adminPassword={subAdminPassword}
-        setAdminPassword={setSubAdminPassword}
-        showPassword={showPassword}
-        setShowPassword={setShowPassword}
-        onSubmit={onSubAdminSubmit}
-        // ✅ Sub admin también puede solicitar recuperación
-        onForgotPassword={() => {
-          resetForm();
-          setStep("subadmForgot");
-        }}
-      />
-    ),
+  <SubAdminForm
+    adminUser={subAdminUser}
+    setAdminUser={setSubAdminUser}
+    adminPassword={subAdminPassword}
+    setAdminPassword={setSubAdminPassword}
+    showPassword={showPassword}
+    setShowPassword={setShowPassword}
+    onSubmit={onSubAdminSubmit}
+  />
+),
     subadmForgot: (
       <AdminForgotForm
         onBack={() => {

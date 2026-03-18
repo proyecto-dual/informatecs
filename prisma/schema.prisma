@@ -362,3 +362,10 @@ model AdminRecoveryToken {
   expiresAt DateTime
   createdAt DateTime @default(now())
 }
+model SubAdminSolicitud {
+  id          Int      @id @default(autoincrement())
+  subAdminUser String
+  seccion     String
+  estado      String   @default("pendiente") // pendiente | aprobado | rechazado
+  creadoEn    DateTime @default(now())
+}

@@ -3,7 +3,7 @@ import "@/styles/alumno/inicio.css";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { FiCalendar, FiFileText, FiBarChart2, FiFile } from "react-icons/fi";
-import { FaCheck, FaStar } from "react-icons/fa6";
+import { FaCheck, FaStar, FaUserShield } from "react-icons/fa6";
 import { Edit, LayoutDashboard } from "lucide-react";
 
 export default function WelcomeAdminPage() {
@@ -68,6 +68,13 @@ export default function WelcomeAdminPage() {
       desc: "Redacta y publica comunicados para los estudiantes",
       color: "#1b396a",
     },
+    {
+  href: "/designs/menuadmin/solicitudesSubAdmin",
+  icon: <FaUserShield size={26} />,
+  label: "Accesos Sub Admin",
+  desc: "Aprueba o rechaza solicitudes de acceso del sub administrador",
+  color: "#1b396a",
+},
   ];
 
   useEffect(() => {

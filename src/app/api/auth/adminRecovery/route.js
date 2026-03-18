@@ -16,7 +16,6 @@ const transporter = nodemailer.createTransport({
 export async function POST(req) {
   try {
     const { adminUser } = await req.json();
-
     if (!adminUser?.trim()) {
       return NextResponse.json(
         { message: "El usuario es requerido." },
@@ -27,6 +26,7 @@ export async function POST(req) {
     const admin = await prisma.adminCredentials.findUnique({
       where: { username: adminUser.trim() },
     });
+       
 
     if (!admin) {
       return NextResponse.json({
