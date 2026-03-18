@@ -522,3 +522,21 @@
     display: none;
   }
 }
+/* Quita estilos por defecto del link */
+.benefit-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex; /* Para que la tarjeta ocupe todo el espacio del link */
+  transition: transform 0.3s ease;
+}
+
+/* Efecto Hover para que se sienta interactivo */
+.benefit-card-link:hover {
+  transform: translateY(-5px);
+}
+
+.benefit-card-link:hover .benefit-card {
+  border-color: #004a99; /* O tu color institucional */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
