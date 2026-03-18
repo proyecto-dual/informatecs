@@ -1,0 +1,224 @@
+/* ================================= */
+/* VARIABLES ITE                      */
+/* ================================= */
+:root {
+  --sidebar-width: 6rem;
+
+  /* Colores sólidos por color de card — sin degradados */
+  --icon-blue: var(--blue-primary);
+  --icon-green: #16a34a;
+  --icon-purple: #7c3aed;
+  --icon-orange: var(--yellow-accent);
+
+  /* Fondos suaves ReportCard */
+  --report-blue: #eff6ff;
+  --report-green: #f0fdf4;
+  --report-purple: #faf5ff;
+
+  /* Bordes ReportCard */
+  --report-blue-brd: #bfdbfe;
+  --report-green-brd: #bbf7d0;
+  --report-purple-brd: #e9d5ff;
+}
+
+/* ================================= */
+/* LAYOUT PRINCIPAL                   */
+/* ================================= */
+.intramuros-admin-wrapper {
+  padding: 2rem;
+  padding-left: calc(var(--sidebar-width) + 2rem);
+  background: var(--pa-bg, #f2f5fb);
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.intramuros-admin-inner {
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* ================================= */
+/* GRID DE STAT CARDS                 */
+/* ================================= */
+.intramuros-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* ================================= */
+/* STAT CARD                          */
+/* ================================= */
+.intramuros-stat-card {
+  background: var(--white);
+  border-radius: var(--pa-r-lg, 22px);
+  box-shadow: var(--pa-sh-sm);
+  border: 1px solid var(--pa-brd);
+  padding: 1.25rem;
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.intramuros-stat-card:hover {
+  box-shadow: var(--pa-sh-md);
+  transform: translateY(-2px);
+}
+
+.intramuros-stat-card__inner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Icono sólido, sin degradado */
+.intramuros-stat-card__icon {
+  padding: 0.75rem;
+  border-radius: var(--pa-r-md, 16px);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.intramuros-stat-card__icon--blue,
+.intramuros-stat-card__icon--green,
+.intramuros-stat-card__icon--purple,
+.intramuros-stat-card__icon--orange {
+  background: var(--blue-primary);
+}
+
+.intramuros-stat-card__body {
+  flex: 1;
+}
+
+.intramuros-stat-card__title {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--pa-txt3);
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.intramuros-stat-card__value {
+  font-size: 1.875rem;
+  font-weight: 900;
+  color: var(--ite-blue-dark);
+  line-height: 1;
+}
+
+.intramuros-stat-card__subtitle {
+  font-size: 0.72rem;
+  color: var(--pa-txt3);
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+/* ================================= */
+/* GRID DE REPORT CARDS               */
+/* ================================= */
+.intramuros-report-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+/* ================================= */
+/* REPORT CARD                        */
+/* ================================= */
+.intramuros-report-card {
+  border-width: 1px;
+  border-style: solid;
+  border-radius: var(--pa-r-lg, 22px);
+  padding: 1.5rem;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  background: var(--white);
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.intramuros-report-card:hover {
+  box-shadow: var(--pa-sh-md);
+  transform: translateY(-2px);
+}
+
+.intramuros-report-card--blue {
+  border-color: var(--report-blue-brd);
+  background: var(--report-blue);
+}
+.intramuros-report-card--green {
+  border-color: var(--report-green-brd);
+  background: var(--report-green);
+}
+.intramuros-report-card--purple {
+  border-color: var(--report-purple-brd);
+  background: var(--report-purple);
+}
+
+.intramuros-report-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  color: var(--ite-blue-dark);
+}
+
+.intramuros-report-card__download {
+  color: var(--pa-txt3);
+  flex-shrink: 0;
+}
+
+.intramuros-report-card__title {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--ite-blue-dark);
+  margin-bottom: 0.4rem;
+}
+
+.intramuros-report-card__desc {
+  font-size: 0.82rem;
+  color: var(--ite-text);
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.intramuros-report-card__count {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--ite-blue-dark);
+}
+
+/* ================================= */
+/* RESPONSIVE                         */
+/* ================================= */
+@media (max-width: 768px) {
+  .intramuros-admin-wrapper {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 4rem;
+  }
+
+  .intramuros-stat-grid,
+  .intramuros-report-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .intramuros-stat-card__value {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .intramuros-admin-wrapper {
+    padding: 3rem 0.75rem 1rem;
+  }
+}

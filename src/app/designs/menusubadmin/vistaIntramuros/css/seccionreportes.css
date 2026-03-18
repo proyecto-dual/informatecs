@@ -1,0 +1,155 @@
+/* ============================================
+   SECCION REPORTES — Paleta ITE
+   ============================================ */
+
+.rp-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Header sin fondo ── */
+.rp-header {
+}
+
+.rp-header__title {
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  color: var(--blue-primary);
+
+  font-weight: 800;
+  margin: 0 0 10px 0;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.rp-header__sub {
+  margin: 4px 0 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--pa-txt3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-style: italic;
+}
+
+/* ── Grid ReportCards ── */
+.rp-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+@media (min-width: 768px) {
+  .rp-grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .rp-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ── Grid desglose ── */
+.rp-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+@media (min-width: 768px) {
+  .rp-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Tarjeta de desglose ── */
+.rp-breakdown-card {
+  background: var(--white);
+  padding: 24px;
+  border-radius: var(--pa-r-xl);
+  border: 1px solid var(--pa-brd);
+  box-shadow: var(--pa-sh-xs);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+  cursor: default;
+}
+
+.rp-breakdown-card:hover {
+  box-shadow: var(--pa-sh-sm);
+}
+.rp-breakdown-card--ite:hover {
+  border-color: var(--blue-primary);
+}
+.rp-breakdown-card--ext:hover {
+  border-color: var(--yellow-accent);
+}
+
+.rp-breakdown-card__left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Ícono */
+.rp-breakdown-card__icon {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--pa-r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.rp-breakdown-card:hover .rp-breakdown-card__icon {
+  transform: scale(1.08);
+}
+
+.rp-breakdown-card__icon--ite {
+  background: var(--pa-blue-light);
+  color: var(--blue-primary);
+}
+.rp-breakdown-card__icon--ext {
+  background: #fff5e0;
+  color: var(--yellow-accent);
+}
+
+/* Texto */
+.rp-breakdown-card__value {
+  font-size: 1.875rem;
+  font-weight: 900;
+  color: var(--ite-blue-dark);
+  line-height: 1;
+  margin: 0;
+}
+
+.rp-breakdown-card__label {
+  margin: 4px 0 0;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--pa-txt3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Badge porcentaje */
+.rp-pct-badge {
+  font-size: 0.62rem;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+}
+
+.rp-pct-badge--ite {
+  background: var(--pa-blue-light);
+  color: var(--blue-primary);
+}
+.rp-pct-badge--ext {
+  background: #fff5e0;
+  color: var(--pa-yellow-d, #c97800);
+}

@@ -1,0 +1,618 @@
+/* ============================================
+   SECCION PARTICIPANTES — Paleta ITE
+   ============================================ */
+:root {
+  --blue-primary: #1b396a;
+  --yellow-accent: #fe9e10;
+  --blue-hover: #8eafef;
+  --text-dark: #333333;
+  --act-primary: #1b396a;
+  --act-primary-dark: #142a50;
+  --act-primary-light: #8eafef;
+  --bg-light: linear-gradient(
+    to left,
+    rgba(8, 94, 222, 0.7),
+    rgba(8, 94, 222, 0)
+  );
+  --white: #ffffff;
+  font-family: "Montserrat", sans-serif;
+}
+
+/* ── Print ── */
+@media print {
+  @page {
+    size: letter;
+    margin: 1cm;
+  }
+
+  nav,
+  header,
+  aside,
+  .sp-no-print,
+  [role="navigation"],
+  .dashboard-header,
+  button {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .sp-print-container {
+    width: 100% !important;
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+  }
+
+  .sp-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    table-layout: fixed !important;
+  }
+
+  .sp-table th,
+  .sp-table td {
+    border: 1pt solid black !important;
+    padding: 8px 5px !important;
+    color: black !important;
+    word-wrap: break-word !important;
+  }
+
+  .sp-table th {
+    background-color: #f2f2f2 !important;
+    font-size: 9pt !important;
+    font-weight: 900 !important;
+    text-transform: uppercase;
+  }
+
+  .sp-table td {
+    font-size: 8.5pt !important;
+  }
+
+  .sp-col-n {
+    width: 30px;
+    text-align: center !important;
+  }
+  .sp-col-nombre {
+    width: 35%;
+  }
+  .sp-col-act {
+    width: 25%;
+  }
+  .sp-col-equipo {
+    width: 20%;
+  }
+  .sp-col-g {
+    width: 35px;
+    text-align: center !important;
+  }
+  .sp-col-firma {
+    width: 70px;
+  }
+
+  .sp-print-only {
+    display: block !important;
+  }
+
+  .sp-print-header {
+    display: block !important;
+  }
+  .sp-print-footer {
+    display: grid !important;
+  }
+}
+
+/* ── Ocultar en pantalla lo que es solo PDF ── */
+.sp-print-only {
+  display: none;
+}
+.sp-print-header {
+  display: none;
+}
+.sp-print-footer {
+  display: none;
+}
+
+/* ============================================
+   LAYOUT
+   ============================================ */
+.sp-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ============================================
+   ENCABEZADO PDF (solo impresión)
+   ============================================ */
+.sp-print-header {
+  text-align: center;
+  border-bottom: 2px solid black;
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+}
+
+.sp-print-header__title {
+  font-size: 1.2rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  text-decoration: underline;
+  margin: 0;
+}
+
+.sp-print-header__sub {
+  font-size: 0.625rem;
+  font-weight: 500;
+  margin: 4px 0 0;
+}
+
+.sp-print-header__stats {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+  font-size: 0.5625rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+/* ============================================
+   BARRA DE FILTROS
+   ============================================ */
+.sp-filters {
+  background: var(--pa-card);
+  padding: 20px 24px;
+  border-radius: var(--pa-r-xl);
+  border: 1px solid var(--pa-brd);
+  box-shadow: var(--pa-sh-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .sp-filters {
+    flex-direction: row;
+  }
+}
+
+/* Search */
+.sp-search-wrap {
+  position: relative;
+  flex: 1;
+  width: 100%;
+}
+
+.sp-search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--pa-txt3);
+  pointer-events: none;
+}
+
+.sp-search-input {
+  width: 100%;
+  padding: 10px 16px 10px 44px;
+  background: var(--pa-bg);
+  border: 2px solid var(--blue-primary);
+  border-radius: 9999px;
+
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--text-dark);
+  outline: none;
+  transition: border-color 0.18s;
+}
+
+.sp-search-input::placeholder {
+  color: var(--pa-txt3);
+}
+.sp-search-input:focus {
+  border-color: var(--pa-brd);
+}
+
+/* Controles derecha */
+.sp-filter-controls {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+@media (min-width: 768px) {
+  .sp-filter-controls {
+    width: auto;
+    flex-wrap: nowrap;
+  }
+}
+
+.sp-select {
+  flex: 1;
+  padding: 10px 12px;
+  background: var(--pa-bg);
+  border: 2px solid transparent;
+  border-radius: var(--pa-r-md);
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 0.72rem;
+  color: var(--pa-txt2);
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.18s;
+}
+
+.sp-select:focus {
+  border-color: var(--pa-brd);
+}
+
+.sp-btn-print {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--blue-primary);
+  color: var(--white);
+  padding: 10px 20px;
+  border-radius: var(--pa-r-md);
+  border: none;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 900;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: var(--pa-sh-sm);
+  white-space: nowrap;
+  transition:
+    background 0.18s,
+    transform 0.12s,
+    box-shadow 0.18s;
+}
+
+.sp-btn-print:hover {
+  background: var(--act-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--pa-sh-md);
+}
+
+/* ============================================
+   TARJETAS RESUMEN
+   ============================================ */
+.sp-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (min-width: 768px) {
+  .sp-stats-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.sp-stat-card {
+  background: var(--pa-card);
+  padding: 16px 12px;
+  border-radius: var(--pa-r-lg);
+  border: 1px solid var(--pa-brd);
+  box-shadow: var(--pa-sh-xs);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.sp-stat-card--ite {
+  border-left: 4px solid var(--blue-primary);
+}
+.sp-stat-card--ext {
+  border-left: 4px solid var(--yellow-accent);
+}
+
+.sp-stat-label {
+  font-size: 0.6rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pa-txt3);
+}
+
+.sp-stat-label--blue {
+  color: var(--pa-blue-mid);
+}
+.sp-stat-label--pink {
+  color: #ec4899;
+}
+
+.sp-stat-value {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: var(--ite-blue-dark);
+  line-height: 1;
+}
+
+/* ============================================
+   TABLA
+   ============================================ */
+.sp-print-container {
+  background: var(--pa-card);
+  border-radius: var(--pa-r-xl);
+  border: 1px solid var(--pa-brd);
+  box-shadow: var(--pa-sh-md);
+  overflow: hidden;
+  overflow-x: auto;
+}
+
+.sp-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+/* Head */
+.sp-table thead tr {
+  background: var(--blue-primary);
+}
+
+.sp-table thead th {
+  padding: 14px 20px;
+  font-size: 0.68rem;
+  font-weight: 900;
+  color: var(--white);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border: none;
+}
+
+.sp-table thead th.sp-center {
+  text-align: center;
+}
+
+/* Body */
+.sp-table tbody tr {
+  border-bottom: 1px solid var(--pa-brd);
+  transition: background 0.15s;
+}
+
+.sp-table tbody tr:last-child {
+  border-bottom: none;
+}
+.sp-table tbody tr:hover {
+  background: var(--pa-blue-ll);
+}
+
+.sp-table tbody td {
+  padding: 14px 20px;
+  font-size: 0.8rem;
+  color: var(--pa-txt2);
+  border: none;
+}
+
+/* Columnas */
+.sp-col-n {
+  width: 30px;
+  text-align: center;
+}
+.sp-col-nombre {
+  width: 35%;
+}
+.sp-col-act {
+  width: 25%;
+}
+.sp-col-equipo {
+  width: 20%;
+}
+.sp-col-g {
+  width: 35px;
+  text-align: center;
+}
+.sp-col-firma {
+  width: 70px;
+  text-align: center;
+}
+
+/* Celdas específicas */
+.sp-td-nombre {
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--ite-blue-dark);
+  font-size: 0.8rem;
+}
+
+.sp-td-actividad {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--pa-txt2);
+}
+
+.sp-td-equipo {
+  font-size: 0.625rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--ite-blue-dark);
+  line-height: 1.3;
+}
+
+.sp-td-rol {
+  font-size: 0.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-style: italic;
+  color: var(--pa-txt3);
+}
+
+.sp-td-num {
+  font-weight: 700;
+  color: var(--pa-txt3);
+  text-align: center;
+  font-size: 0.75rem;
+}
+
+/* ============================================
+   PIE DE FIRMAS (solo PDF)
+   ============================================ */
+.sp-print-footer {
+  margin-top: 128px;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  padding: 0 80px;
+  text-align: center;
+}
+
+.sp-print-footer__line {
+  border-top: 2px solid black;
+  padding-top: 8px;
+  font-size: 0.5625rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+/* Ocultar en el navegador */
+.sp-print-page {
+  display: none;
+}
+
+@media print {
+  /* Reset de visibilidad para impresión limpia */
+  body * {
+    visibility: hidden;
+  }
+
+  .sp-print-page,
+  .sp-print-page * {
+    visibility: visible;
+  }
+
+  .sp-print-page {
+    display: block !important;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 21.59cm; /* Carta */
+    min-height: 27.94cm;
+    padding: 1.5cm 1.5cm 1cm 1.5cm;
+    font-family: "Helvetica", Arial, sans-serif;
+    background: white;
+    font-size: 10pt;
+    line-height: 1.2;
+    color: black;
+  }
+
+  /* Logos Superiores */
+  .sp-pdf-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20pt;
+  }
+  .sp-pdf-logo-sep {
+    width: 280px;
+    height: auto;
+  }
+  .sp-pdf-logo-tec {
+    width: 120px;
+    height: auto;
+  }
+
+  /* Títulos y Folio */
+  .sp-pdf-top-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25pt;
+  }
+  .sp-pdf-titles {
+    text-align: right;
+  }
+  .sp-pdf-main-title {
+    font-size: 11pt;
+    font-weight: bold;
+    margin: 0;
+  }
+  .sp-pdf-sub-title {
+    font-size: 10pt;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+  }
+
+  /* Tabla Oficial */
+  .sp-pdf-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15pt;
+  }
+  .sp-pdf-table th,
+  .sp-pdf-table td {
+    border: 0.5pt solid black !important;
+    padding: 6pt;
+    font-size: 8.5pt;
+    text-align: left;
+  }
+  .sp-pdf-table th {
+    background-color: #f2f2f2 !important;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  /* Bloque Inferior */
+  .sp-pdf-footer-section {
+    margin-top: 30pt;
+    /* Evita que la firma se corte entre páginas */
+    page-break-inside: avoid;
+  }
+  .sp-pdf-lema {
+    font-style: italic;
+    font-size: 8pt;
+    margin: 0;
+  }
+
+  .sp-pdf-firma-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 10pt;
+  }
+
+  .sp-pdf-line {
+    border-top: 1pt solid black;
+    width: 250px;
+    margin-top: 45pt;
+    margin-bottom: 5pt;
+  }
+
+  /* Sello */
+  .sp-pdf-sello-box {
+    width: 90px;
+    height: 90px;
+    border: 1px dashed #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Footer Imagen Institucional */
+  .sp-pdf-footer-img-wrap {
+    position: fixed;
+    bottom: 20pt;
+    left: 40pt;
+    right: 40pt;
+    text-align: center;
+  }
+  .sp-pdf-img-footer {
+    width: 100%;
+    height: auto;
+    max-height: 80px;
+  }
+
+  .sp-pdf-bold {
+    font-weight: bold;
+  }
+}

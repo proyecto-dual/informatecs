@@ -1,0 +1,257 @@
+/* ============================================
+   SECCION EQUIPOS — Paleta ITE
+   ============================================ */
+
+@media print {
+  @page {
+    size: letter;
+    margin: 1cm;
+  }
+  body {
+    background: white !important;
+  }
+
+  .eq-no-print {
+    display: none !important;
+  }
+
+  .eq-card {
+    break-inside: avoid;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: none !important;
+    margin-bottom: 20px !important;
+    border-radius: 12px !important;
+  }
+
+  .eq-grid {
+    display: block !important;
+  }
+
+  .eq-card__icon-wrap {
+    background: var(--blue-primary) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* ── Layout ── */
+.eq-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Header sin fondo ── */
+.eq-header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+@media (min-width: 1024px) {
+  .eq-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+}
+
+.eq-header__title {
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  color: var(--blue-primary);
+
+  font-weight: 800;
+  margin: 0 0 10px 0;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+.eq-btn-print {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--blue-primary);
+  color: var(--white);
+  padding: 10px 18px;
+  border-radius: var(--border-radius);
+  border: none;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 800;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  margin-top: 8px;
+  transition:
+    background 0.18s,
+    transform 0.12s;
+}
+.eq-btn-print:hover {
+  background: var(--act-primary-dark);
+  transform: translateY(-1px);
+}
+
+/* ── Filtros ── */
+.eq-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+@media (min-width: 640px) {
+  .eq-filters {
+    flex-direction: row;
+  }
+}
+
+.eq-search {
+  flex: 1;
+  padding: 12px 16px;
+  background: var(--gray-100);
+  border: 2px solid transparent;
+  border-radius: var(--border-radius);
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--gray-700);
+  outline: none;
+  transition: border-color 0.18s;
+  box-sizing: border-box;
+}
+.eq-search:focus {
+  border-color: var(--blue-primary);
+}
+
+.eq-select {
+  padding: 12px 16px;
+  background: var(--gray-100);
+  border: 2px solid transparent;
+  border-radius: var(--border-radius);
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  color: var(--gray-700);
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.18s;
+}
+.eq-select:focus {
+  border-color: var(--blue-primary);
+}
+
+/* ── Grid de cards ── */
+.eq-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+@media (min-width: 768px) {
+  .eq-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1280px) {
+  .eq-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ── Card equipo ── */
+.eq-card {
+  background: var(--white);
+  border-radius: 24px;
+  border: 1px solid var(--pa-brd);
+  box-shadow: var(--pa-sh-sm);
+  overflow: hidden;
+}
+
+.eq-card__body {
+  padding: 24px;
+}
+
+.eq-card__head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.eq-card__icon-wrap {
+  width: 48px;
+  height: 48px;
+  background: var(--blue-primary);
+  color: var(--white);
+  border-radius: var(--pa-r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.eq-card__name {
+  font-weight: 900;
+  color: var(--ite-blue-dark);
+  font-size: 1rem;
+  text-transform: uppercase;
+  line-height: 1.1;
+  margin: 0;
+}
+.eq-card__actividad {
+  font-size: 0.62rem;
+  font-weight: 900;
+  color: var(--blue-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 3px 0 0;
+}
+
+/* ── Plantilla ── */
+.eq-card__roster {
+  border-top: 1px solid var(--border-color);
+  padding-top: 16px;
+}
+
+.eq-card__roster-label {
+  font-size: 0.58rem;
+  font-weight: 900;
+  color: var(--pa-txt3);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 10px;
+}
+
+.eq-card__member {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+.eq-card__member:last-child {
+  border-bottom: none;
+}
+
+.eq-card__member-name {
+  font-size: 0.75rem;
+}
+.eq-card__member-name--cap {
+  font-weight: 900;
+  color: var(--ite-blue-dark);
+}
+.eq-card__member-name--int {
+  font-weight: 500;
+  color: var(--ite-text);
+}
+
+.eq-card__cap-icon {
+  color: var(--yellow-accent);
+  margin-right: 4px;
+}
+
+.eq-card__cap-badge {
+  font-size: 0.55rem;
+  font-weight: 900;
+  color: var(--blue-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}

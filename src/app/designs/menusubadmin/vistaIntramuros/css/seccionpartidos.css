@@ -1,0 +1,512 @@
+/* ============================================
+   SECCION PARTIDOS — Paleta ITE
+   Responsive: iPhone SE → iPad Pro 12.9"
+   ============================================ */
+:root {
+  --blue-primary: #1b396a;
+  --yellow-accent: #fe9e10;
+  --blue-hover: #8eafef;
+  --text-dark: #333333;
+  --act-primary: #1b396a;
+  --act-primary-dark: #142a50;
+  --act-primary-light: #8eafef;
+  --white: #ffffff;
+  font-family: "Montserrat", sans-serif;
+}
+
+/* ── Visibilidad según breakpoint ── */
+.pt-desktop-only {
+  display: block;
+}
+.pt-mobile-only {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .pt-desktop-only {
+    display: none;
+  }
+  .pt-mobile-only {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+/* ── Wrapper ── */
+.pt-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0; /* evita desborde en flex */
+}
+
+/* ── Header ── */
+.pt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pt-header__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: clamp(1.4rem, 5vw, 2.5rem);
+  color: var(--blue-primary);
+  font-weight: 800;
+  margin: 0;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+.pt-header__title-icon {
+  color: var(--yellow-accent);
+}
+.pt-header__sub {
+  margin: 4px 0 0;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--ite-text);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.pt-btn-new {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--blue-primary);
+  color: var(--white);
+  padding: 12px 22px;
+  border-radius: var(--border-radius);
+  border: none;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 800;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  white-space: nowrap;
+  transition:
+    background 0.18s,
+    transform 0.12s;
+}
+.pt-btn-new:hover {
+  background: var(--act-primary-dark);
+  transform: translateY(-1px);
+}
+.pt-btn-new:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 640px) {
+  .pt-btn-new {
+    width: 100%;
+  }
+}
+
+/* ════════════════════════════════════════
+   TABLA (tablet / escritorio)
+   ════════════════════════════════════════ */
+.pt-table-wrap {
+  background: var(--white);
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  min-width: 0;
+}
+
+.pt-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.pt-table thead tr {
+  background: var(--gray-100);
+  border-bottom: 2px solid var(--border-color);
+}
+.pt-table thead th {
+  padding: 14px 16px;
+  font-size: 0.62rem;
+  font-weight: 900;
+  color: var(--ite-text);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+.pt-table thead th.right {
+  text-align: right;
+}
+.pt-table thead th.center {
+  text-align: center;
+}
+
+.pt-table tbody tr {
+  border-bottom: 1px solid var(--gray-200);
+  transition: background 0.15s;
+}
+.pt-table tbody tr:last-child {
+  border-bottom: none;
+}
+.pt-table tbody tr:hover {
+  background: #f0f5ff;
+}
+
+.pt-table tbody td {
+  padding: 14px 16px;
+  font-size: 0.8rem;
+  color: var(--ite-text);
+}
+.pt-table tbody td.right {
+  text-align: right;
+}
+.pt-table tbody td.center {
+  text-align: center;
+}
+
+/* ── iPad mini/Air portrait ── */
+@media (min-width: 641px) and (max-width: 820px) {
+  .pt-table thead th,
+  .pt-table tbody td {
+    padding: 11px 12px;
+    font-size: 0.75rem;
+  }
+}
+
+/* ════════════════════════════════════════
+   CARDS (móvil ≤ 640px)
+   ════════════════════════════════════════ */
+.pt-card {
+  background: var(--white, #fff);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+}
+
+/* Encabezado: torneo + fecha */
+.pt-card__head {
+  padding: 12px 16px;
+  background: var(--gray-100, #f3f4f6);
+  border-bottom: 2px solid var(--border-color, #e5e7eb);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.pt-card__torneo {
+  font-weight: 800;
+  font-size: 0.8rem;
+  color: var(--ite-blue-dark, #1b396a);
+  text-transform: uppercase;
+}
+
+.pt-card__fecha {
+  font-size: 0.72rem;
+  color: var(--ite-text, #4a5568);
+  white-space: nowrap;
+}
+
+/* Fila marcador central */
+.pt-card__marcador {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 14px 16px;
+  border-bottom: 1px dashed var(--border-color, #e5e7eb);
+}
+
+.pt-card__equipo {
+  flex: 1;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--gray-700, #374151);
+  text-transform: uppercase;
+}
+
+.pt-card__equipo--right {
+  text-align: right;
+}
+
+/* Filas label ↔ valor */
+.pt-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 16px;
+  border-bottom: 1px dashed var(--border-color, #e5e7eb);
+}
+.pt-card__row--last {
+  border-bottom: none;
+}
+
+.pt-card__label {
+  font-size: 0.66rem;
+  font-weight: 900;
+  color: var(--gray-300, #9ca3af);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Empty card */
+.pt-empty-card {
+  padding: 36px 20px;
+  text-align: center;
+  color: var(--gray-300, #9ca3af);
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  background: var(--white, #fff);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 16px;
+}
+
+/* ════════════════════════════════════════
+   Estilos compartidos (tabla + cards)
+   ════════════════════════════════════════ */
+.pt-td-fecha {
+  color: var(--ite-text);
+}
+
+.pt-td-torneo {
+  font-weight: 800;
+  color: var(--ite-blue-dark);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+.pt-td-equipo {
+  font-weight: 600;
+  color: var(--gray-700);
+}
+
+.pt-marcador {
+  display: inline-block;
+  background: var(--blue-primary);
+  color: var(--white);
+  padding: 4px 14px;
+  border-radius: var(--radius-sm);
+  font-family: monospace;
+  font-weight: 900;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.pt-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+.pt-badge--empate {
+  background: var(--gray-100);
+  color: var(--ite-text);
+}
+.pt-badge--ganador {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.pt-empty {
+  padding: 80px 20px;
+  text-align: center;
+  color: var(--gray-300);
+  font-weight: 700;
+}
+
+/* ════════════════════════════════════════
+   MODAL — responsivo
+   ════════════════════════════════════════ */
+.pt-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.pt-modal {
+  width: 100%;
+  max-width: 520px;
+  background: var(--white);
+  border-radius: 28px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+.pt-modal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--gray-100);
+  gap: 12px;
+}
+.pt-modal__title {
+  font-size: 0.88rem;
+  font-weight: 900;
+  color: var(--ite-blue-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+.pt-modal__close {
+  background: var(--gray-200);
+  border: none;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--ite-text);
+  transition: background 0.15s;
+}
+.pt-modal__close:hover {
+  background: var(--gray-300);
+}
+
+.pt-modal__body {
+  padding: 24px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pt-form-select,
+.pt-form-input {
+  width: 100%;
+  background: var(--gray-100);
+  border: 2px solid transparent;
+  border-radius: var(--border-radius);
+  padding: 14px 16px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--gray-700);
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.18s;
+  box-sizing: border-box;
+}
+.pt-form-select:focus,
+.pt-form-input:focus {
+  border-color: var(--blue-primary);
+}
+
+.pt-score-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.pt-score-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pt-form-score {
+  width: 100%;
+  background: #eff6ff;
+  border: 2px solid transparent;
+  border-radius: var(--border-radius);
+  padding: 14px;
+  text-align: center;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 900;
+  font-size: 1.75rem;
+  color: var(--blue-primary);
+  outline: none;
+  transition: border-color 0.18s;
+  box-sizing: border-box;
+}
+.pt-form-score:focus {
+  border-color: var(--blue-primary);
+}
+
+.pt-modal__footer {
+  padding: 18px 24px;
+  border-top: 1px solid var(--border-color);
+  background: var(--gray-100);
+}
+
+.pt-btn-submit {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--blue-primary);
+  color: var(--white);
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 16px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 900;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition:
+    background 0.18s,
+    transform 0.12s;
+}
+.pt-btn-submit:hover:not(:disabled) {
+  background: var(--act-primary-dark);
+}
+.pt-btn-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Modal en iPhone SE */
+@media (max-width: 390px) {
+  .pt-modal {
+    border-radius: 20px;
+  }
+  .pt-modal__body {
+    padding: 16px;
+    gap: 12px;
+  }
+  .pt-modal__header,
+  .pt-modal__footer {
+    padding: 14px 16px;
+  }
+  .pt-score-grid {
+    grid-template-columns: 1fr;
+  }
+  .pt-form-score {
+    font-size: 1.4rem;
+  }
+}

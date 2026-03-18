@@ -85,15 +85,26 @@ export default function WelcomeSubAdminPage() {
         const res = await fetch(`/api/subadmin/mis-permisos?user=${subUser}`);
         const data = await res.json();
         if (data.permisos) {
-          sessionStorage.setItem(
-            "subAdminPermisos",
-            JSON.stringify(data.permisos),
-          );
+          // ✅ Sin sessionStorage — siempre viene del servidor
           setPermisosActivos(data.permisos);
         }
       } catch {}
     };
+
+    // Carga inicial
     cargarPermisos();
+
+    // ✅ Re-verifica cada 30 segundos para reflejar bloqueos/aprobaciones del admin
+    const intervalo = setInterval(cargarPermisos, 30000);
+
+    // ✅ Re-verifica al volver a la pestaña
+    const handleFocus = () => cargarPermisos();
+    window.addEventListener("focus", handleFocus);
+
+    return () => {
+      clearInterval(intervalo);
+      window.removeEventListener("focus", handleFocus);
+    };
   }, []);
 
   const tienePermiso = (label) => {
@@ -180,7 +191,6 @@ export default function WelcomeSubAdminPage() {
 
               return (
                 <div key={section.href} className="admin-card-wrapper">
-                  {/* Tarjeta — navega solo si tiene acceso */}
                   {accesoConcedido ? (
                     <Link href={section.href} className="admin-card-link">
                       <TarjetaContenido

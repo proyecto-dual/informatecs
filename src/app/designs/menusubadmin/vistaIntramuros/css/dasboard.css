@@ -1,0 +1,214 @@
+/* ============================================
+   DASHBOARD — Paleta ITE
+   ============================================ */
+:root {
+  --blue-primary: #1b396a;
+  --yellow-accent: #fe9e10;
+  --blue-hover: #8eafef;
+  --text-dark: #333333;
+  --act-primary: #1b396a;
+  --act-primary-dark: #142a50;
+  --act-primary-light: #8eafef;
+  --bg-light: linear-gradient(
+    to left,
+    rgba(8, 94, 222, 0.7),
+    rgba(8, 94, 222, 0)
+  );
+  --white: #ffffff;
+  font-family: "Montserrat", sans-serif;
+}
+
+.db-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  gap: 24px;
+}
+
+/* ── Header sin fondo ── */
+.db-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  color: #142a50;
+}
+
+.db-header__title {
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  color: var(--ite-blue-dark);
+
+  font-weight: 800;
+  margin: 0 0 10px 0;
+  line-height: 1.2;
+  text-transform: uppercase;
+  margin: 0;
+}
+.db-header__sub {
+  margin: 4px 0 0;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--ite-text);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ── Stat Cards Grid ── */
+.db-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 640px) {
+  .db-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .db-stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ── Bottom Grid ── */
+.db-bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+@media (min-width: 1024px) {
+  .db-bottom-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Card base ── */
+.db-card {
+  background: var(--white);
+  border-radius: 24px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow);
+  padding: 24px;
+}
+
+.db-card__label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.6rem;
+  font-weight: 900;
+  color: var(--ite-text);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 24px;
+}
+.db-card__label-icon {
+  color: var(--blue-primary);
+}
+
+/* ── Barras deporte ── */
+.db-bar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.db-bar-row {
+}
+.db-bar-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.db-bar-meta__name {
+  font-size: 0.7rem;
+  font-weight: 900;
+  color: var(--ite-blue-dark);
+  text-transform: uppercase;
+}
+.db-bar-meta__count {
+  font-size: 0.7rem;
+  font-weight: 900;
+  color: var(--blue-primary);
+}
+
+.db-bar-track {
+  height: 10px;
+  background: var(--gray-100);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.db-bar-fill {
+  height: 100%;
+  background: var(--blue-primary);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+/* ── Resultados recientes ── */
+.db-results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.db-result-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--gray-100);
+  border-radius: 16px;
+  border-left: 4px solid var(--blue-primary);
+}
+
+.db-result-item__body {
+  flex: 1;
+}
+.db-result-item__torneo {
+  font-size: 0.55rem;
+  font-weight: 900;
+  color: var(--yellow-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 4px;
+}
+.db-result-item__match {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.db-result-item__team {
+  font-size: 0.72rem;
+  font-weight: 900;
+  color: var(--ite-blue-dark);
+  text-transform: uppercase;
+}
+.db-result-item__vs {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--gray-300);
+}
+
+.db-result-item__score {
+  margin-left: 16px;
+  background: var(--blue-primary);
+  color: var(--white);
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  font-family: monospace;
+  font-weight: 900;
+  font-size: 0.85rem;
+  box-shadow: 0 0 0 3px var(--gray-200);
+}
+
+.db-empty {
+  padding: 40px 0;
+  text-align: center;
+  color: var(--gray-300);
+  font-weight: 700;
+  font-size: 0.8rem;
+}

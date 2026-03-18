@@ -1,0 +1,237 @@
+/* ============================================
+   EDIT MODAL — Paleta ITE
+   ============================================ */
+
+.em-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(6px);
+}
+
+/* ── Modal box ── */
+.em-modal {
+  background: var(--white);
+  border-radius: 28px;
+  width: 100%;
+  max-width: 440px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--pa-brd);
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Variante ancha para formulario completo */
+.em-modal--wide {
+  max-width: 640px;
+}
+
+/* ── Header ── */
+.em-modal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--pa-bg);
+  flex-shrink: 0;
+}
+
+.em-modal__title {
+  font-size: 1rem;
+  font-weight: 900;
+  color: var(--ite-blue-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+
+.em-modal__id {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--blue-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 3px 0 0;
+}
+
+.em-modal__close {
+  background: var(--gray-200);
+  border: none;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--ite-text);
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.em-modal__close:hover {
+  background: var(--gray-300);
+}
+
+/* ── Form body (scrollable) ── */
+.em-modal__body {
+  padding: 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+/* Helper: campo que ocupa las 2 columnas */
+.em-full {
+  grid-column: 1 / span 2;
+}
+
+/* ── Label ── */
+.em-label {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 900;
+  color: var(--pa-txt3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+
+/* ── Input / Select / Textarea ── */
+.em-input,
+.em-select,
+.em-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--gray-100);
+  border: 2px solid transparent;
+  border-radius: var(--border-radius);
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--gray-700);
+  outline: none;
+  transition:
+    border-color 0.18s,
+    background 0.18s;
+  box-sizing: border-box;
+}
+.em-input:focus,
+.em-select:focus,
+.em-textarea:focus {
+  border-color: var(--blue-primary);
+  background: var(--white);
+}
+
+.em-textarea {
+  height: 80px;
+  resize: vertical;
+}
+
+/* ── Grid 2 cols dentro del form ── */
+.em-grid-2 {
+  grid-column: 1 / span 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* ── Info banner ── */
+.em-banner {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  background: var(--pa-blue-light, #e8f0fb);
+  border: 1px solid var(--pa-blue-mid, #2d5ba8);
+  border-radius: var(--border-radius);
+}
+.em-banner__icon {
+  color: var(--blue-primary);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.em-banner__text {
+  font-size: 0.7rem;
+  color: var(--ite-blue-dark);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* ── Botones ── */
+.em-btn-row {
+  display: flex;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.em-btn-cancel {
+  flex: 1;
+  padding: 14px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 900;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ite-text);
+  background: var(--gray-100);
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.em-btn-cancel:hover {
+  background: var(--gray-200);
+}
+
+.em-btn-save {
+  flex: 1;
+  padding: 14px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 900;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--white);
+  background: var(--blue-primary);
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition:
+    background 0.18s,
+    transform 0.12s;
+}
+.em-btn-save:hover:not(:disabled) {
+  background: var(--act-primary-dark);
+}
+.em-btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Spinner ── */
+.em-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: em-spin 0.7s linear infinite;
+}
+@keyframes em-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
