@@ -154,17 +154,27 @@ const LoginPage = () => {
   // ----------------------
   // ADMIN
   // ----------------------
-  const onAdminSubmit = (e) => {
-    e.preventDefault();
-    if (adminUser === "NodalTec" && adminPassword === "eventosadmin2025") {
-      localStorage.setItem("adminName", "Juan Carlos Leal Nodal");
+ const onAdminSubmit = async (e) => {
+  e.preventDefault();
+  if (!adminUser || !adminPassword)
+    return setError("Escribe usuario y contraseña");
+  try {
+    const res = await fetch("/api/auth/adminLogin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: adminUser, password: adminPassword }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      localStorage.setItem("adminName", adminUser);
       router.push("/designs/menuadmin");
     } else {
-      setError("Usuario o contraseña incorrectos");
+      setError(data.message || "Usuario o contraseña incorrectos");
     }
-  };
-
- 
+  } catch {
+    setError("Error al conectar con el servidor");
+  }
+};
 const onSubAdminSubmit = (e) => {
   e.preventDefault();
   if (subAdminUser === "SubAdmin" && subAdminPassword === "admintec2026") {

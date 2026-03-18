@@ -58,14 +58,6 @@ export async function POST(req) {
       });
     }
 
-    // 3. Validar contraseña
-    // Temporal para debug - quítalo después
-console.log("Student encontrado:", {
-  matricula: student.matricula,
-  passwordEnBD: student.password?.substring(0, 20) + "...",
-  passwordEsHash: student.password?.startsWith("$2"),
-  
-});
 
     const passwordMatch = await bcrypt.compare(password, student.password);
     if (!passwordMatch) {
