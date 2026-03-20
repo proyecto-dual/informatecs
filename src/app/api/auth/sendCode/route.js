@@ -1,3 +1,4 @@
+// src/app/api/auth/sendCode/route.js
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { prisma } from "@/lib/prisma";
@@ -5,7 +6,6 @@ import { prisma } from "@/lib/prisma";
 export async function POST(req) {
   const { matricula, correo } = await req.json();
 
-  // ✅ Validar que el correo coincida con la matrícula
   const expectedEmail = `al${matricula}@ite.edu.mx`.toLowerCase();
   const providedEmail = correo?.trim().toLowerCase();
 
@@ -18,17 +18,45 @@ export async function POST(req) {
     );
   }
 
-  const student = await prisma.authStudents.findUnique({
-    where: { matricula },
+  // 1. Verificar que la matrícula exista en la tabla principal de estudiantes
+  const estudiante = await prisma.estudiantes.findUnique({
+    where: { aluctr: matricula },
   });
 
-  if (!student) {
+  if (!estudiante) {
     return NextResponse.json(
-      { message: "Estudiante no encontrado" },
+      { message: "Matrícula no encontrada en el sistema" },
       { status: 404 },
     );
   }
 
+  // 2. Buscar o crear en authStudents
+  let student = await prisma.authStudents.findUnique({
+    where: { matricula },
+  });
+
+  if (!student) {
+    const nombreCompleto = [
+      estudiante.alunom,
+      estudiante.aluapp,
+      estudiante.aluapm,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .trim();
+
+    student = await prisma.authStudents.create({
+      data: {
+        matricula,
+        password: "",
+        nombreCompleto,
+        correo: providedEmail,
+        isVerified: false,
+      },
+    });
+  }
+
+  // 3. Generar y enviar código
   const code = Math.floor(100000 + Math.random() * 900000).toString();
 
   try {
