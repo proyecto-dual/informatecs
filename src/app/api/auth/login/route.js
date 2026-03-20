@@ -32,33 +32,31 @@ export async function POST(req) {
       );
     }
 
-    // 2. Buscar/Crear en authStudents
-    let student = await prisma.authStudents.findUnique({
+    // 2. Buscar en authStudents — si no existe, pedir registro
+    const student = await prisma.authStudents.findUnique({
       where: { matricula },
     });
 
     if (!student) {
-      const nombreCompleto = [
-        estudiante.alunom,
-        estudiante.aluapp,
-        estudiante.aluapm,
-      ]
-        .filter(Boolean)
-        .join(" ")
-        .trim();
-      const hashedPassword = await bcrypt.hash("123456", 10);
-      student = await prisma.authStudents.create({
-        data: {
-          matricula,
-          password: hashedPassword,
-          nombreCompleto,
-          correo: estudiante.alumai || "",
-          isVerified: true,
-        },
-      });
+      return NextResponse.json(
+        { message: "No tienes cuenta activa. Regístrate primero." },
+        { status: 404 },
+      );
     }
 
+    // 3. Verificar que la cuenta esté activa
+    if (!student.isVerified) {
+      return NextResponse.json(
+        {
+          message:
+            "Tu cuenta no ha sido verificada. Usa '¿Olvidaste tu contraseña?' para activarla.",
+          requiresVerification: true,
+        },
+        { status: 403 },
+      );
+    }
 
+    // 4. Verificar contraseña
     const passwordMatch = await bcrypt.compare(password, student.password);
     if (!passwordMatch) {
       return NextResponse.json(
@@ -67,7 +65,7 @@ export async function POST(req) {
       );
     }
 
-    // 4. Procesar inscripción y carrera
+    // 5. Procesar inscripción y carrera
     const inscripciones = Array.isArray(estudiante.inscripciones)
       ? estudiante.inscripciones
       : [estudiante.inscripciones].filter(Boolean);
@@ -75,7 +73,7 @@ export async function POST(req) {
     const inscripcionPrincipal = inscripciones[0] || {};
     const carrera = inscripcionPrincipal.carrera;
 
-    // 5. Construir perfil completo
+    // 6. Construir perfil completo
     const perfilCompleto = {
       numeroControl: estudiante.aluctr,
       nombreCompleto: [estudiante.alunom, estudiante.aluapp, estudiante.aluapm]
