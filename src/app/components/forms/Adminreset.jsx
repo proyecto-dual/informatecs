@@ -79,7 +79,7 @@ function AdminResetContent() {
   return (
     <div style={styles.page}>
       <div style={styles.card}>
-        <h2 style={styles.title}>🔑 Eventos ITE</h2>
+        <h2 style={styles.title}> Eventos ITE</h2>
         <p style={styles.subtitle}>Restablece tu contraseña de administrador</p>
 
         {status === "loading" && (

@@ -79,7 +79,7 @@ function ResetForm() {
     <div className="flex min-h-screen items-center justify-center bg-slate-900 p-4">
       <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-2xl">
         <div className="mb-8 text-center">
-          <h2 className="text-2xl font-bold text-slate-800">🔐 Eventos ITE</h2>
+          <h2 className="text-2xl font-bold text-slate-800"> Eventos ITE</h2>
           <p className="text-sm text-slate-500">
             Restablece tu contraseña de administrador
           </p>

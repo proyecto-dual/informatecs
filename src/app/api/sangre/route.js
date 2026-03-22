@@ -1,8 +1,13 @@
-
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { createClient } from "@supabase/supabase-js";
 
-//  determina si el alumno tiene sangre validada o pendiente
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY,
+);
+
+// ── GET: determina si el alumno tiene sangre validada o pendiente ──
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -37,7 +42,7 @@ export async function GET(request) {
   }
 }
 
-//actualiza la inscripcion con el archivo
+// ── POST: actualiza la inscripcion con el archivo ──
 export async function POST(request) {
   try {
     const formData = await request.formData();
@@ -48,11 +53,6 @@ export async function POST(request) {
     if (!aluctr || !file) {
       return NextResponse.json({ error: "Datos incompletos" }, { status: 400 });
     }
-
-    // Convertir archivo a Base64 para almacenamiento sencillo o Buffer si prefieres Blob
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    const base64String = `data:${file.type};base64,${buffer.toString("base64")}`;
 
     const inscripcion = await prisma.inscripact.findFirst({
       where: { estudianteId: aluctr },
@@ -66,12 +66,39 @@ export async function POST(request) {
       );
     }
 
+    // ── SUBIR A SUPABASE STORAGE ──
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    const ext = file.name.includes(".")
+      ? "." + file.name.split(".").pop()
+      : ".pdf";
+    const filename = `${aluctr}_${Date.now()}${ext}`;
+    const storagePath = `sangre/${filename}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("uploads")
+      .upload(storagePath, buffer, {
+        contentType: file.type || "application/pdf",
+        upsert: true,
+      });
+
+    if (uploadError) {
+      console.error("Error Supabase:", uploadError.message);
+      return NextResponse.json({ error: uploadError.message }, { status: 500 });
+    }
+
+    // ── OBTENER URL PÚBLICA ──
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from("uploads").getPublicUrl(storagePath);
+
+    // ── GUARDAR URL EN BD ──
     await prisma.inscripact.update({
       where: { id: inscripcion.id },
       data: {
         tipoSangreSolicitado: bloodType,
-        comprobanteSangrePDF: base64String, // Guardamos como string para previsualización directa
-        nombreArchivoSangre: file.name,
+        comprobanteSangrePDF: publicUrl, // ✅ URL pública, no base64
+        nombreArchivoSangre: filename,
         sangreValidada: false,
         mensajeAdmin: null,
       },
@@ -79,7 +106,7 @@ export async function POST(request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error(" Error en POST /api/sangre:", error);
+    console.error("Error en POST /api/sangre:", error);
     return NextResponse.json(
       { error: "Error interno del servidor" },
       { status: 500 },
@@ -87,19 +114,16 @@ export async function POST(request) {
   }
 }
 
-// 3.  el panel de control usa esto para Aprobar/Rechazar
+// ── PATCH: el panel de control usa esto para Aprobar/Rechazar ──
 export async function PATCH(request) {
   try {
     const body = await request.json();
-    console.log("PATCH /api/sangre body:", body); // temporal para debug
-
     const { aluctr, accion, mensaje } = body;
 
     if (!aluctr) {
       return NextResponse.json({ error: "Falta aluctr" }, { status: 400 });
     }
 
-    // sin filtros extra — solo la inscripcion mas reciente del alumno
     const inscripcion = await prisma.inscripact.findFirst({
       where: { estudianteId: aluctr },
       orderBy: { id: "desc" },
@@ -121,13 +145,19 @@ export async function PATCH(request) {
           where: { id: inscripcion.id },
           data: {
             sangreValidada: true,
-            mensajeAdmin: null, 
+            mensajeAdmin: null,
           },
         }),
       ]);
     } else if (accion === "rechazar") {
+      // ── ELIMINAR ARCHIVO DE SUPABASE AL RECHAZAR ──
+      if (inscripcion.nombreArchivoSangre) {
+        await supabase.storage
+          .from("uploads")
+          .remove([`sangre/${inscripcion.nombreArchivoSangre}`]);
+      }
+
       await prisma.$transaction([
-        
         prisma.estudiantes.update({
           where: { aluctr },
           data: { alutsa: null },
@@ -136,9 +166,11 @@ export async function PATCH(request) {
           where: { id: inscripcion.id },
           data: {
             comprobanteSangrePDF: null,
+            nombreArchivoSangre: null,
             sangreValidada: false,
             tipoSangreSolicitado: null,
-            mensajeAdmin: mensaje || "Documento rechazado por el administrador.",
+            mensajeAdmin:
+              mensaje || "Documento rechazado por el administrador.",
           },
         }),
       ]);
@@ -149,7 +181,7 @@ export async function PATCH(request) {
       mensaje: `Expediente ${accion}ado`,
     });
   } catch (error) {
-    console.error(" Error en PATCH /api/sangre:", error);
+    console.error("Error en PATCH /api/sangre:", error);
     return NextResponse.json(
       { error: "Error en la operación de base de datos" },
       { status: 500 },

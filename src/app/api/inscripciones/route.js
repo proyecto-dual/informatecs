@@ -1,7 +1,12 @@
 import { prisma } from "@/lib/prisma";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { createClient } from "@supabase/supabase-js";
 import nodemailer from "nodemailer";
+import path from "path";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY,
+);
 
 // ── GET: OBTENER INSCRIPCIONES ────────
 export async function GET(request) {
@@ -43,10 +48,7 @@ export async function GET(request) {
           },
         },
       },
-      orderBy: [
-        { comprobanteSangrePDF: "desc" },
-        { fechaInscripcion: "desc" },
-      ],
+      orderBy: [{ comprobanteSangrePDF: "desc" }, { fechaInscripcion: "desc" }],
     });
 
     const inscripcionesTransformadas = inscripciones.map((inscripcion) => {
@@ -102,17 +104,33 @@ export async function POST(request) {
       });
     }
 
-    // ── GESTIÓN DE ARCHIVO ──
+    // ── GESTIÓN DE ARCHIVO (Supabase Storage) ──
     let fileNamePath = null;
     if (file && typeof file !== "string" && file.size > 0) {
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
-      const uniqueFileName = `${aluctr}_${actividadId}_${Date.now()}${path.extname(file.name) || ".pdf"}`;
-      const uploadDir = path.join(process.cwd(), "public", "uploads", "sangre");
-      await mkdir(uploadDir, { recursive: true });
-      const fullPath = path.join(uploadDir, uniqueFileName);
-      await writeFile(fullPath, buffer);
-      fileNamePath = `/uploads/sangre/${uniqueFileName}`;
+      const ext = file.name.includes(".")
+        ? "." + file.name.split(".").pop()
+        : ".pdf";
+      const uniqueFileName = `${aluctr}_${actividadId}_${Date.now()}${ext}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("uploads")
+        .upload(`sangre/${uniqueFileName}`, buffer, {
+          contentType: file.type || "application/pdf",
+          upsert: true,
+        });
+
+      if (uploadError) {
+        console.error("Error subiendo a Supabase:", uploadError.message);
+      } else {
+        const {
+          data: { publicUrl },
+        } = supabase.storage
+          .from("uploads")
+          .getPublicUrl(`sangre/${uniqueFileName}`);
+        fileNamePath = publicUrl;
+      }
     }
 
     // ── GUARDAR EN BASE DE DATOS ──
@@ -151,12 +169,11 @@ export async function POST(request) {
     }
 
     // ── ENVÍO DE CORREO ──
-    // 1. REVISIÓN DE CORREO (USAMOS TODOS LOS CAMPOS POSIBLES)
     const correoDestino =
       nuevaInscripcion.estudiante.alumai || nuevaInscripcion.estudiante.alumail;
 
     if (!correoDestino) {
-      console.error(" ERROR: No hay correo para este alumno en la DB.");
+      console.error("ERROR: No hay correo para este alumno en la DB.");
     } else {
       try {
         const transporter = nodemailer.createTransport({
@@ -223,7 +240,7 @@ export async function POST(request) {
 
     return new Response(JSON.stringify(nuevaInscripcion), { status: 201 });
   } catch (error) {
-    console.error(" Error general:", error);
+    console.error("Error general:", error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
     });
