@@ -6,3 +6,4 @@ export default function VistaHorarios() {
       <p>Esta es una página de prueba para horarios.</p>
     </div> );
 }
+// cometnare para hacer un commit de prueba
