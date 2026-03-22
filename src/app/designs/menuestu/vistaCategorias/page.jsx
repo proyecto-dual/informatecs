@@ -32,11 +32,7 @@ export default function App() {
 
   const { carouselRef, scrollCarousel } = useCarousel(408);
 
-  /* ===============================
-     LÓGICA DE SEMESTRE APLICADA
-     =============================== */
   const obtenerSemestreValido = () => {
-    // Aplicamos la misma prioridad que en el Admon Dashboard
     const rawSem =
       studentData?.semestre || studentData?.alusme || studentData?.calnpe;
     return rawSem ? parseInt(rawSem) : null;
@@ -44,16 +40,10 @@ export default function App() {
 
   const handleRegister = (item) => {
     const numControl = studentData?.numeroControl || studentData?.aluctr;
-
     if (!numControl) {
       alert("No se pudo obtener el número de control del alumno");
       return;
     }
-
-    // Al iniciar, inyectamos el semestre detectado en el proceso de inscripción
-    const semestre = obtenerSemestreValido();
-
-    // Pasamos los datos del estudiante extendidos
     iniciarInscripcion(item, numControl);
     handleClose();
   };
@@ -69,14 +59,9 @@ export default function App() {
     try {
       const data = new FormData();
 
-      // --- CORRECCIÓN DE IDs ---
-      // 1. El ID de la ACTIVIDAD (Suele estar dentro del objeto actividad o como actividadId)
       const realActividadId = formSport.actividadId || formSport.actividad?.id;
-
-      // 2. El ID de la OFERTA (Es el ID principal de la tarjeta que seleccionaste)
       const realOfertaId = formSport.id;
 
-      // Si por alguna razón realActividadId es null, usamos formSport.id como respaldo
       data.append("aluctr", numControl);
       data.append("actividadId", realActividadId || formSport.id);
       data.append("ofertaId", realOfertaId);
@@ -87,7 +72,6 @@ export default function App() {
         ofertaId: realOfertaId,
       });
 
-      // 3. Cuestionario
       data.append("purpose", formDataFromChild.purpose);
       data.append("bloodType", formDataFromChild.bloodType);
       data.append("hasCondition", formDataFromChild.hasCondition);
@@ -96,7 +80,7 @@ export default function App() {
       data.append("hasInjury", formDataFromChild.hasInjury);
       data.append("hasRestriction", formDataFromChild.hasRestriction);
 
-      // 4. Archivo
+      // ✅ Archivo directo sin conversión
       if (formDataFromChild.bloodTypeFile instanceof File) {
         data.append("bloodTypeFile", formDataFromChild.bloodTypeFile);
       }
@@ -159,19 +143,15 @@ export default function App() {
             selectedSport={formSport}
             cancelar={cancelarInscripcion}
             isSubmitting={isSubmitting}
-            // Pasamos el semestre como prop por si el formulario necesita lógica interna
             currentSemester={obtenerSemestreValido()}
-            // Pasamos sangre si ya existe en el perfil (visto en consola)
             initialBloodType={studentData?.sangre}
+            aluctr={studentData?.numeroControl || studentData?.aluctr}
           />
         </main>
       </div>
     );
   }
 
-  /* ===============================
-     VISTA PRINCIPAL (PASO 1)
-     =============================== */
   return (
     <div className="ofertas-dashboard-container">
       <main className="ofertas-dashboard-main">

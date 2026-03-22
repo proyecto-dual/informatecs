@@ -24,29 +24,29 @@ const BloodTypeValidator = ({ numeroControl, onUploadSuccess }) => {
   const intervalRef = useRef(null);
 
   const cargarTipoSangre = useCallback(async () => {
-  if (!numeroControl) return;
-  try {
-    const response = await fetch(`/api/sangre?aluctr=${numeroControl}`);
-    if (!response.ok) return;
+    if (!numeroControl) return;
+    try {
+      const response = await fetch(`/api/sangre?aluctr=${numeroControl}`);
+      if (!response.ok) return;
 
-    const data = await response.json();
-    console.log("DATA SANGRE:", JSON.stringify(data, null, 2)); // ← aquí
-    setCurrentBloodType(data?.estudiante?.alutsa || null);
-    setPendingRequest(data?.solicitudPendiente || null);
+      const data = await response.json();
+      console.log("DATA SANGRE:", JSON.stringify(data, null, 2)); // ← aquí
+      setCurrentBloodType(data?.estudiante?.alutsa || null);
+      setPendingRequest(data?.solicitudPendiente || null);
 
-    // Solo mostrar mensajeAdmin si la inscripción NO está validada
-    // Si sangreValidada es true, el mensaje es de aprobación, no de rechazo
-    const insc = data?.inscripcion;
-    const estaValidada = insc?.sangreValidada === true;
-    setMensajeAdmin(!estaValidada ? (insc?.mensajeAdmin || null) : null);
+      // Solo mostrar mensajeAdmin si la inscripción NO está validada
+      // Si sangreValidada es true, el mensaje es de aprobación, no de rechazo
+      const insc = data?.inscripcion;
+      const estaValidada = insc?.sangreValidada === true;
+      setMensajeAdmin(!estaValidada ? insc?.mensajeAdmin || null : null);
 
-    if (data?.estudiante?.alutsa && !data?.solicitudPendiente) {
-      setIsUpdating(false);
+      if (data?.estudiante?.alutsa && !data?.solicitudPendiente) {
+        setIsUpdating(false);
+      }
+    } catch (error) {
+      console.error("❌ Error:", error);
     }
-  } catch (error) {
-    console.error("❌ Error:", error);
-  }
-}, [numeroControl]);
+  }, [numeroControl]);
 
   useEffect(() => {
     cargarTipoSangre();

@@ -1,12 +1,8 @@
+export const runtime = "nodejs";
+
 import { prisma } from "@/lib/prisma";
-import { createClient } from "@supabase/supabase-js";
 import nodemailer from "nodemailer";
 import path from "path";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY,
-);
 
 // ── GET: OBTENER INSCRIPCIONES ────────
 export async function GET(request) {
@@ -91,6 +87,7 @@ export async function GET(request) {
 
 // ── POST: CREAR INSCRIPCIÓN ───────────────────────────────────────────────
 export async function POST(request) {
+  console.log("🆕 POST /api/inscripciones corriendo");
   try {
     const formData = await request.formData();
     const aluctr = formData.get("aluctr");
@@ -104,32 +101,33 @@ export async function POST(request) {
       });
     }
 
-    // ── GESTIÓN DE ARCHIVO (Supabase Storage) ──
+    // ── GESTIÓN DE ARCHIVO (Supabase Storage via fetch) ──
     let fileNamePath = null;
     if (file && typeof file !== "string" && file.size > 0) {
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
       const ext = file.name.includes(".")
         ? "." + file.name.split(".").pop()
         : ".pdf";
       const uniqueFileName = `${aluctr}_${actividadId}_${Date.now()}${ext}`;
+      const arrayBuffer = await file.arrayBuffer();
 
-      const { error: uploadError } = await supabase.storage
-        .from("uploads")
-        .upload(`sangre/${uniqueFileName}`, buffer, {
-          contentType: file.type || "application/pdf",
-          upsert: true,
-        });
+      const uploadRes = await fetch(
+        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/uploads/sangre/${uniqueFileName}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+            "Content-Type": file.type || "application/pdf",
+          },
+          body: arrayBuffer,
+        },
+      );
 
-      if (uploadError) {
-        console.error("Error subiendo a Supabase:", uploadError.message);
+      if (!uploadRes.ok) {
+        const err = await uploadRes.text();
+        console.error("Error subiendo a Supabase:", err);
       } else {
-        const {
-          data: { publicUrl },
-        } = supabase.storage
-          .from("uploads")
-          .getPublicUrl(`sangre/${uniqueFileName}`);
-        fileNamePath = publicUrl;
+        fileNamePath = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/uploads/sangre/${uniqueFileName}`;
+        console.log("✅ Archivo subido:", fileNamePath);
       }
     }
 
@@ -199,33 +197,24 @@ export async function POST(request) {
           to: correoDestino,
           subject: `Confirmación de Inscripción - ${nombreActividad}`,
           attachments: [
-            {
-              filename: "logoen.png",
-              path: logoPath,
-              cid: "logoite",
-            },
+            { filename: "logoen.png", path: logoPath, cid: "logoite" },
           ],
           html: `
             <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 500px; margin: auto; border: 1px solid #eee; border-radius: 10px; overflow: hidden;">
-              
               <div style="background-color: #ffffff; padding: 20px; text-align: center; border-bottom: 3px solid #013ee3;">
                 <img src="cid:logoite" alt="ITE Intramuros" style="width: 180px; height: auto; display: block; margin: auto;">
               </div>
-
               <div style="padding: 30px; color: #1a1a1a;">
                 <p style="font-size: 16px;">Hola <strong>${nombreEstudiante}</strong>,</p>
                 <p style="font-size: 16px;">Tu inscripción a la actividad <strong>"${nombreActividad}"</strong> ha sido confirmada correctamente.</p>
                 <p style="font-size: 16px;">Gracias por participar en las actividades del ITE.</p>
-                
                 <div style="background: #f8fafc; padding: 15px; margin-top: 20px; border-radius: 8px; font-size: 14px; border: 1px solid #e2e8f0;">
                   <p style="margin: 5px 0;"><strong>No. Control:</strong> ${aluctr}</p>
                   <p style="margin: 5px 0;"><strong>Modalidad:</strong> ${nuevaInscripcion.modalidad}</p>
                   <p style="margin: 5px 0;"><strong>Fecha:</strong> ${new Date().toLocaleDateString("es-MX")}</p>
                 </div>
-
                 <p style="margin-top: 30px; font-size: 15px;">Saludos,<br><strong>Equipo de Actividades Extracurriculares ITE</strong></p>
               </div>
-              
               <div style="background: #0f36a1ff; padding: 10px; text-align: center; color: white; font-size: 12px;">
                 © ${new Date().getFullYear()} Instituto Tecnológico de Ensenada
               </div>

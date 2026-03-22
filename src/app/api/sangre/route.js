@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@supabase/supabase-js";
@@ -7,7 +9,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY,
 );
 
-// ── GET: determina si el alumno tiene sangre validada o pendiente ──
+// ── GET ──
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -42,8 +44,9 @@ export async function GET(request) {
   }
 }
 
-// ── POST: actualiza la inscripcion con el archivo ──
+// ── POST ──
 export async function POST(request) {
+  console.log("🆕 POST /api/sangre corriendo");
   try {
     const formData = await request.formData();
     const aluctr = formData.get("aluctr");
@@ -66,38 +69,39 @@ export async function POST(request) {
       );
     }
 
-    // ── SUBIR A SUPABASE STORAGE ──
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
     const ext = file.name.includes(".")
       ? "." + file.name.split(".").pop()
       : ".pdf";
     const filename = `${aluctr}_${Date.now()}${ext}`;
-    const storagePath = `sangre/${filename}`;
+    const arrayBuffer = await file.arrayBuffer();
 
-    const { error: uploadError } = await supabase.storage
-      .from("uploads")
-      .upload(storagePath, buffer, {
-        contentType: file.type || "application/pdf",
-        upsert: true,
-      });
+    // ✅ Subida directa via fetch a la REST API de Supabase
+    const uploadRes = await fetch(
+      `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/uploads/sangre/${filename}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+          "Content-Type": file.type || "application/pdf",
+        },
+        body: arrayBuffer,
+      },
+    );
 
-    if (uploadError) {
-      console.error("Error Supabase:", uploadError.message);
-      return NextResponse.json({ error: uploadError.message }, { status: 500 });
+    if (!uploadRes.ok) {
+      const err = await uploadRes.text();
+      console.error("Error subiendo a Supabase:", err);
+      return NextResponse.json({ error: err }, { status: 500 });
     }
 
-    // ── OBTENER URL PÚBLICA ──
-    const {
-      data: { publicUrl },
-    } = supabase.storage.from("uploads").getPublicUrl(storagePath);
+    const publicUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/uploads/sangre/${filename}`;
+    console.log("✅ Archivo subido:", publicUrl);
 
-    // ── GUARDAR URL EN BD ──
     await prisma.inscripact.update({
       where: { id: inscripcion.id },
       data: {
         tipoSangreSolicitado: bloodType,
-        comprobanteSangrePDF: publicUrl, // ✅ URL pública, no base64
+        comprobanteSangrePDF: publicUrl,
         nombreArchivoSangre: filename,
         sangreValidada: false,
         mensajeAdmin: null,
@@ -114,7 +118,7 @@ export async function POST(request) {
   }
 }
 
-// ── PATCH: el panel de control usa esto para Aprobar/Rechazar ──
+// ── PATCH ──
 export async function PATCH(request) {
   try {
     const body = await request.json();
@@ -143,14 +147,10 @@ export async function PATCH(request) {
         }),
         prisma.inscripact.update({
           where: { id: inscripcion.id },
-          data: {
-            sangreValidada: true,
-            mensajeAdmin: null,
-          },
+          data: { sangreValidada: true, mensajeAdmin: null },
         }),
       ]);
     } else if (accion === "rechazar") {
-      // ── ELIMINAR ARCHIVO DE SUPABASE AL RECHAZAR ──
       if (inscripcion.nombreArchivoSangre) {
         await supabase.storage
           .from("uploads")
