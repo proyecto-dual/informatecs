@@ -193,7 +193,7 @@ export async function POST(request) {
         );
 
         await transporter.sendMail({
-          from: `"Equipo Actividades ITE" <${process.env.EMAIL_USER}>`,
+          from: `"Equipo Actividades extraescolaresITE" <${process.env.EMAIL_USER}>`,
           to: correoDestino,
           subject: `Confirmación de Inscripción - ${nombreActividad}`,
           attachments: [
@@ -213,7 +213,7 @@ export async function POST(request) {
                   <p style="margin: 5px 0;"><strong>Modalidad:</strong> ${nuevaInscripcion.modalidad}</p>
                   <p style="margin: 5px 0;"><strong>Fecha:</strong> ${new Date().toLocaleDateString("es-MX")}</p>
                 </div>
-                <p style="margin-top: 30px; font-size: 15px;">Saludos,<br><strong>Equipo de Actividades Extracurriculares ITE</strong></p>
+                <p style="margin-top: 30px; font-size: 15px;">Saludos,<br><strong>Equipo de Actividades Extraescolaress ITE</strong></p>
               </div>
               <div style="background: #0f36a1ff; padding: 10px; text-align: center; color: white; font-size: 12px;">
                 © ${new Date().getFullYear()} Instituto Tecnológico de Ensenada
