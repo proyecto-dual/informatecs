@@ -1,18 +1,23 @@
 import React from "react";
-import { FaUser, FaEnvelope } from "react-icons/fa";
+import { FaUser, FaEnvelope, FaIdCard } from "react-icons/fa";
 
 const AskEmailForm = ({
   matricula,
   setMatricula,
+  percve,
   email,
   setEmail,
   onSubmit,
+  role = "estudiante",
 }) => {
+  const isMaestro = role === "maestro";
+
   const expectedEmail = matricula ? `al${matricula}@ite.edu.mx` : "";
-  const emailIsValid =
-    email.trim().toLowerCase() === expectedEmail.toLowerCase();
+  const emailIsValid = isMaestro
+    ? email.length > 0
+    : email.trim().toLowerCase() === expectedEmail.toLowerCase();
   const showEmailError =
-    email.length > 0 && matricula.length > 0 && !emailIsValid;
+    !isMaestro && email.length > 0 && matricula?.length > 0 && !emailIsValid;
 
   return (
     <form onSubmit={onSubmit} className="login-form">
@@ -23,7 +28,7 @@ const AskEmailForm = ({
           textAlign: "center",
         }}
       >
-        Recuperar contraseña
+        {isMaestro ? "Verificar cuenta de Maestro" : "Recuperar contraseña"}
       </h3>
       <p
         style={{
@@ -33,23 +38,47 @@ const AskEmailForm = ({
           marginBottom: "0.75rem",
         }}
       >
-        Ingresa tu matrícula y te enviaremos un código a tu correo
-        institucional.
+        {isMaestro
+          ? "Te enviaremos un código a tu correo institucional para verificar tu cuenta."
+          : "Ingresa tu matrícula y te enviaremos un código a tu correo institucional."}
       </p>
 
-      {/* Matrícula */}
-      <label className="login-label">Matrícula:</label>
-      <div className="input-with-icon">
-        <FaUser className="input-icon-left" />
-        <input
-          type="text"
-          className="login-input with-left-icon"
-          value={matricula}
-          placeholder="Ej: 20760204"
-          onChange={(e) => setMatricula(e.target.value)}
-          required
-        />
-      </div>
+      {/* ID Maestro (solo lectura) o Matrícula estudiante */}
+      {isMaestro ? (
+        <>
+          <label className="login-label">ID de Maestro:</label>
+          <div className="input-with-icon">
+            <FaIdCard className="input-icon-left" />
+            <input
+              type="text"
+              className="login-input with-left-icon"
+              value={percve || ""}
+              disabled
+              style={{
+                backgroundColor: "#f0f4ff",
+                color: "#1b396a",
+                fontWeight: "600",
+                cursor: "not-allowed",
+              }}
+            />
+          </div>
+        </>
+      ) : (
+        <>
+          <label className="login-label">Matrícula:</label>
+          <div className="input-with-icon">
+            <FaUser className="input-icon-left" />
+            <input
+              type="text"
+              className="login-input with-left-icon"
+              value={matricula || ""}
+              placeholder="Ej: 20760204"
+              onChange={(e) => setMatricula(e.target.value)}
+              required
+            />
+          </div>
+        </>
+      )}
 
       {/* Correo institucional */}
       <label className="login-label">Correo institucional:</label>
@@ -60,15 +89,19 @@ const AskEmailForm = ({
           className="login-input with-left-icon"
           value={email}
           placeholder={
-            matricula ? `al${matricula}@ite.edu.mx` : "al________@ite.edu.mx"
+            isMaestro
+              ? "correo@ite.edu.mx"
+              : matricula
+                ? `al${matricula}@ite.edu.mx`
+                : "al________@ite.edu.mx"
           }
           onChange={(e) => setEmail(e.target.value)}
           required
         />
       </div>
 
-      {/* Hint / error en tiempo real */}
-      {matricula && (
+      {/* Hint / error en tiempo real — solo para estudiantes */}
+      {!isMaestro && matricula && (
         <p
           style={{
             fontSize: "0.76rem",

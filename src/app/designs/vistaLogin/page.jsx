@@ -312,8 +312,11 @@ const LoginPage = () => {
         }}
       />
     ),
+
     askEmailMaestro: (
       <AskEmailForm
+        role="maestro" // ← ¿está esto?
+        percve={teacherId} // ← ¿y esto?
         email={email}
         setEmail={setEmail}
         onSubmit={onMaestroSendCode}
