@@ -19,12 +19,18 @@ import {
   FiTrendingUp,
   FiMapPin,
 } from "react-icons/fi";
-import "./menumaestro.css";
+import "@/styles/maestro/menumaestro.css";
 
 export default function MenuMaestrosPage() {
   const router = useRouter();
   const [maestroData, setMaestroData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({
+    materias: 0,
+    horasSemana: 0,
+    estudiantes: 0,
+    semana: 1,
+  });
 
   useEffect(() => {
     const savedData = localStorage.getItem("maestroData");
@@ -36,7 +42,20 @@ export default function MenuMaestrosPage() {
 
     const parsed = JSON.parse(savedData);
     setMaestroData(parsed);
-    setLoading(false);
+
+    // Fetch de datos reales usando el percve del maestro logueado
+    fetch(`/api/maestros/stats?percve=${parsed.percve}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.error) {
+          setStats(data);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error al cargar stats:", err);
+        setLoading(false);
+      });
   }, [router]);
 
   if (loading) {
@@ -94,7 +113,7 @@ export default function MenuMaestrosPage() {
                 <FiBook />
               </div>
               <div className="metric-content">
-                <span className="metric-value">5</span>
+                <span className="metric-value">{stats.materias}</span>
                 <span className="metric-label">Materias Activas</span>
               </div>
               <div className="metric-trend">
@@ -109,7 +128,7 @@ export default function MenuMaestrosPage() {
                   <FiClock />
                 </div>
                 <div className="metric-item-content">
-                  <h4>24 hrs</h4>
+                  <h4>{stats.horasSemana} hrs</h4>
                   <p>Carga semanal</p>
                 </div>
               </div>
@@ -119,7 +138,7 @@ export default function MenuMaestrosPage() {
                   <FiUsers />
                 </div>
                 <div className="metric-item-content">
-                  <h4>142</h4>
+                  <h4>{stats.estudiantes}</h4>
                   <p>Estudiantes</p>
                 </div>
               </div>
@@ -129,7 +148,7 @@ export default function MenuMaestrosPage() {
                   <FiCalendar />
                 </div>
                 <div className="metric-item-content">
-                  <h4>Semana 14</h4>
+                  <h4>Semana {stats.semana}</h4>
                   <p>Avance del ciclo</p>
                 </div>
               </div>
@@ -147,7 +166,7 @@ export default function MenuMaestrosPage() {
           <div className="actions-list">
             <div
               className="action-row"
-              onClick={() => router.push("/designs/menumaestros/perfil")}
+              onClick={() => router.push("/designs/menumaestros")}
             >
               <div className="action-row-left">
                 <div className="action-icon">
@@ -175,7 +194,12 @@ export default function MenuMaestrosPage() {
                 </div>
                 <div className="action-info">
                   <h3>Mis Materias</h3>
-                  <p>Gestiona 5 asignaturas activas</p>
+                  <p>
+                    Gestiona{" "}
+                    {stats.materias === 1
+                      ? "1 asignatura activa"
+                      : `${stats.materias} asignaturas activas`}
+                  </p>
                 </div>
               </div>
               <div className="action-row-right">
@@ -195,7 +219,7 @@ export default function MenuMaestrosPage() {
                 </div>
                 <div className="action-info">
                   <h3>Mi Horario</h3>
-                  <p>24 horas semanales programadas</p>
+                  <p>{stats.horasSemana} horas semanales programadas</p>
                 </div>
               </div>
               <div className="action-row-right">
@@ -215,7 +239,7 @@ export default function MenuMaestrosPage() {
                 </div>
                 <div className="action-info">
                   <h3>Calificaciones</h3>
-                  <p>142 estudiantes asignados</p>
+                  <p>{stats.estudiantes} estudiantes asignados</p>
                 </div>
               </div>
               <div className="action-row-right">

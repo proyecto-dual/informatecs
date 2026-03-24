@@ -10,7 +10,7 @@ import {
   FiBook,
   FiAlertCircle,
 } from "react-icons/fi";
-import "./horario.css";
+import "@/styles/maestro/horario.css";
 
 export default function VistaMiHorarioPage() {
   const router = useRouter();

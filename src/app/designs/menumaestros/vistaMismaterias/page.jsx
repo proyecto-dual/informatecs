@@ -12,7 +12,7 @@ import {
   FiSearch,
   FiDownload,
 } from "react-icons/fi";
-import "./materias.css";
+import "@/styles/maestro/materias.css";
 
 export default function MisMateriasMaestroPage() {
   const router = useRouter();

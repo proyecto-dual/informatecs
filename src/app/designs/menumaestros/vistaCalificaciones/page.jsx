@@ -13,7 +13,7 @@ import {
   FiCheck,
   FiX,
 } from "react-icons/fi";
-import "./calificaciones.css";
+import "@/styles/maestro/calificaciones.css";
 import ActaPDF from "@/app/components/ActaPdf";
 
 export default function VistaCalificacionesPage() {
